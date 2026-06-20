@@ -88,7 +88,7 @@ export default function PricingSection() {
         </div>
 
         <div className="pricing-bottom">
-          <button className="btn-primary">Start the 2-Minute Challenge</button>
+          <button className="btn-primary">Start Talking to Learn — Free</button>
           <p className="pricing-micro">Cancel anytime. No commitment.</p>
         </div>
       </div>

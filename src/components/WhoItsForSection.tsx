@@ -13,7 +13,7 @@ export default function WhoItsForSection() {
       <div className="container">
         <h2 className="section-title">Who It's For</h2>
         <p className="section-subtitle">
-          Everyone learns better by speaking. Teach to Learn makes it effortless.
+          Everyone learns better by speaking. Talk to Learn is the behaviour — Teach to Learn is the platform that makes it effortless.
         </p>
 
         <div className="who-grid">

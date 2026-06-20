@@ -31,9 +31,9 @@ export default function ParentSection() {
           <div className="parent-story">
             <p>
               My son used to freeze when speaking. He'd whisper. He'd avoid eye contact. He'd panic
-              before presentations. We tried Teach to Learn for 10 minutes a day… and last week he
+              before presentations. We tried Talk to Learn for just 10 minutes a day on the Teach to Learn app… and last week he
               stood in front of 400 students and delivered the best talk of his life. I cried. This
-              app changed everything.
+              changed everything.
             </p>
           </div>
 

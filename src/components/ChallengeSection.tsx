@@ -24,9 +24,10 @@ export default function ChallengeSection() {
       <div className="container">
         <div className="challenge-inner">
           <div className="challenge-content">
+            <div className="section-eyebrow">Talk to Learn</div>
             <h2 className="section-title">The 2-Minute Talk Challenge</h2>
             <p className="section-subtitle">
-              Master any topic by explaining it out loud — in just 120 seconds.
+              Talk to Learn is the behaviour. Master any topic by explaining it out loud — in just 120 seconds.
             </p>
 
             <div className="challenge-steps">
@@ -42,7 +43,7 @@ export default function ChallengeSection() {
             </div>
 
             <div className="challenge-ctas">
-              <button className="btn-primary">Start Your First Talk</button>
+              <button className="btn-primary">Start Talking to Learn</button>
               <p className="challenge-micro">Practice privately. Perform publicly.</p>
               <p className="challenge-truth">Think you know your stuff? We'll tell you the truth.</p>
             </div>

@@ -30,7 +30,7 @@ function TimerScreen() {
         <span className="pm-mic-icon">🎙</span>
         Speaking…
       </div>
-      <div className="pm-hint">Private · No audience · No judgement</div>
+      <div className="pm-hint">Talk to Learn · Private · No judgement</div>
     </div>
   )
 }
