@@ -147,7 +147,7 @@ ul {
    HERO SECTION
    ============================================================ */
 .hero {
-  background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 40%, #e0f2fe 75%, #ffffff 100%);
+  background: linear-gradient(145deg, #0369A1 0%, #0284C7 30%, #0EA5E9 60%, #BAE6FD 88%, #F0F9FF 100%);
   padding: 64px 0 80px;
   overflow: hidden;
 }
@@ -165,7 +165,7 @@ ul {
 
 .hero-badge {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.18);
   color: var(--color-white);
   font-size: 0.8rem;
   font-weight: 700;
@@ -174,7 +174,8 @@ ul {
   padding: 6px 16px;
   border-radius: 50px;
   margin-bottom: 24px;
-  border: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
 }
 
 .hero-title {
@@ -184,19 +185,20 @@ ul {
   line-height: 1.05;
   letter-spacing: -0.03em;
   margin-bottom: 16px;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.22);
 }
 
 .hero-tagline {
   font-size: clamp(1.1rem, 3vw, 1.5rem);
-  color: rgba(255,255,255,0.92);
+  color: rgba(255,255,255,0.97);
   font-weight: 600;
   margin-bottom: 20px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.15);
 }
 
 .hero-sub {
   font-size: clamp(0.95rem, 2vw, 1.1rem);
-  color: rgba(255,255,255,0.82);
+  color: rgba(255,255,255,0.90);
   max-width: 520px;
   margin: 0 auto 32px;
   line-height: 1.65;
@@ -222,13 +224,13 @@ ul {
 
 .hero-micro {
   font-size: 0.875rem;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.85);
   margin-bottom: 8px;
 }
 
 .hero-challenge {
   font-size: 0.875rem;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.72);
   font-style: italic;
 }
 
@@ -251,7 +253,7 @@ ul {
   align-items: center;
   justify-content: center;
   gap: 20px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 24px 80px rgba(2, 50, 90, 0.55), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.12);
   position: relative;
 }
 
