@@ -5,16 +5,16 @@
   --color-primary: #0EA5E9;
   --color-primary-dark: #0284C7;
   --color-primary-light: #E0F2FE;
-  --color-secondary: #F8FAFC;
+  --color-secondary: #F7F9FC;
   --color-accent-gold: #F59E0B;
   --color-accent-coral: #F87171;
   --color-text-dark: #0F172A;
   --color-text-muted: #64748B;
-  --color-white: #ffffff;
+  --color-white: #F7F9FC;
   --color-border: #E2E8F0;
-  --color-bg-alt: #F8FAFC;
-  --color-bg-blue-tint: #F0F9FF;
-  --color-parent-bg: #FFF5F5;
+  --color-bg-alt: #F0F3F8;
+  --color-bg-blue-tint: #EBF4FF;
+  --color-parent-bg: #FDF0F0;
 
   --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
@@ -147,7 +147,7 @@ ul {
    HERO SECTION
    ============================================================ */
 .hero {
-  background: linear-gradient(145deg, #0369A1 0%, #0284C7 30%, #0EA5E9 60%, #BAE6FD 88%, #F0F9FF 100%);
+  background: linear-gradient(145deg, #0369A1 0%, #0284C7 30%, #0EA5E9 60%, #BAE6FD 88%, #EBF4FF 100%);
   padding: 64px 0 80px;
   overflow: hidden;
 }
