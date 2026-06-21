@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 
 const FLOW_STEPS = [
-  { num: '01', title: 'Enter a Subject',      desc: 'Type any topic — maths, science, history, a language, a skill, anything.' },
-  { num: '02', title: 'Generate a Flashcard', desc: 'The AI instantly builds a comprehensive Flashcard covering all relevant subject matter.' },
-  { num: '03', title: 'Learn First',          desc: 'Read the Flashcard. Absorb the concept, the structure, and the depth before you speak or test.' },
-  { num: '04', title: 'Talk or Test',         desc: 'Prove your understanding — explain it out loud for up to 6 minutes, or answer AI-generated questions.' },
+  { num: '01', title: 'Enter a Subject',      desc: 'Type any topic — maths, science, history, a language, a skill, anything.',              color: '#1E4DD8', bg: '#EEF2FF', glow: 'rgba(30,77,216,0.18)' },
+  { num: '02', title: 'Generate a Flashcard', desc: 'The AI instantly builds a comprehensive Flashcard covering all relevant subject matter.', color: '#7C3AED', bg: '#F5F3FF', glow: 'rgba(124,58,237,0.18)' },
+  { num: '03', title: 'Learn First',          desc: 'Read the Flashcard. Absorb the concept, the structure, and the depth before you speak or test.', color: '#0891B2', bg: '#ECFEFF', glow: 'rgba(8,145,178,0.18)' },
+  { num: '04', title: 'Talk or Test',         desc: 'Prove your understanding — explain it out loud for up to 6 minutes, or answer AI-generated questions.', color: '#059669', bg: '#ECFDF5', glow: 'rgba(5,150,105,0.18)' },
 ]
 
 /* ── Design tokens — exact spec ─────────────────────────────────────────── */
@@ -341,25 +341,55 @@ export default function CardFlowSection() {
         </div>
 
         {/* Flow steps */}
-        <div className="flex flex-col md:flex-row gap-0 mb-16">
+        <div className="flex flex-col md:flex-row items-start md:items-start gap-6 md:gap-0 mb-16">
           {FLOW_STEPS.map((step, i) => (
-            <div key={step.num}
-                 className="flex md:flex-col md:flex-1 md:items-center md:text-center items-start gap-5 md:gap-0 relative pb-9 md:pb-0 md:px-4">
+            <div key={step.num} className="flex md:flex-col md:flex-1 md:items-center md:text-center items-start gap-5 md:gap-0 relative md:px-3">
+
+              {/* Mobile: vertical connector */}
               {i < FLOW_STEPS.length - 1 && (
-                <div className="absolute left-[14px] top-8 bottom-0 w-px bg-gradient-to-b from-primary/25 to-transparent md:hidden" />
+                <div className="absolute left-[27px] top-[60px] bottom-[-24px] w-px md:hidden"
+                     style={{ background: `linear-gradient(to bottom, ${step.color}40, ${FLOW_STEPS[i+1].color}20)` }} />
               )}
+
+              {/* Desktop: arrow between steps */}
               {i < FLOW_STEPS.length - 1 && (
-                <div className="hidden md:block absolute h-px top-[18px] bg-gradient-to-r from-primary/25 to-transparent"
-                     style={{ left: 'calc(50% + 22px)', right: 'calc(-50% + 22px)' }} />
+                <div className="hidden md:flex absolute top-[27px] items-center pointer-events-none"
+                     style={{ left: 'calc(50% + 30px)', right: 'calc(-50% + 30px)', zIndex: 1 }}>
+                  <div style={{ flex: 1, height: '2px', background: `linear-gradient(to right, ${step.color}50, ${FLOW_STEPS[i+1].color}50)` }} />
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0, marginLeft: '-1px' }}>
+                    <path d="M3 7h8M7 3l4 4-4 4" stroke={FLOW_STEPS[i+1].color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.7"/>
+                  </svg>
+                </div>
               )}
-              <div className="w-9 h-9 min-w-[36px] rounded-full flex items-center justify-center text-[0.68rem] font-black md:mx-auto md:mb-4 shadow-card"
-                   style={{ background: T.bgPanel, border: `1px solid ${T.borderSoft}`, color: T.brandBlue }}>
-                {step.num}
+
+              {/* Circle */}
+              <div
+                className="flex-shrink-0 md:mx-auto md:mb-5"
+                style={{
+                  width: '56px', height: '56px', minWidth: '56px',
+                  borderRadius: '50%',
+                  background: step.bg,
+                  border: `2px solid ${step.color}30`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: `0 0 0 6px ${step.glow}, 0 4px 16px ${step.glow}`,
+                  position: 'relative', zIndex: 2,
+                }}
+              >
+                <span style={{ fontSize: '0.8rem', fontWeight: 900, color: step.color, letterSpacing: '0.02em' }}>
+                  {step.num}
+                </span>
               </div>
-              <div>
-                <h3 className="text-[0.95rem] font-bold text-text-dark mb-1.5">{step.title}</h3>
-                <p className="text-sm text-text-muted leading-relaxed">{step.desc}</p>
+
+              {/* Text */}
+              <div className="pt-1 md:pt-0">
+                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: T.textPrimary, marginBottom: '6px' }}>
+                  {step.title}
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: T.textSec, lineHeight: 1.6 }}>
+                  {step.desc}
+                </p>
               </div>
+
             </div>
           ))}
         </div>
