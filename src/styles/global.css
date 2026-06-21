@@ -344,9 +344,28 @@ ul {
 .pm-screen {
   background: linear-gradient(160deg, #0D1117 0%, #0A0E1A 100%);
   min-height: 480px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Stacked layers for crossfade animation */
+.pm-screen-layer {
+  position: absolute;
+  inset: 0;
   padding: 54px 18px 24px;
   display: flex;
   flex-direction: column;
+}
+
+.pm-screen-layer--top {
+  z-index: 2;
+}
+
+/* Scores screen needs less top padding to fit content */
+.pm-screen-scores {
+  padding-top: 40px;
 }
 
 /* ---- Screen content ---- */
@@ -402,12 +421,11 @@ ul {
 
 .pm-ring-progress {
   fill: none;
-  stroke: url(#ringGrad);
   stroke: #0EA5E9;
   stroke-width: 6;
   stroke-linecap: round;
-  stroke-dasharray: 276;
-  stroke-dashoffset: 60;
+  stroke-dasharray: 276.46;
+  stroke-dashoffset: 0;
 }
 
 .pm-timer-inner {

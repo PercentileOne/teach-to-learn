@@ -22,7 +22,7 @@ export default function HeroSection() {
             <p className="hero-micro">Talk privately. Grow publicly. Master anything.</p>
             <p className="hero-challenge">Think you know your stuff? We'll tell you the truth.</p>
           </div>
-          <PhoneMockup variant="timer" />
+          <PhoneMockup variant="timer" animated />
         </div>
       </div>
     </section>
