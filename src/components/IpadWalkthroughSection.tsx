@@ -11,35 +11,42 @@ export default function IpadWalkthroughSection() {
       gap: '56px',
     }}>
       {/* Section header */}
-      <div style={{ textAlign: 'center', maxWidth: '560px' }}>
+      <div style={{ textAlign: 'center', maxWidth: '580px' }}>
         <div style={{
-          display: 'inline-block',
+          display: 'inline-flex', alignItems: 'center', gap: '8px',
           fontSize: '9px', fontWeight: 800, letterSpacing: '.18em',
-          textTransform: 'uppercase', color: 'rgba(255,255,255,.4)',
+          textTransform: 'uppercase' as const, color: 'rgba(255,255,255,.45)',
           border: '1px solid rgba(255,255,255,.14)',
-          borderRadius: '20px', padding: '5px 14px', marginBottom: '18px',
+          borderRadius: '20px', padding: '5px 16px', marginBottom: '20px',
         }}>
-          Full Product Walkthrough
+          <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#60A5FA', boxShadow: '0 0 6px #60A5FA', display: 'inline-block' }} />
+          See It In Action
         </div>
+
         <h2 style={{
-          fontSize: 'clamp(1.8rem,5vw,2.8rem)',
+          fontSize: 'clamp(1.9rem,5vw,3rem)',
           fontWeight: 900, color: '#FFFFFF',
-          letterSpacing: '-.03em', lineHeight: 1.08,
-          margin: '0 0 14px',
+          letterSpacing: '-.035em', lineHeight: 1.06,
+          margin: '0 0 18px',
         }}>
-          From subject to mastery<br/>in one session.
+          One subject. One session.{' '}
+          <span style={{ background: 'linear-gradient(90deg,#60A5FA,#818CF8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Total mastery.
+          </span>
         </h2>
+
         <p style={{
-          fontSize: '15px', color: 'rgba(255,255,255,.52)',
-          lineHeight: 1.65, margin: 0,
+          fontSize: '15px', color: 'rgba(255,255,255,.50)',
+          lineHeight: 1.7, margin: 0, maxWidth: '460px', marginInline: 'auto',
         }}>
-          Watch the complete learning flow — enter a subject, generate a flashcard,
-          read and learn, then choose to Talk or Test your understanding.
+          Watch the AI build your flashcard, guide your reading, then test what you know — in real time.
         </p>
       </div>
 
-      {/* iPad demo */}
-      <IpadWalkthrough />
+      {/* iPad — responsive scale on smaller screens */}
+      <div className="scale-[0.75] sm:scale-90 md:scale-100 origin-top" style={{ lineHeight: 0 }}>
+        <IpadWalkthrough />
+      </div>
     </section>
   )
 }
