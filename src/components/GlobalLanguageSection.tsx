@@ -8,7 +8,7 @@ export default function GlobalLanguageSection() {
       <div className="container">
         <h2 className="section-title">Talk to Learn in Any Language</h2>
         <p className="section-subtitle">
-          Your voice, your language, your world — Talk to Learn wherever you are. Teach to Learn works everywhere.
+          Your voice, your language, your world — Learn by Talking works everywhere the Teach to Learn principle applies. Which is everywhere.
         </p>
 
         <div className="language-grid">

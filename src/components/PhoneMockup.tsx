@@ -9,7 +9,7 @@ interface Props {
 function TimerScreen() {
   return (
     <div className="pm-screen-content">
-      <div className="pm-app-name">Teach to Learn</div>
+      <div className="pm-app-name">Learn by Talking</div>
       <div className="pm-topic-pill">Topic: Photosynthesis</div>
       <div className="pm-timer-ring">
         <svg viewBox="0 0 100 100" className="pm-ring-svg">
@@ -30,7 +30,7 @@ function TimerScreen() {
         <span className="pm-mic-icon">🎙</span>
         Speaking…
       </div>
-      <div className="pm-hint">Talk to Learn · Private · No judgement</div>
+      <div className="pm-hint">Learn by Talking · Private · No judgement</div>
     </div>
   )
 }
@@ -45,7 +45,7 @@ function ScoreScreen() {
   ]
   return (
     <div className="pm-screen-content">
-      <div className="pm-app-name">Teach to Learn</div>
+      <div className="pm-app-name">Learn by Talking</div>
       <div className="pm-score-headline">Your Results</div>
       <div className="pm-vms-ring">
         <span className="pm-vms-number">82</span>
