@@ -1,5 +1,4 @@
-// CardFlowSection — explains the Card as the core learning unit
-// Flow: Enter Subject → Generate Card → Learn First → Talk or Test
+// CardFlowSection — Flashcard as the core learning unit
 
 const FLOW_STEPS = [
   {
@@ -11,46 +10,55 @@ const FLOW_STEPS = [
   {
     num: '02',
     icon: '⚡',
-    title: 'Generate a Card',
-    desc: 'The app instantly builds a structured learning card: explanation, key points, examples, and a summary.',
+    title: 'Generate a Flashcard',
+    desc: 'The AI instantly builds a comprehensive Flashcard covering all relevant subject matter.',
   },
   {
     num: '03',
     icon: '👁️',
-    title: 'Read & Learn First',
-    desc: 'Read the card. Absorb the concept. Understand the structure before you speak or test.',
+    title: 'Learn First',
+    desc: 'Read the Flashcard. Absorb the concept, the structure, and the depth before you speak or test.',
   },
   {
     num: '04',
     icon: '🔀',
     title: 'Choose: Talk or Test',
-    desc: 'Prove your understanding by talking it out loud — or challenge yourself with AI-generated questions.',
+    desc: 'Prove your understanding — explain it out loud for up to 6 minutes, or answer AI-generated questions.',
   },
 ]
 
-function CardPreview() {
+function FlashCard() {
   return (
-    <div className="card-preview">
-      {/* Card header */}
-      <div className="card-preview-header">
-        <div className="card-preview-subject-badge">Science · Year 9</div>
-        <h3 className="card-preview-title">Photosynthesis</h3>
-        <p className="card-preview-tagline">How plants convert light into energy</p>
+    <div className="flashcard">
+
+      {/* AI header bar */}
+      <div className="flashcard-ai-bar">
+        <span className="flashcard-ai-dot" />
+        <span className="flashcard-ai-label">AI-Generated Flashcard</span>
+        <span className="flashcard-ai-time">Generated in 1.2s</span>
       </div>
 
-      {/* Card body */}
-      <div className="card-preview-body">
-        <div className="card-section">
-          <div className="card-section-label">📖 Explanation</div>
-          <p className="card-section-text">
+      {/* Card header */}
+      <div className="flashcard-header">
+        <div className="flashcard-subject-badge">Science · Year 9</div>
+        <h3 className="flashcard-title">Photosynthesis</h3>
+        <p className="flashcard-tagline">How plants convert light into energy</p>
+      </div>
+
+      {/* Card body — all subject matter */}
+      <div className="flashcard-body">
+
+        <div className="flashcard-section">
+          <div className="flashcard-section-label">📖 Explanation</div>
+          <p className="flashcard-section-text">
             Photosynthesis is the process by which green plants use sunlight, water, and carbon dioxide
-            to produce glucose and oxygen. It takes place in the chloroplasts of plant cells.
+            to produce glucose and oxygen — taking place in the chloroplasts of plant cells.
           </p>
         </div>
 
-        <div className="card-section">
-          <div className="card-section-label">🔑 Key Points</div>
-          <ul className="card-key-points">
+        <div className="flashcard-section">
+          <div className="flashcard-section-label">🔑 Key Points</div>
+          <ul className="flashcard-key-points">
             <li>Requires sunlight, water (H₂O), and CO₂</li>
             <li>Produces glucose (energy) and oxygen</li>
             <li>Occurs in chloroplasts — contains chlorophyll</li>
@@ -58,42 +66,63 @@ function CardPreview() {
           </ul>
         </div>
 
-        <div className="card-section card-section--row">
-          <div className="card-section-half">
-            <div className="card-section-label">💡 Example</div>
-            <p className="card-section-text">A leaf absorbs sunlight through its surface and pulls water up from roots — converting both into sugar it uses to grow.</p>
+        <div className="flashcard-section flashcard-section--row">
+          <div className="flashcard-section-half">
+            <div className="flashcard-section-label">💡 Example</div>
+            <p className="flashcard-section-text">A leaf absorbs sunlight through its surface and pulls water up from roots — converting both into sugar it uses to grow.</p>
           </div>
-          <div className="card-section-half">
-            <div className="card-section-label">🏗️ Structure</div>
-            <p className="card-section-text">Light reactions → Calvin cycle → Glucose output. Two-stage process inside the chloroplast.</p>
+          <div className="flashcard-section-half">
+            <div className="flashcard-section-label">🏗️ Structure</div>
+            <p className="flashcard-section-text">Two stages: light-dependent reactions (thylakoid) → Calvin cycle (stroma) → glucose output.</p>
           </div>
         </div>
 
-        <div className="card-section card-section--summary">
-          <div className="card-section-label">✅ Summary</div>
-          <p className="card-section-text">
-            Plants are solar-powered sugar factories. Light + water + CO₂ → glucose + oxygen. The equation balances perfectly — and so does nature.
+        <div className="flashcard-section flashcard-section--row">
+          <div className="flashcard-section-half">
+            <div className="flashcard-section-label">⚠️ Misconceptions</div>
+            <ul className="flashcard-key-points">
+              <li>Plants do not only absorb CO₂ — they also respire</li>
+              <li>Photosynthesis stops at night — it needs light</li>
+            </ul>
+          </div>
+          <div className="flashcard-section-half">
+            <div className="flashcard-section-label">🔬 Breakdown</div>
+            <ul className="flashcard-key-points">
+              <li>Chlorophyll absorbs red + blue light</li>
+              <li>Water is split to release electrons</li>
+              <li>CO₂ is fixed into 3-carbon sugars</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="flashcard-section flashcard-section--summary">
+          <div className="flashcard-section-label">✅ Summary</div>
+          <p className="flashcard-section-text">
+            Plants are solar-powered sugar factories. Light + water + CO₂ → glucose + oxygen.
+            The equation balances perfectly — and so does nature.
           </p>
         </div>
+
       </div>
 
-      {/* Card actions */}
-      <div className="card-preview-actions">
-        <button className="card-action-talk">
-          <span className="card-action-icon">🎙</span>
-          <div className="card-action-text">
-            <span className="card-action-title">TALK</span>
-            <span className="card-action-sub">2–6 min · 5 AI scores</span>
+      {/* Action buttons */}
+      <div className="flashcard-actions">
+        <button className="flashcard-action-talk">
+          <span className="flashcard-action-icon">🎙</span>
+          <div className="flashcard-action-text">
+            <span className="flashcard-action-title">TALK</span>
+            <span className="flashcard-action-sub">2–6 min · 5 AI scores</span>
           </div>
         </button>
-        <button className="card-action-test">
-          <span className="card-action-icon">🧠</span>
-          <div className="card-action-text">
-            <span className="card-action-title">TEST</span>
-            <span className="card-action-sub">Questions · instant results</span>
+        <button className="flashcard-action-test">
+          <span className="flashcard-action-icon">🧠</span>
+          <div className="flashcard-action-text">
+            <span className="flashcard-action-title">TEST</span>
+            <span className="flashcard-action-sub">Questions · instant results</span>
           </div>
         </button>
       </div>
+
     </div>
   )
 }
@@ -106,9 +135,10 @@ export default function CardFlowSection() {
         {/* Header */}
         <div className="cardflow-header">
           <div className="section-eyebrow">How It Works</div>
-          <h2 className="section-title">The Card — Your Learning Unit</h2>
+          <h2 className="section-title">The Flashcard — Your Learning Unit</h2>
           <p className="section-subtitle">
-            Every subject becomes a structured Card. Read it, understand it, then prove it — by talking or testing.
+            Enter any subject and the AI generates a comprehensive Flashcard — covering everything you need to know, instantly.
+            Then prove you know it: Talk or Test.
           </p>
         </div>
 
@@ -125,38 +155,37 @@ export default function CardFlowSection() {
           ))}
         </div>
 
-        {/* Premium card preview */}
+        {/* Premium flashcard */}
         <div className="cardflow-preview-wrap">
-          <div className="cardflow-preview-label">A real Card — generated in seconds</div>
-          <CardPreview />
+          <div className="cardflow-preview-label">A real Flashcard — generated in seconds</div>
+          <FlashCard />
         </div>
 
-        {/* TALK / TEST explanation row */}
+        {/* TALK / TEST mode explanation */}
         <div className="cardflow-modes">
+
           <div className="cardflow-mode cardflow-mode--talk">
             <div className="cardflow-mode-icon">🎙</div>
             <h3 className="cardflow-mode-title">TALK</h3>
             <p className="cardflow-mode-desc">
-              Explain the card out loud for 2 to 6 minutes. The AI listens and scores you across five skills:
-              Accuracy, Depth, Clarity, Structure, and Confidence — then gives your Verbal Mastery Score.
+              Explain the Flashcard out loud — choose your own duration from <strong>2 to 6 minutes</strong>.
+              The AI listens and scores you across five skills, then delivers your Verbal Mastery Score.
             </p>
             <div className="cardflow-mode-tags">
-              {['Accuracy', 'Depth', 'Clarity', 'Structure', 'Confidence'].map(t => (
-                <span key={t} className="cardflow-tag cardflow-tag--blue">{t}</span>
+              {['2–6 Minutes', 'Accuracy', 'Depth', 'Clarity', 'Structure', 'Confidence'].map(t => (
+                <span key={t} className={`cardflow-tag ${t === '2–6 Minutes' ? 'cardflow-tag--time' : 'cardflow-tag--blue'}`}>{t}</span>
               ))}
             </div>
           </div>
 
-          <div className="cardflow-mode-divider">
-            <span>or</span>
-          </div>
+          <div className="cardflow-mode-divider"><span>or</span></div>
 
           <div className="cardflow-mode cardflow-mode--test">
             <div className="cardflow-mode-icon">🧠</div>
             <h3 className="cardflow-mode-title">TEST</h3>
             <p className="cardflow-mode-desc">
-              The app generates targeted questions based on your card. Answer them to prove real understanding —
-              not just recall, but application and depth. Instant AI feedback on every answer.
+              The AI generates targeted questions based on your Flashcard — testing recall, application, and real depth.
+              Instant feedback on every answer, not just right or wrong.
             </p>
             <div className="cardflow-mode-tags">
               {['Understanding', 'Application', 'Recall', 'Instant Feedback'].map(t => (
@@ -164,6 +193,7 @@ export default function CardFlowSection() {
               ))}
             </div>
           </div>
+
         </div>
 
       </div>
