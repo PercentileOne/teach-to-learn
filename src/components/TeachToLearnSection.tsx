@@ -238,7 +238,7 @@ export default function TeachToLearnSection() {
               color: '#0A0F1C', margin: '0 0 12px',
             }}>
               Why Explaining a Topic<br />Makes You{' '}
-              <span style={{ color: ACCENT }}>Learn Faster</span>
+              <span style={{ color: ACCENT }}>Learn it Faster</span>
             </h2>
 
             <p style={{ fontSize: '15px', fontStyle: 'italic', color: '#9CA3AF', marginBottom: '28px', lineHeight: 1.6 }}>
