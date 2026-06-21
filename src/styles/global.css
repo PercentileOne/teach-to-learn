@@ -102,7 +102,7 @@
 .pm-screen-layer {
   position: absolute;
   inset: 0;
-  padding: 54px 18px 24px;
+  padding: 54px 28px 24px;
   display: flex;
   flex-direction: column;
 }
