@@ -1,54 +1,35 @@
 import PhoneMockup from './PhoneMockup'
-
 const steps = [
-  {
-    num: 1,
-    title: 'Pick a Topic',
-    desc: 'Choose anything — schoolwork, a concept, a script, a presentation, a story, a language.',
-  },
-  {
-    num: 2,
-    title: 'Talk for 2 Minutes',
-    desc: "Hit 'Start Talking' and explain it out loud. No pressure. No audience. No judgement.",
-  },
-  {
-    num: 3,
-    title: 'Get Instant AI Feedback',
-    desc: 'Clarity. Accuracy. Depth. Structure. Confidence. Your Verbal Mastery Score.',
-  },
+  { num: 1, title: 'Pick a Topic', desc: 'Choose anything — schoolwork, a concept, a script, a presentation, a story, a language.' },
+  { num: 2, title: 'Talk for 2–6 Minutes', desc: "Hit 'Start Talking' and explain it out loud. No pressure. No audience. No judgement." },
+  { num: 3, title: 'Get Instant AI Feedback', desc: 'Clarity. Accuracy. Depth. Structure. Confidence. Your Verbal Mastery Score.' },
 ]
-
 export default function ChallengeSection() {
   return (
-    <section className="challenge-section section">
-      <div className="container">
-        <div className="challenge-inner">
-          <div className="challenge-content">
-            <div className="section-eyebrow">Talk to Learn</div>
-            <h2 className="section-title">The 2-Minute Talk Challenge</h2>
-            <p className="section-subtitle">
-              The heart of Learn by Talking — explain any topic out loud for just 120 seconds and watch your understanding transform.
-            </p>
-
-            <div className="challenge-steps">
-              {steps.map((s) => (
-                <div key={s.num} className="challenge-step">
-                  <div className="challenge-step-num">{s.num}</div>
-                  <div className="challenge-step-body">
-                    <h3>{s.title}</h3>
-                    <p>{s.desc}</p>
+    <section className="bg-bg-blue py-12 md:py-20">
+      <div className="max-w-[1160px] mx-auto px-5">
+        <div className="flex flex-col md:flex-row items-start gap-12 md:gap-16">
+          <div className="flex-1 text-center md:text-left">
+            <span className="section-eyebrow">Talk to Learn</span>
+            <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-extrabold text-text-dark leading-tight tracking-[-0.02em] mb-3">The 2-Minute Talk Challenge</h2>
+            <p className="text-[clamp(1rem,2vw,1.2rem)] text-text-muted max-w-lg">The heart of Learn by Talking — explain any topic out loud for 2 to 6 minutes and watch your understanding transform.</p>
+            <div className="flex flex-col gap-6 my-10 text-left">
+              {steps.map(s => (
+                <div key={s.num} className="flex gap-5 items-start bg-bg-white rounded-card p-6 shadow-card hover:-translate-y-0.5 transition-transform">
+                  <div className="w-11 h-11 min-w-[44px] bg-primary text-white rounded-full flex items-center justify-center text-lg font-black shadow-blue-sm">{s.num}</div>
+                  <div>
+                    <h3 className="text-base font-bold text-text-dark mb-1.5">{s.title}</h3>
+                    <p className="text-sm text-text-muted leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
-
-            <div className="challenge-ctas">
+            <div className="flex flex-col items-center md:items-start gap-3">
               <button className="btn-primary">Start Learning by Talking</button>
-              <p className="challenge-micro">Practice privately. Perform publicly.</p>
-              <p className="challenge-truth">Think you know your stuff? We'll tell you the truth.</p>
+              <p className="text-sm text-text-muted">Practice privately. Perform publicly.</p>
+              <p className="text-sm text-primary italic font-semibold">Think you know your stuff? We'll tell you the truth.</p>
             </div>
           </div>
-
           <PhoneMockup variant="timer" />
         </div>
       </div>

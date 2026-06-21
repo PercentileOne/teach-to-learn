@@ -1,16 +1,16 @@
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer-logo">Learn by Talking</div>
-        <div className="footer-tagline">Practice Privately. Thrive Publicly.</div>
-        <nav className="footer-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Contact</a>
+    <footer className="bg-text-dark py-12 text-center">
+      <div className="max-w-[1160px] mx-auto px-5">
+        <div className="text-lg font-extrabold text-bg-white mb-1.5">Learn by Talking</div>
+        <div className="text-sm text-white/50 mb-7">Practice Privately. Thrive Publicly.</div>
+        <nav className="flex gap-6 justify-center mb-7">
+          {['Privacy','Terms','Contact'].map(l => (
+            <a key={l} href="#" className="text-sm text-white/60 hover:text-primary transition-colors">{l}</a>
+          ))}
         </nav>
-        <p className="footer-quote">Built on the Teach to Learn principle. Confidence has no language barrier.</p>
-        <p className="footer-copy">© 2026 Learn by Talking</p>
+        <p className="text-sm text-white/40 italic mb-5">Built on the Teach to Learn principle. Confidence has no language barrier.</p>
+        <p className="text-xs text-white/30">© 2026 Learn by Talking</p>
       </div>
     </footer>
   )
