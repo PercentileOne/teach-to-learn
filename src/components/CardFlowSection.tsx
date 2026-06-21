@@ -137,7 +137,8 @@ function FlashCard() {
       {/* ── Header zone ─────────────────────────────────── */}
       <div style={{
         padding: '28px 40px',
-        background: 'linear-gradient(180deg, #F4F7FF 0%, #FAFBFF 55%, #FFFFFF 100%)',
+        background: '#F2F4F7',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
         borderBottom: `1px solid ${T.borderSoft}`,
       }}>
         {/* AI generation badge + timer */}
@@ -184,7 +185,7 @@ function FlashCard() {
       </div>
 
       {/* ── Body ────────────────────────────────────────── */}
-      <div style={{ padding: '32px 40px' }}>
+      <div style={{ padding: '32px 40px', background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 100%)' }}>
 
         <div>
           <SLabel>Explanation</SLabel>
@@ -195,7 +196,7 @@ function FlashCard() {
 
         <SDivider />
 
-        <div>
+        <div style={{ background: 'rgba(30,77,216,0.04)', borderRadius: '12px', padding: '16px 18px', margin: '0 -18px' }}>
           <SLabel>Key Points</SLabel>
           <SBullets items={[
             'Requires sunlight, water (H₂O), and CO₂',
@@ -221,7 +222,7 @@ function FlashCard() {
         <SDivider />
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
-          <div>
+          <div style={{ background: 'rgba(255,170,0,0.06)', borderRadius: '10px', padding: '14px 16px', margin: '0 -16px' }}>
             <SLabel>Misconceptions</SLabel>
             <SBullets items={[
               'Plants do not only absorb CO₂ — they also respire',
@@ -240,11 +241,11 @@ function FlashCard() {
 
         <SDivider />
 
-        {/* Summary panel — indigo tint */}
+        {/* Summary panel */}
         <div style={{
           padding: '20px 24px', borderRadius: '14px',
-          background: 'linear-gradient(135deg, #EEF2FF 0%, #EDF4FF 100%)',
-          border: '1px solid #C7D2FE',
+          background: 'rgba(0,180,90,0.05)',
+          border: '1px solid rgba(0,180,90,0.14)',
         }}>
           <SLabel>Summary</SLabel>
           <SBody>
@@ -258,7 +259,7 @@ function FlashCard() {
       <div style={{
         display: 'flex', gap: '12px',
         padding: '24px 40px',
-        background: 'linear-gradient(180deg, #FAFBFE 0%, #F7F9FC 100%)',
+        background: '#F7F9FC',
         borderTop: `1px solid ${T.borderSoft}`,
       }}>
         <button
