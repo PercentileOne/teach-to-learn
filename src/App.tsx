@@ -1,5 +1,6 @@
 import HeroSection from './components/HeroSection'
 import CardFlowSection from './components/CardFlowSection'
+import IpadWalkthroughSection from './components/IpadWalkthroughSection'
 import VideoSection from './components/VideoSection'
 import ChallengeSection from './components/ChallengeSection'
 import ScoringSection from './components/ScoringSection'
@@ -15,6 +16,7 @@ export default function App() {
     <>
       <HeroSection />
       <CardFlowSection />
+      <IpadWalkthroughSection />
       <VideoSection />
       <ChallengeSection />
       <ScoringSection />
