@@ -9,7 +9,7 @@ export default function HeroSection() {
           <div className="flex-1 text-center md:text-left">
             {/* Badge with live green dot */}
             <div className="inline-flex items-center gap-2.5 bg-white/12 text-white text-[0.72rem] font-bold tracking-[0.12em] uppercase px-4 py-1.5 rounded-btn border border-white/25 backdrop-blur-sm mb-7">
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#34D399', boxShadow: '0 0 7px #34D399', display: 'inline-block', flexShrink: 0 }} />
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#BAE6FD', boxShadow: '0 0 7px #BAE6FD', display: 'inline-block', flexShrink: 0 }} />
               The Speak-to-Learn Method
             </div>
 
@@ -32,11 +32,11 @@ export default function HeroSection() {
             {/* Explanatory sub-headline */}
             <p className="text-[clamp(1rem,2.2vw,1.2rem)] text-white/92 max-w-[480px] mx-auto md:mx-0 mb-8 leading-[1.6]" style={{ fontWeight: 500 }}>
               Explain any topic out loud — we'll score your{' '}
-              <span style={{ color: '#34D399', fontWeight: 650 }}>clarity</span>,{' '}
-              <span style={{ color: '#34D399', fontWeight: 650 }}>depth</span>,{' '}
-              <span style={{ color: '#34D399', fontWeight: 650 }}>accuracy</span>,{' '}
-              <span style={{ color: '#34D399', fontWeight: 650 }}>structure</span>, and{' '}
-              <span style={{ color: '#34D399', fontWeight: 650 }}>confidence</span>.
+              <span style={{ color: '#BAE6FD', fontWeight: 650 }}>clarity</span>,{' '}
+              <span style={{ color: '#BAE6FD', fontWeight: 650 }}>depth</span>,{' '}
+              <span style={{ color: '#BAE6FD', fontWeight: 650 }}>accuracy</span>,{' '}
+              <span style={{ color: '#BAE6FD', fontWeight: 650 }}>structure</span>, and{' '}
+              <span style={{ color: '#BAE6FD', fontWeight: 650 }}>confidence</span>.
             </p>
 
             {/* CTAs */}
