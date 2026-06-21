@@ -1,4 +1,4 @@
-import HandHeldPhone from './HandHeldPhone'
+import PhoneMockup from './PhoneMockup'
 
 export default function HeroSection() {
   return (
@@ -36,8 +36,17 @@ export default function HeroSection() {
             <p className="text-sm text-white/70 italic">Think you know your stuff? We'll tell you the truth.</p>
           </div>
 
-          {/* Hand-held phone — animated screen, SVG hand wrapping */}
-          <HandHeldPhone />
+          {/* Floating phone mockup — animated screen */}
+          <div style={{
+            flexShrink: 0,
+            transform: 'rotate(-4deg) translateY(-8px)',
+            filter: [
+              'drop-shadow(0 8px 24px rgba(0,0,0,0.18))',
+              'drop-shadow(0 32px 64px rgba(0,0,0,0.14))',
+            ].join(' '),
+          }}>
+            <PhoneMockup variant="timer" animated />
+          </div>
 
         </div>
       </div>
