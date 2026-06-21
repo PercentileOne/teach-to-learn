@@ -237,7 +237,7 @@ export default function TeachToLearnSection() {
               fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1.07,
               color: '#0A0F1C', margin: '0 0 12px',
             }}>
-              Why Talking Makes You<br />
+              Why Explaining a Topic<br />Makes You{' '}
               <span style={{ color: ACCENT }}>Learn Faster</span>
             </h2>
 
