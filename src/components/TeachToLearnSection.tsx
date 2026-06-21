@@ -1,36 +1,77 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   TeachToLearnSection
-   "Why Talking Makes You Learn Faster"
-
-   Layout:  Left column — text copy with rich typographic treatment
-            Right column — 3 staggered insight cards (illustrated, no photos needed)
+   TeachToLearnSection — Premium redesign
+   Single accent: #2D9E6A. Neutral palette. Editorial image cards.
+   Three equal step cards. Centred Feynman pull-quote.
    ───────────────────────────────────────────────────────────────────────────── */
 
-const YOU_LINES = [
-  { text: 'You organise your thoughts.',                            color: '#1E4DD8', bg: '#EEF2FF' },
-  { text: 'You connect ideas.',                                     color: '#7C3AED', bg: '#F5F3FF' },
-  { text: 'You spot gaps instantly.',                               color: '#D97706', bg: '#FFFBEB' },
-  { text: 'You build clarity, confidence, and real understanding.', color: '#059669', bg: '#ECFDF5' },
+const ACCENT = '#2D9E6A'
+
+const YOU_BULLETS = [
+  'You organise your thoughts.',
+  'You connect ideas.',
+  'You spot gaps instantly.',
+  'You build clarity, confidence, and real understanding.',
 ]
 
-const INSIGHT_CARDS = [
+function ChevronIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <path d="M5 3 L10 8 L5 13" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+/* Editorial image cards — warm graduated tints in lieu of photography */
+function ImageCard({ gradient, label, aspectRatio = '1/1' }: {
+  gradient: string
+  label: string
+  aspectRatio?: string
+}) {
+  return (
+    <div style={{
+      borderRadius: '18px', overflow: 'hidden',
+      background: gradient, aspectRatio,
+      position: 'relative', width: '100%',
+      boxShadow: '0 4px 12px rgba(0,0,0,.06), 0 20px 48px rgba(0,0,0,.10)',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.30) 0%, transparent 60%)',
+        pointerEvents: 'none',
+      }}/>
+      <svg viewBox="0 0 200 260" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .18 }} preserveAspectRatio="xMidYMid meet">
+        <ellipse cx="100" cy="76" rx="34" ry="38" fill="rgba(0,0,0,1)"/>
+        <path d="M58 118 Q58 148 100 156 Q142 148 142 118 L140 208 Q140 224 100 228 Q60 224 60 208 Z" fill="rgba(0,0,0,1)"/>
+        <path d="M58 126 L32 188" stroke="rgba(0,0,0,1)" strokeWidth="26" strokeLinecap="round"/>
+        <path d="M142 126 L168 188" stroke="rgba(0,0,0,1)" strokeWidth="26" strokeLinecap="round"/>
+      </svg>
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,.36) 0%, transparent 100%)',
+        padding: '40px 16px 14px',
+      }}>
+        <span style={{
+          fontSize: '10px', fontWeight: 700, letterSpacing: '.10em',
+          color: 'rgba(255,255,255,.92)', textTransform: 'uppercase' as const,
+        }}>
+          {label}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+const STEP_CARDS = [
   {
     num: '01',
     headline: 'Teacher Mode',
-    body: 'The moment you start explaining, your brain reorganises knowledge — making connections passive reading never triggers.',
-    color: '#3BAF7A',
-    bg: 'linear-gradient(145deg,#F0FBF5 0%,#E2F5EA 100%)',
-    border: 'rgba(59,175,122,.18)',
+    body: 'The moment you start explaining, your brain reorganises knowledge — making connections that passive reading never triggers.',
     icon: (
-      <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
-        {/* Simple person speaking */}
-        <circle cx="20" cy="14" r="7" fill="#3BAF7A" opacity=".20"/>
-        <path d="M8 38 Q8 28 20 28 Q32 28 32 38" fill="#3BAF7A" opacity=".15"/>
-        <circle cx="20" cy="14" r="5" fill="#3BAF7A" opacity=".55"/>
-        {/* Speech arc */}
-        <path d="M30 16 Q36 12 30 8" stroke="#3BAF7A" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".70"/>
-        <path d="M33 18 Q42 12 33 6" stroke="#3BAF7A" strokeWidth="2" strokeLinecap="round" fill="none" opacity=".50"/>
-        <path d="M36 20 Q48 12 36 4" stroke="#3BAF7A" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity=".30"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
     ),
   },
@@ -38,26 +79,11 @@ const INSIGHT_CARDS = [
     num: '02',
     headline: 'Gap Detection',
     body: 'Gaps in understanding become instantly visible when you try to explain. Silence is feedback. The AI catches what you miss.',
-    color: '#1E4DD8',
-    bg: 'linear-gradient(145deg,#EEF2FF 0%,#E0E9FF 100%)',
-    border: 'rgba(30,77,216,.16)',
     icon: (
-      <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
-        {/* Brain / network */}
-        <circle cx="24" cy="24" r="14" fill="#1E4DD8" opacity=".10"/>
-        <circle cx="24" cy="24" r="3" fill="#1E4DD8" opacity=".60"/>
-        <circle cx="14" cy="18" r="2.5" fill="#1E4DD8" opacity=".45"/>
-        <circle cx="34" cy="18" r="2.5" fill="#1E4DD8" opacity=".45"/>
-        <circle cx="14" cy="30" r="2.5" fill="#1E4DD8" opacity=".40"/>
-        <circle cx="34" cy="30" r="2.5" fill="#1E4DD8" opacity=".40"/>
-        <circle cx="24" cy="10" r="2" fill="#1E4DD8" opacity=".35"/>
-        <circle cx="24" cy="38" r="2" fill="#1E4DD8" opacity=".35"/>
-        <line x1="24" y1="24" x2="14" y2="18" stroke="#1E4DD8" strokeWidth="1.2" opacity=".30"/>
-        <line x1="24" y1="24" x2="34" y2="18" stroke="#1E4DD8" strokeWidth="1.2" opacity=".30"/>
-        <line x1="24" y1="24" x2="14" y2="30" stroke="#1E4DD8" strokeWidth="1.2" opacity=".30"/>
-        <line x1="24" y1="24" x2="34" y2="30" stroke="#1E4DD8" strokeWidth="1.2" opacity=".30"/>
-        <line x1="24" y1="24" x2="24" y2="10" stroke="#1E4DD8" strokeWidth="1.2" opacity=".30"/>
-        <line x1="24" y1="24" x2="24" y2="38" stroke="#1E4DD8" strokeWidth="1.2" opacity=".30"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="M21 21l-4.35-4.35"/>
+        <path d="M11 8v6"/><path d="M8 11h6"/>
       </svg>
     ),
   },
@@ -65,15 +91,10 @@ const INSIGHT_CARDS = [
     num: '03',
     headline: 'Proven Retention',
     body: 'Research shows learners who teach retain up to 90% more than those who only read or listen. Talking is the shortcut.',
-    color: '#7C3AED',
-    bg: 'linear-gradient(145deg,#F5F3FF 0%,#EDE8FF 100%)',
-    border: 'rgba(124,58,237,.15)',
     icon: (
-      <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
-        {/* Upward growth / star */}
-        <path d="M8 36 L18 24 L24 30 L34 16 L40 22" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity=".45" fill="none"/>
-        <circle cx="40" cy="22" r="4" fill="#7C3AED" opacity=".55"/>
-        <path d="M38 8 L39.5 12 L44 12 L40.5 14.5 L42 19 L38 16 L34 19 L35.5 14.5 L32 12 L36.5 12 Z" fill="#7C3AED" opacity=".35"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+        <polyline points="16 7 22 7 22 13"/>
       </svg>
     ),
   },
@@ -81,147 +102,136 @@ const INSIGHT_CARDS = [
 
 export default function TeachToLearnSection() {
   return (
-    <section style={{
-      background: 'linear-gradient(180deg, #FEFBF3 0%, #F7F9FC 100%)',
-      padding: '100px 20px 112px',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      {/* Subtle decorative arc */}
-      <div style={{
-        position: 'absolute', top: '-120px', right: '-120px',
-        width: '520px', height: '520px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(59,175,122,.06) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
+    <section style={{ background: '#FAFBFC', padding: '108px 20px 120px' }}>
+      <div className="max-w-[1120px] mx-auto">
 
-      <div className="max-w-[1160px] mx-auto">
-        <div className="flex flex-col lg:flex-row gap-16 xl:gap-20 items-start">
+        {/* ── Part 1: Two columns ──────────────────────────────────────── */}
+        <div className="flex flex-col lg:flex-row gap-16 xl:gap-24 items-start mb-20">
 
-          {/* ── Left: text column ─────────────────────────────────── */}
-          <div className="flex-1 max-w-[560px]">
+          {/* LEFT: text */}
+          <div style={{ flex: '1 1 460px', maxWidth: '520px' }}>
 
-            {/* Eyebrow */}
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
-              padding: '5px 14px', borderRadius: '20px', marginBottom: '20px',
-              background: 'rgba(59,175,122,.10)', border: '1px solid rgba(59,175,122,.22)',
+              padding: '4px 14px', borderRadius: '20px', marginBottom: '22px',
+              border: `1px solid ${ACCENT}28`, background: `${ACCENT}0C`,
             }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3BAF7A', display: 'inline-block', boxShadow: '0 0 6px #3BAF7A' }} />
-              <span style={{ fontSize: '0.70rem', fontWeight: 800, letterSpacing: '.14em', textTransform: 'uppercase' as const, color: '#2E9E6A' }}>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: ACCENT, display: 'inline-block' }} />
+              <span style={{ fontSize: '0.67rem', fontWeight: 800, letterSpacing: '.15em', textTransform: 'uppercase' as const, color: ACCENT }}>
                 The Teach to Learn Principle
               </span>
             </div>
 
-            {/* Title */}
             <h2 style={{
-              fontSize: 'clamp(1.8rem,4.5vw,2.9rem)',
+              fontSize: 'clamp(1.75rem,4.5vw,2.85rem)',
               fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1.07,
-              color: '#0A0F1C', margin: '0 0 10px',
+              color: '#0A0F1C', margin: '0 0 12px',
             }}>
               Why Talking Makes You<br />
-              <span style={{ color: '#3BAF7A' }}>Learn Faster</span>
+              <span style={{ color: ACCENT }}>Learn Faster</span>
             </h2>
 
-            {/* Subtitle */}
-            <p style={{ fontSize: '15px', color: '#6B7280', fontStyle: 'italic', marginBottom: '32px', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '15px', fontStyle: 'italic', color: '#9CA3AF', marginBottom: '28px', lineHeight: 1.6 }}>
               The science behind the Teach to Learn Principle.
             </p>
 
-            {/* Intro paragraph */}
-            <p style={{ fontSize: '17px', fontWeight: 500, lineHeight: 1.7, color: '#1A2332', marginBottom: '28px' }}>
+            <p style={{ fontSize: '17px', fontWeight: 500, color: '#1A2332', lineHeight: 1.72, marginBottom: '28px' }}>
               When you explain something out loud, your brain switches into{' '}
-              <span style={{ color: '#3BAF7A', fontWeight: 700 }}>'teacher mode'</span>.
+              <span style={{ color: ACCENT, fontWeight: 700 }}>'teacher mode'</span>.
             </p>
 
-            {/* The "You..." lines */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '32px' }}>
-              {YOU_LINES.map((line, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: '13px',
-                  padding: '12px 16px', borderRadius: '10px',
-                  background: line.bg, border: `1px solid ${line.color}20`,
-                }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: line.color, flexShrink: 0, boxShadow: `0 0 6px ${line.color}80` }} />
-                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#1A2332', lineHeight: 1.4 }}>{line.text}</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '32px' }}>
+              {YOU_BULLETS.map((line, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <div style={{ flexShrink: 0, marginTop: '3px' }}><ChevronIcon /></div>
+                  <span style={{ fontSize: '16px', fontWeight: 500, color: '#374151', lineHeight: 1.5 }}>{line}</span>
                 </div>
               ))}
             </div>
 
-            {/* Principle callout */}
             <div style={{
-              padding: '22px 28px', borderRadius: '16px', marginBottom: '24px',
-              background: 'linear-gradient(135deg,#0A0F1C,#1A2540)',
-              borderLeft: '4px solid #3BAF7A',
+              padding: '20px 24px', borderRadius: '14px',
+              background: '#FFFFFF', border: '1px solid #E8EDF5',
+              borderLeft: `3px solid ${ACCENT}`,
+              boxShadow: '0 2px 8px rgba(0,0,0,.04)',
+              marginBottom: '22px',
             }}>
-              <p style={{ fontSize: '16px', fontWeight: 600, lineHeight: 1.65, color: '#F0F4FF', margin: 0 }}>
-                This is the{' '}
-                <span style={{ color: '#6EE7A8', fontWeight: 800 }}>Teach to Learn Principle</span>
-                {' '}— one of the most powerful learning methods ever discovered.
+              <p style={{ fontSize: '15.5px', fontWeight: 600, lineHeight: 1.65, color: '#1A2332', margin: 0 }}>
+                This is the <span style={{ color: ACCENT }}>Teach to Learn Principle</span> — one of the most powerful learning methods ever discovered.
               </p>
             </div>
 
-            {/* Closing */}
-            <p style={{ fontSize: '16px', color: '#4A5568', lineHeight: 1.7 }}>
+            <p style={{ fontSize: '15px', color: '#6B7280', lineHeight: 1.72 }}>
               <strong style={{ color: '#0A0F1C', fontWeight: 700 }}>Talk to Learn</strong> brings this method to life with AI that listens, scores, and helps you improve every time you speak.
             </p>
-
           </div>
 
-          {/* ── Right: insight cards ──────────────────────────────── */}
-          <div className="flex-1 w-full" style={{ maxWidth: '520px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {INSIGHT_CARDS.map((card, i) => (
-                <div key={i} style={{
-                  padding: '28px 32px', borderRadius: '20px',
-                  background: card.bg, border: `1px solid ${card.border}`,
-                  boxShadow: '0 2px 6px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.07)',
-                  display: 'flex', alignItems: 'flex-start', gap: '20px',
-                  transform: i === 1 ? 'translateX(20px)' : i === 2 ? 'translateX(10px)' : 'translateX(0)',
-                  transition: 'transform .3s ease',
-                }}>
-                  {/* Icon */}
-                  <div style={{
-                    width: '64px', height: '64px', borderRadius: '16px', flexShrink: 0,
-                    background: '#FFFFFF', border: `1px solid ${card.border}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 2px 8px rgba(0,0,0,.06)',
-                  }}>
-                    {card.icon}
-                  </div>
-
-                  {/* Text */}
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '9px', fontWeight: 800, letterSpacing: '.14em', color: card.color, textTransform: 'uppercase' as const }}>{card.num}</span>
-                      <span style={{ fontSize: '10px', color: `${card.color}60` }}>·</span>
-                      <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#0A0F1C', margin: 0 }}>{card.headline}</h3>
-                    </div>
-                    <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#4A5568', margin: 0 }}>{card.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom quote */}
-            <div style={{
-              marginTop: '20px', padding: '18px 24px', borderRadius: '14px',
-              background: 'rgba(255,255,255,.70)', border: '1px solid #E8EDF5',
-              backdropFilter: 'blur(8px)',
-              display: 'flex', alignItems: 'center', gap: '12px',
-            }}>
-              <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-                <circle cx="16" cy="16" r="15" fill="#F0FBF5" stroke="rgba(59,175,122,.25)" strokeWidth="1"/>
-                <path d="M10 20 Q10 14 14 12 L16 13 Q13 14 13 17 L15 17 L15 22 L10 22 Z" fill="#3BAF7A" opacity=".70"/>
-                <path d="M18 20 Q18 14 22 12 L24 13 Q21 14 21 17 L23 17 L23 22 L18 22 Z" fill="#3BAF7A" opacity=".70"/>
-              </svg>
-              <p style={{ fontSize: '13px', fontStyle: 'italic', color: '#4A5568', margin: 0, lineHeight: 1.5 }}>
-                "The best way to learn something is to teach it." — Richard Feynman
-              </p>
+          {/* RIGHT: editorial image cards */}
+          <div style={{ flex: '1 1 420px', maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <ImageCard
+              gradient="linear-gradient(145deg, #F5EDD0 0%, #E8D496 50%, #D4B870 100%)"
+              label="Explaining out loud"
+              aspectRatio="4/3"
+            />
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <ImageCard
+                gradient="linear-gradient(145deg, #D4EAE2 0%, #A8D4BE 100%)"
+                label="Deep focus"
+                aspectRatio="1/1"
+              />
+              <ImageCard
+                gradient="linear-gradient(145deg, #D8D4F0 0%, #B4ACDC 100%)"
+                label="Real confidence"
+                aspectRatio="1/1"
+              />
             </div>
           </div>
 
         </div>
+
+        {/* ── Part 2: Three equal step cards ──────────────────────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-20">
+          {STEP_CARDS.map((card) => (
+            <div key={card.num} style={{
+              background: '#FFFFFF', border: '1px solid #E8EDF5',
+              borderRadius: '16px', padding: '28px 28px 26px',
+              boxShadow: '0 2px 6px rgba(0,0,0,.03), 0 8px 24px rgba(0,0,0,.06)',
+            }}>
+              <div style={{
+                width: '48px', height: '48px', borderRadius: '12px',
+                background: `${ACCENT}0E`, border: `1px solid ${ACCENT}1E`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '18px',
+              }}>
+                {card.icon}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
+                <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '.14em', color: `${ACCENT}80`, textTransform: 'uppercase' as const }}>{card.num}</span>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0A0F1C', margin: 0 }}>{card.headline}</h3>
+              </div>
+              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.65, margin: 0 }}>{card.body}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Part 3: Feynman pull-quote — centred ────────────────────── */}
+        <div style={{ textAlign: 'center', borderTop: '1px solid #E8EDF5', paddingTop: '60px' }}>
+          <svg width="32" height="24" viewBox="0 0 32 24" fill="none" style={{ marginBottom: '22px', opacity: .20 }}>
+            <path d="M0 24V13.5C0 6 4.5 1.5 13.5 0l1.5 3C9.5 4.5 7 7 7 10.5V12h6V24H0zm18 0V13.5C18 6 22.5 1.5 31.5 0L33 3C27.5 4.5 25 7 25 10.5V12h6V24H18z" fill="#0A0F1C"/>
+          </svg>
+          <p style={{
+            fontSize: 'clamp(1.15rem,2.5vw,1.42rem)',
+            fontStyle: 'italic', fontWeight: 400,
+            color: '#6B7280', lineHeight: 1.7,
+            maxWidth: '580px', margin: '0 auto 16px',
+          }}>
+            "The best way to learn something is to teach it."
+          </p>
+          <p style={{ fontSize: '14px', fontWeight: 600, color: '#9CA3AF', letterSpacing: '.06em' }}>
+            — Richard Feynman
+          </p>
+        </div>
+
       </div>
     </section>
   )
