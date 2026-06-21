@@ -1,4 +1,5 @@
 import HeroSection from './components/HeroSection'
+import CardFlowSection from './components/CardFlowSection'
 import VideoSection from './components/VideoSection'
 import ChallengeSection from './components/ChallengeSection'
 import ScoringSection from './components/ScoringSection'
@@ -13,6 +14,7 @@ export default function App() {
   return (
     <>
       <HeroSection />
+      <CardFlowSection />
       <VideoSection />
       <ChallengeSection />
       <ScoringSection />
