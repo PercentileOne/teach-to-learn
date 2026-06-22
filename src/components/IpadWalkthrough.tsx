@@ -71,7 +71,7 @@ function Phase1() {
     <div style={{
       height: '100%', background: '#080E1C', display: 'flex',
       flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      padding: '24px 28px', position: 'relative', overflow: 'hidden',
+      padding: '44px 28px 24px', position: 'relative', overflow: 'hidden',
     }}>
       {/* Glow orbs */}
       <div style={{ position: 'absolute', top: '-60px', left: '-40px', width: '220px', height: '220px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(30,77,216,0.38) 0%,transparent 70%)', animation: 'iw-orb-pulse 3s ease-in-out infinite', pointerEvents: 'none' }} />
@@ -79,7 +79,14 @@ function Phase1() {
 
       {/* Logo */}
       <div style={{ textAlign: 'center', marginBottom: '28px', animation: 'iw-fade-up .5s ease both' }}>
-        <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(30,77,216,.20)', border: '1px solid rgba(30,77,216,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', margin: '0 auto 12px', boxShadow: '0 0 24px rgba(30,77,216,.35)' }}>🎙</div>
+        <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(30,77,216,.20)', border: '1px solid rgba(30,77,216,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', boxShadow: '0 0 24px rgba(30,77,216,.35)' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </div>
         <div style={{ fontSize: '18px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.4px', marginBottom: '4px' }}>Learn by Talking</div>
         <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.38)', letterSpacing: '2px', fontWeight: 700, textTransform: 'uppercase' as const }}>Talk · Learn · Grow</div>
       </div>
@@ -122,7 +129,7 @@ function Phase2() {
   useEffect(() => { const t = setTimeout(() => setShowBadge(true), 1200); return () => clearTimeout(t) }, [])
 
   return (
-    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', padding: '18px 18px 14px', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', padding: '44px 18px 14px', position: 'relative', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', top: '-80px', left: '-60px', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(30,77,216,0.15) 0%,transparent 70%)', pointerEvents: 'none' }} />
 
       {/* Nav */}
@@ -208,7 +215,7 @@ function Phase3() {
   }, [])
 
   return (
-    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', padding: '18px 18px 14px', overflow: 'hidden' }}>
+    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', padding: '44px 18px 14px', overflow: 'hidden' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '14px', animation: 'iw-fade-up .4s ease both' }}>
         <span style={{ fontSize: '20px' }}>🟠</span>
@@ -267,7 +274,7 @@ function Phase4() {
   useEffect(() => { const t = setTimeout(() => setExpanded(true), 1000); return () => clearTimeout(t) }, [])
 
   return (
-    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', padding: '18px 18px 14px', overflow: 'hidden' }}>
+    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', padding: '44px 18px 14px', overflow: 'hidden' }}>
       <div style={{ fontSize: '8px', fontWeight: 800, letterSpacing: '1.5px', color: 'rgba(255,255,255,.28)', marginBottom: '5px' }}>AWS SAA-C03 · KEY CONCEPTS</div>
       <div style={{ fontSize: '14px', fontWeight: 900, color: '#FFFFFF', marginBottom: '14px' }}>Tap to go deeper</div>
 
@@ -401,7 +408,7 @@ const ALL_SCORES = [
 
 function Phase6() {
   return (
-    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '18px 18px 14px', overflow: 'hidden' }}>
+    <div style={{ height: '100%', background: '#080E1C', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '44px 18px 14px', overflow: 'hidden' }}>
       <div style={{ fontSize: '8px', fontWeight: 800, letterSpacing: '1.5px', color: 'rgba(255,255,255,.28)', marginBottom: '12px', animation: 'iw-fade-up .4s ease both' }}>YOUR RESULTS</div>
 
       {/* Score ring */}
