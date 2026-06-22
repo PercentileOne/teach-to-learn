@@ -173,8 +173,7 @@ export default function PricingSection() {
         </div>
 
         {/* Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '20px', marginBottom: '56px', alignItems: 'start' }}
-          className="grid-cols-1 md:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14 items-start">
           {PLANS.map((plan, pi) => {
             const dark = plan.featured
             const price = annual && plan.monthly > 0 ? plan.annual : plan.monthly

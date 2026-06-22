@@ -50,7 +50,7 @@ export default function HeroSection() {
           </div>
 
           {/* Floating phone mockup */}
-          <div style={{
+          <div className="w-[260px] md:w-auto" style={{
             flexShrink: 0,
             transform: 'rotate(-4deg) translateY(-8px)',
             filter: [

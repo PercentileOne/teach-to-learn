@@ -19,7 +19,7 @@ export default function NavBar() {
       borderBottom: '1px solid rgba(0,0,0,.07)',
       boxShadow: '0 2px 16px rgba(0,0,0,.06)',
       display: 'flex', alignItems: 'center',
-      padding: '0 24px',
+      padding: '0 16px',
       transform: visible ? 'translateY(0)' : 'translateY(-100%)',
       transition: 'transform .32s cubic-bezier(.4,0,.2,1)',
       pointerEvents: visible ? 'auto' : 'none',
