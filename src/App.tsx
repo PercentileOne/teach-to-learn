@@ -6,6 +6,7 @@ import IpadWalkthroughSection from './components/IpadWalkthroughSection'
 import VideoSection from './components/VideoSection'
 import ChallengeSection from './components/ChallengeSection'
 import ScoringSection from './components/ScoringSection'
+import CertificationSection from './components/CertificationSection'
 import WhoItsForSection from './components/WhoItsForSection'
 import ParentSection from './components/ParentSection'
 import GlobalLanguageSection from './components/GlobalLanguageSection'
@@ -24,6 +25,7 @@ export default function App() {
       <VideoSection />
       <ChallengeSection />
       <ScoringSection />
+      <CertificationSection />
       <WhoItsForSection />
       <ParentSection />
       <GlobalLanguageSection />
