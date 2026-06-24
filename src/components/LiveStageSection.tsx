@@ -374,14 +374,14 @@ export default function LiveStageSection(){
         {/* Header */}
         <div style={{textAlign:'center',marginBottom:64,animation:'stage-in .7s ease both'}}>
           <div style={{display:'inline-flex',alignItems:'center',gap:8,background:'rgba(251,191,36,.12)',border:'1px solid rgba(251,191,36,.30)',borderRadius:20,padding:'6px 18px',marginBottom:20}}>
-            <span style={{fontSize:13,fontWeight:800,color:'#FDE68A',letterSpacing:'.08em'}}>🎭 LIVE STAGE — TRY IT NOW</span>
+            <span style={{fontSize:13,fontWeight:800,color:'#FDE68A',letterSpacing:'.08em'}}>📹 PANEL CALL — TRY IT NOW</span>
           </div>
           <h2 style={{fontSize:'clamp(2.4rem,5vw,3.6rem)',fontWeight:900,color:'#FFF',letterSpacing:'-.04em',marginBottom:16,lineHeight:1.05}}>
-            Practice to a crowd.<br/>Build real confidence.
+            Speak under pressure.<br/>Build real confidence.
           </h2>
           <p style={{fontSize:'clamp(1rem,2vw,1.2rem)',color:'rgba(255,255,255,.55)',maxWidth:520,margin:'0 auto',lineHeight:1.75}}>
-            Set your audience, choose their mood, and speak.{' '}
-            <span style={{color:'#FDE68A',fontWeight:700}}>The confidence you build here is real.</span>
+            Join a Panel Call, choose your panel mood, and speak.{' '}
+            <span style={{color:'#FDE68A',fontWeight:700}}>Your heart rate goes up the moment you see the grid. That's the point.</span>
           </p>
         </div>
 

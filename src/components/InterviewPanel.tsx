@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 // ─── Drop D-ID / HeyGen generated MP4s here ──────────────────────────────────
 // Each: 6-10s loop, person sitting at desk, looking at camera, breathing
 // Generate free at d-id.com or heygen.com
 
 const PEOPLE = [
-  { name:'Lord Warren',    title:'Chairman',         personality:'intimidator', video:'', img:'https://i.pravatar.cc/400?img=57', gender:'m' },
-  { name:'Diana Stone',    title:'Senior Partner',   personality:'analyst',     video:'', img:'https://i.pravatar.cc/400?img=39', gender:'f' },
-  { name:'R. Blake',       title:'Chief Examiner',   personality:'skeptic',     video:'', img:'https://i.pravatar.cc/400?img=15', gender:'m' },
-  { name:'Sarah Chen',     title:'Founder & CEO',    personality:'friendly',    video:'', img:'https://i.pravatar.cc/400?img=47', gender:'f' },
-  { name:'Marcus Reid',    title:'Investment Lead',  personality:'notetaker',   video:'', img:'https://i.pravatar.cc/400?img=11', gender:'m' },
+  { name:'Lord Warren',    title:'Chairman',         personality:'intimidator', video:'/videos/7552530-hd_1920_1080_25fps.mp4',      img:'https://i.pravatar.cc/400?img=57', gender:'m', freeze:false },
+  { name:'Diana Stone',    title:'Senior Partner',   personality:'analyst',     video:'/videos/5527757-uhd_3840_2160_25fps.mp4',      img:'https://i.pravatar.cc/400?img=39', gender:'f', freeze:false },
+  { name:'R. Blake',       title:'Chief Examiner',   personality:'skeptic',     video:'/videos/6620539-uhd_3840_2160_25fpsMan.mp4',   img:'https://i.pravatar.cc/400?img=15', gender:'m', freeze:false },
+  { name:'Lady Warren',    title:'Vice Chairman',    personality:'intimidator', video:'/videos/7224877-uhd_3840_2160_25fps.mp4',      img:'https://i.pravatar.cc/400?img=26', gender:'f', freeze:false },
+  { name:'Sarah Chen',     title:'Founder & CEO',    personality:'friendly',    video:'/videos/8048249-hd_1920_1080_25fps.mp4',       img:'https://i.pravatar.cc/400?img=47', gender:'f', freeze:true },
+  { name:'Marcus Reid',    title:'Investment Lead',  personality:'notetaker',   video:'/videos/8048256-hd_1920_1080_25fps.mp4',       img:'https://i.pravatar.cc/400?img=11', gender:'m', freeze:true },
+  { name:'J. Pearce',      title:'Tech Lead',        personality:'analyst',     video:'/videos/7262257-uhd_3840_2160_25fps.mp4',      img:'https://i.pravatar.cc/400?img=33', gender:'m', freeze:true },
 ]
 
 // Personality → animation + behaviour
@@ -68,230 +70,238 @@ const KF = `
 @keyframes eyeshift   { 0%,100%{transform:translateX(0)} 40%{transform:translateX(-1.5px)} 70%{transform:translateX(1px)} }
 `
 
-function PanelistCard({ person, idx, mood, speaking, interrupt, panelCount }: {
+function PanelistTile({ person, idx, mood, speaking, interrupt }: {
   person: typeof PEOPLE[0]
   idx: number
   mood: Mood
   speaking: boolean
   interrupt: { text:string; idx:number } | null
-  panelCount: number
 }) {
   const theme = MOOD_THEME[mood]
   const p     = PERSONALITY[person.personality as Personality]
   const isInterrupting = interrupt?.idx === idx
   const hasVideo = !!person.video
   const blinkDelay = [0, 1.8, 3.4, 0.9, 2.6][idx]
-  const eyeshiftDelay = [0.5, 2.1, 3.8, 1.2, 4.0][idx]
-
-  const cardW = panelCount <= 2 ? 220 : panelCount === 3 ? 180 : panelCount === 4 ? 150 : 130
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:10, position:'relative', flex:1, maxWidth:cardW }}>
+    <div style={{ position:'relative', aspectRatio:'16/9', background:'#1A1A1A', borderRadius:8, overflow:'hidden',
+      border: isInterrupting ? `2px solid ${theme.accent}` : speaking ? '2px solid rgba(255,255,255,0.15)' : '2px solid transparent',
+      boxShadow: isInterrupting ? `0 0 20px ${theme.glow}` : 'none',
+      transition:'border-color 0.3s ease, box-shadow 0.3s ease',
+    }}>
 
-      {/* Personality badge */}
-      <div style={{ fontSize:9, fontWeight:800, letterSpacing:'0.12em', color:`${theme.accent}99`, marginBottom:-4 }}>
-        {p.label}
-      </div>
-
-      {/* Video / photo panel */}
-      <div style={{
-        width:'100%', aspectRatio:'3/4',
-        borderRadius:14, overflow:'hidden', position:'relative',
-        border:`1px solid ${isInterrupting ? theme.accent : theme.border}`,
-        boxShadow: isInterrupting
-          ? `0 0 28px 6px ${theme.glow}, 0 12px 40px rgba(0,0,0,0.7)`
-          : `0 8px 32px rgba(0,0,0,0.65)`,
-        transition:'box-shadow 0.5s ease, border-color 0.4s ease',
-        background:'#0A0A0A',
-      }}>
-
-        {/* Room lighting: overhead single source */}
-        <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:'80%', height:'60%', zIndex:2, pointerEvents:'none',
-          background:'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)',
-          animation: speaking ? 'room-glow 4s ease-in-out infinite' : 'none',
-        }}/>
-        {/* Bottom shadow */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'30%', zIndex:2, pointerEvents:'none',
-          background:'linear-gradient(transparent, rgba(0,0,0,0.6))',
-        }}/>
-        {/* Edge vignette */}
-        <div style={{ position:'absolute', inset:0, zIndex:2, pointerEvents:'none',
-          background:'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%)',
-        }}/>
-
-        {hasVideo ? (
-          <video src={person.video} autoPlay muted loop playsInline
-            style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }}
+      {hasVideo ? (
+        <video src={person.video} autoPlay={!person.freeze} muted loop playsInline
+          onLoadedData={person.freeze ? e => { e.currentTarget.pause(); e.currentTarget.currentTime = 0 } : undefined}
+          style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top' }}
+        />
+      ) : (
+        <div style={{ width:'100%', height:'100%', animation:`${p.anim} ${p.dur}s ease-in-out infinite`, transformOrigin:'bottom center' }}>
+          <img src={person.img} alt={person.name}
+            style={{
+              width:'100%', height:'100%', objectFit:'cover', objectPosition:'center top', display:'block',
+              filter: mood==='tough' ? 'brightness(0.82) contrast(1.10) saturate(0.65)'
+                    : mood==='professional' ? 'brightness(0.90) saturate(0.80)' : 'brightness(1.0)',
+              animation:`blink ${3+blinkDelay}s ease-in-out ${blinkDelay}s infinite`,
+            }}
           />
-        ) : (
-          <>
-            {/* Animated photo */}
-            <div style={{
-              width:'100%', height:'100%',
-              animation:`${p.anim} ${p.dur}s ease-in-out infinite`,
-              transformOrigin:'bottom center',
-            }}>
-              <img src={person.img} alt={person.name}
-                style={{
-                  width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', display:'block',
-                  filter: mood==='tough'       ? 'brightness(0.82) contrast(1.10) saturate(0.65)'
-                        : mood==='professional'? 'brightness(0.90) saturate(0.80) contrast(1.05)'
-                        : 'brightness(1.0) saturate(0.90)',
-                  transition:'filter 0.8s ease',
-                  animation:`blink ${3+blinkDelay}s ease-in-out ${blinkDelay}s infinite`,
-                }}
-              />
-            </div>
-            {/* Eye shift overlay — implies looking around */}
-            {speaking && (
-              <div style={{
-                position:'absolute', top:'28%', left:0, right:0, height:'14%', zIndex:3, pointerEvents:'none',
-                animation:`eyeshift ${4.5 + idx}s ease-in-out ${eyeshiftDelay}s infinite`,
-              }}/>
-            )}
-            {/* Note-taking hand */}
-            {p.note && (
-              <div style={{
-                position:'absolute', bottom:'8%', right:'12%', zIndex:4,
-                fontSize: panelCount <= 3 ? 22 : 16,
-                animation:'note-hand 2.8s ease-in-out infinite',
-                filter:'drop-shadow(0 2px 4px rgba(0,0,0,0.8))',
-                transformOrigin:'bottom right',
-              }}>✍️</div>
-            )}
-          </>
-        )}
-
-        {/* LIVE / PHOTO badge */}
-        <div style={{ position:'absolute', top:7, left:7, zIndex:5,
-          display:'flex', alignItems:'center', gap:4,
-          background:'rgba(0,0,0,0.60)', borderRadius:20, padding:'3px 7px',
-        }}>
-          <div style={{
-            width:5, height:5, borderRadius:'50%',
-            background: hasVideo ? '#EF4444' : 'rgba(255,255,255,0.25)',
-            animation: hasVideo ? 'live-pulse 1.2s ease-in-out infinite' : 'none',
-          }}/>
-          <span style={{ fontSize:8, fontWeight:800, letterSpacing:'0.1em', color: hasVideo ? '#FCA5A5' : 'rgba(255,255,255,0.25)' }}>
-            {hasVideo ? 'LIVE' : 'PHOTO'}
-          </span>
         </div>
+      )}
 
-        {/* Speaking attention ring */}
-        {speaking && (
-          <div style={{ position:'absolute', inset:0, zIndex:4, borderRadius:14, pointerEvents:'none',
-            border:`1.5px solid ${theme.accent}`, opacity:0.25,
-            animation:'room-glow 3s ease-in-out infinite',
-          }}/>
-        )}
+      {/* Bottom gradient */}
+      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'45%', pointerEvents:'none',
+        background:'linear-gradient(transparent, rgba(0,0,0,0.85))',
+      }}/>
+
+      {/* LIVE dot top-left */}
+      <div style={{ position:'absolute', top:8, left:8, display:'flex', alignItems:'center', gap:4,
+        background:'rgba(0,0,0,0.55)', borderRadius:20, padding:'3px 7px', backdropFilter:'blur(4px)',
+      }}>
+        <div style={{ width:6, height:6, borderRadius:'50%',
+          background: hasVideo ? '#EF4444' : 'rgba(255,255,255,0.2)',
+          animation: hasVideo ? 'live-pulse 1.2s ease-in-out infinite' : 'none',
+        }}/>
+        <span style={{ fontSize:8, fontWeight:800, letterSpacing:'0.1em', color: hasVideo ? '#FCA5A5' : 'rgba(255,255,255,0.3)' }}>
+          {hasVideo ? 'LIVE' : 'PHOTO'}
+        </span>
       </div>
+
+      {/* Name bottom-left */}
+      <div style={{ position:'absolute', bottom:8, left:10 }}>
+        <div style={{ fontSize:11, fontWeight:700, color:'#FFF', textShadow:'0 1px 4px rgba(0,0,0,0.8)' }}>{person.name}</div>
+        <div style={{ fontSize:9, color:`${theme.accent}CC`, fontWeight:600 }}>{p.label}</div>
+      </div>
+
+      {/* Mic muted icon bottom-right */}
+      <div style={{ position:'absolute', bottom:8, right:8,
+        background:'rgba(239,68,68,0.85)', borderRadius:'50%', width:20, height:20,
+        display:'flex', alignItems:'center', justifyContent:'center', fontSize:10,
+      }}>🔇</div>
 
       {/* Speech bubble */}
       {isInterrupting && interrupt && (
         <div style={{
-          position:'absolute', bottom:56, left:'50%',
-          transform:'translateX(-50%)',
+          position:'absolute', top:'10%', left:'50%', transform:'translateX(-50%)',
           background:'rgba(5,5,10,0.95)', border:`1px solid ${theme.border}`,
-          borderRadius:12, padding:'8px 14px',
+          borderRadius:10, padding:'7px 12px',
           animation:'bubble-in 4.2s ease forwards',
-          zIndex:10, whiteSpace:'nowrap', maxWidth:190,
+          zIndex:10, whiteSpace:'nowrap',
           boxShadow:`0 4px 20px ${theme.glow}`,
         }}>
-          <p style={{ margin:0, fontSize:11, fontWeight:700, color:'#FFF', fontStyle:'italic', textAlign:'center', lineHeight:1.4 }}>
+          <p style={{ margin:0, fontSize:11, fontWeight:700, color:'#FFF', fontStyle:'italic', textAlign:'center' }}>
             {interrupt.text}
           </p>
-          <div style={{ position:'absolute', bottom:-6, left:'50%', transform:'translateX(-50%)',
-            width:10, height:6, background:'rgba(5,5,10,0.95)',
-            clipPath:'polygon(0 0,100% 0,50% 100%)',
-          }}/>
         </div>
       )}
-
-      {/* Name plate */}
-      <div style={{ textAlign:'center' }}>
-        <div style={{ fontSize: panelCount<=3?12:10, fontWeight:800, color:'#FFF', marginBottom:2 }}>{person.name}</div>
-        <div style={{ fontSize: panelCount<=3?10:9,  fontWeight:600, color:`${theme.accent}CC` }}>{person.title}</div>
-        <div style={{ fontSize:9, color:'rgba(255,255,255,0.28)', marginTop:2, fontStyle:'italic' }}>{p.desc}</div>
-      </div>
     </div>
   )
 }
 
+function fmt(s:number){ const m=Math.floor(s/60); return `${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}` }
+
 export default function InterviewPanel({ mood, speaking, interruptions, count=3 }: {
   mood:Mood; speaking:boolean; interruptions:boolean; count?:number
 }) {
-  const theme    = MOOD_THEME[mood]
-  const panel    = PEOPLE.slice(0, count)
+  const theme   = MOOD_THEME[mood]
+  const panel   = PEOPLE.slice(0, count)
   const [interrupt, setInterrupt] = useState<{ text:string; idx:number }|null>(null)
-  const intRef   = useRef<ReturnType<typeof setTimeout>|null>(null)
+  const [elapsed, setElapsed]     = useState(0)
+  const intRef  = useRef<ReturnType<typeof setTimeout>|null>(null)
+  const tickRef = useRef<ReturnType<typeof setInterval>|null>(null)
+
+  useEffect(()=>{
+    if(speaking){ tickRef.current = setInterval(()=>setElapsed(e=>e+1),1000) }
+    else { clearInterval(tickRef.current!); setElapsed(0) }
+    return ()=>clearInterval(tickRef.current!)
+  },[speaking])
+
+  const schedule = useCallback(()=>{
+    const delay=(mood==='tough'?5000:10000)+Math.random()*8000
+    intRef.current=setTimeout(()=>{
+      const pIdx  = Math.floor(Math.random()*count)
+      const pType = panel[pIdx].personality as keyof typeof INTERRUPTS.friendly
+      const list  = INTERRUPTS[mood][pType]
+      setInterrupt({ text:list[Math.floor(Math.random()*list.length)], idx:pIdx })
+      setTimeout(()=>{ setInterrupt(null); schedule() },4400)
+    },delay)
+  },[mood,count,panel])
 
   useEffect(()=>{
     if(!speaking||!interruptions){ clearTimeout(intRef.current!); setInterrupt(null); return }
-    const schedule=()=>{
-      const delay=(mood==='tough'?5000:10000)+Math.random()*8000
-      intRef.current=setTimeout(()=>{
-        const pIdx  = Math.floor(Math.random()*count)
-        const pType = panel[pIdx].personality as keyof typeof INTERRUPTS.friendly
-        const list  = INTERRUPTS[mood][pType]
-        setInterrupt({ text:list[Math.floor(Math.random()*list.length)], idx:pIdx })
-        setTimeout(()=>{ setInterrupt(null); schedule() },4400)
-      },delay)
-    }
     schedule()
     return ()=>clearTimeout(intRef.current!)
   },[speaking,interruptions,mood,count])
 
+  // Grid columns: panelists + 1 "You" tile
+  const cols = 2
+
   return (
-    <div style={{
-      background:theme.bg, borderRadius:20, padding:'24px 20px 22px',
-      border:`1px solid ${theme.border}`, position:'relative', overflow:'hidden',
-      transition:'background 0.8s ease, border-color 0.8s ease',
+    <div style={{ fontFamily:'system-ui,-apple-system,sans-serif', background:'#1C1C1C', borderRadius:14, overflow:'hidden',
+      border:'1px solid rgba(255,255,255,0.08)', boxShadow:'0 24px 80px rgba(0,0,0,0.8)',
     }}>
       <style>{KF}</style>
 
-      {/* Ceiling light simulation */}
-      <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)',
-        width:'60%', height:'55%', pointerEvents:'none',
-        background:`radial-gradient(ellipse at top, ${theme.light} 0%, transparent 75%)`,
-        transition:'background 0.8s ease',
-      }}/>
-
-      {/* Panel tag */}
-      <div style={{ textAlign:'center', marginBottom:20, position:'relative' }}>
-        <div style={{ display:'inline-flex', alignItems:'center', gap:7,
-          background:'rgba(0,0,0,0.5)', border:`1px solid ${theme.border}`,
-          borderRadius:20, padding:'4px 14px',
-        }}>
-          <div style={{ width:5, height:5, borderRadius:'50%', background:theme.accent, boxShadow:`0 0 8px ${theme.accent}` }}/>
-          <span style={{ fontSize:9, fontWeight:800, letterSpacing:'0.18em', color:theme.accent }}>{theme.tag}</span>
+      {/* ── TOP BAR ── */}
+      <div style={{ background:'#252525', padding:'10px 16px', display:'flex', alignItems:'center', justifyContent:'space-between',
+        borderBottom:'1px solid rgba(255,255,255,0.06)',
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <div style={{ width:8, height:8, borderRadius:'50%', background:'#EF4444', animation:'live-pulse 1.4s ease-in-out infinite' }}/>
+          <span style={{ color:'#FFF', fontSize:13, fontWeight:600, letterSpacing:'-0.01em' }}>Panel Call</span>
+          <span style={{ color:'rgba(255,255,255,0.25)', fontSize:12 }}>·</span>
+          <span style={{ color:'rgba(255,255,255,0.4)', fontSize:12 }}>{PEOPLE.length + 1} participants</span>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <span style={{ color:'rgba(255,255,255,0.5)', fontSize:12, fontVariantNumeric:'tabular-nums' }}>{fmt(elapsed)}</span>
+          <div style={{ background:'#EF4444', borderRadius:4, padding:'2px 7px', fontSize:9, fontWeight:800, letterSpacing:'0.1em', color:'#FFF', animation:'live-pulse 1.4s ease-in-out infinite' }}>● REC</div>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:5, background:'rgba(0,0,0,0.4)', border:`1px solid ${theme.border}`,
+            borderRadius:20, padding:'3px 10px',
+          }}>
+            <div style={{ width:5, height:5, borderRadius:'50%', background:theme.accent }}/>
+            <span style={{ fontSize:9, fontWeight:800, letterSpacing:'0.15em', color:theme.accent }}>{theme.tag}</span>
+          </div>
         </div>
       </div>
 
-      {/* Panelists */}
-      <div style={{ display:'flex', gap: count<=3?20:12, justifyContent:'center', alignItems:'flex-start', position:'relative' }}>
-        {panel.map((person,i)=>(
-          <PanelistCard key={`${mood}-${i}`}
-            person={person} idx={i} mood={mood}
-            speaking={speaking} interrupt={interrupt}
-            panelCount={count}
-          />
-        ))}
+      {/* ── VIDEO GRID ── */}
+      <div style={{ position:'relative' }}>
+        <div style={{ display:'grid', gridTemplateColumns:`repeat(${cols}, 1fr)`, gap:3, padding:3, background:'#111' }}>
+          {PEOPLE.slice(0,4).map((person,i)=>(
+            <PanelistTile key={`${mood}-${i}`}
+              person={person} idx={i} mood={mood}
+              speaking={speaking} interrupt={interrupt}
+            />
+          ))}
+        </div>
+
+        {/* ── YOU pip — floating bottom-right ── */}
+        <div style={{
+          position:'absolute', bottom:12, right:12,
+          width:'18%', aspectRatio:'16/9',
+          background:'#0D0D0D', borderRadius:6, overflow:'hidden',
+          border: speaking ? '2px solid #5558AF' : '2px solid rgba(255,255,255,0.15)',
+          boxShadow:'0 4px 20px rgba(0,0,0,0.8)',
+          transition:'border-color 0.3s ease',
+          zIndex:10,
+        }}>
+          <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center',
+            background: speaking ? 'radial-gradient(ellipse at center, #1a1a3e, #0D0D0D)' : '#0D0D0D',
+          }}>
+            <span style={{ fontSize:18 }}>🎙</span>
+          </div>
+          <div style={{ position:'absolute', bottom:0, left:0, right:0,
+            background:'linear-gradient(transparent, rgba(0,0,0,0.9))',
+            padding:'6px 5px 3px',
+          }}>
+            <div style={{ fontSize:8, fontWeight:700, color:'#FFF' }}>You</div>
+            <div style={{ fontSize:7, color: speaking ? '#818CF8' : 'rgba(255,255,255,0.3)' }}>
+              {speaking ? '● Speaking' : '🔇 Muted'}
+            </div>
+          </div>
+          {speaking && <div style={{ position:'absolute', inset:0, borderRadius:6, boxShadow:'inset 0 0 0 2px #5558AF', animation:'room-glow 2s ease-in-out infinite' }}/>}
+        </div>
       </div>
 
-      {/* Table line */}
-      <div style={{ margin:'18px 0 14px',
-        height:2, borderRadius:1,
-        background:`linear-gradient(90deg,transparent,${theme.border},transparent)`,
-      }}/>
-
-      {/* Status line */}
-      <p style={{ margin:0, textAlign:'center', fontSize:11,
-        color: speaking ? theme.accent : 'rgba(255,255,255,0.25)',
-        fontStyle:'italic', letterSpacing:'0.04em',
-        transition:'color 0.5s ease',
+      {/* ── TOOLBAR ── */}
+      <div style={{ background:'#252525', padding:'12px 20px', display:'flex', alignItems:'center', justifyContent:'center', gap:8,
+        borderTop:'1px solid rgba(255,255,255,0.06)',
       }}>
-        {speaking ? "They're listening. Don't stop now." : "They're waiting. Tap the mic when you're ready."}
-      </p>
+        {[
+          { icon: speaking ? '🎙' : '🔇', label: speaking ? 'Mute' : 'Unmute', active: speaking, color: speaking ? '#5558AF' : '#EF4444' },
+          { icon:'📹', label:'Stop Video', active:false, color:'#EF4444' },
+          { icon:'👥', label:'Participants', active:false, color:'rgba(255,255,255,0.5)' },
+          { icon:'💬', label:'Chat', active:false, color:'rgba(255,255,255,0.5)' },
+          { icon:'⋯',  label:'More', active:false, color:'rgba(255,255,255,0.5)' },
+        ].map(btn=>(
+          <div key={btn.label} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:3, cursor:'default', minWidth:52 }}>
+            <div style={{ width:40, height:40, borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center', fontSize:16,
+              background: btn.active ? `${btn.color}22` : 'rgba(255,255,255,0.06)',
+              border:`1px solid ${btn.active ? btn.color+'44' : 'rgba(255,255,255,0.08)'}`,
+            }}>{btn.icon}</div>
+            <span style={{ fontSize:9, color:'rgba(255,255,255,0.35)', fontWeight:500 }}>{btn.label}</span>
+          </div>
+        ))}
+
+        <div style={{ width:1, height:40, background:'rgba(255,255,255,0.08)', margin:'0 4px' }}/>
+
+        {/* Leave button */}
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:3, cursor:'default', minWidth:52 }}>
+          <div style={{ width:40, height:40, borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14,
+            background:'#EF4444', border:'1px solid #DC2626',
+          }}>📵</div>
+          <span style={{ fontSize:9, color:'#FCA5A5', fontWeight:600 }}>Leave</span>
+        </div>
+      </div>
+
+      {/* Status */}
+      <div style={{ background:'#1C1C1C', padding:'8px 16px', textAlign:'center', borderTop:'1px solid rgba(255,255,255,0.04)' }}>
+        <p style={{ margin:0, fontSize:11, fontStyle:'italic', letterSpacing:'0.03em',
+          color: speaking ? theme.accent : 'rgba(255,255,255,0.2)',
+          transition:'color 0.5s ease',
+        }}>
+          {speaking ? "They're listening. Don't stop now." : "They're waiting. Tap the mic when you're ready."}
+        </p>
+      </div>
     </div>
   )
 }
