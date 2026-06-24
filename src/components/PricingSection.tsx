@@ -115,7 +115,7 @@ export default function PricingSection() {
   const [annual, setAnnual] = useState(false)
 
   return (
-    <section style={{ background: 'linear-gradient(180deg,#F0F5FF 0%,#EBF4FF 100%)', padding: '108px 20px 120px' }}>
+    <section id="pricing" style={{ background: 'linear-gradient(180deg,#F0F5FF 0%,#EBF4FF 100%)', padding: '108px 20px 120px' }}>
       <style>{KF}</style>
       <div className="max-w-[1120px] mx-auto">
 

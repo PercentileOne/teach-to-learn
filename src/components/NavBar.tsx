@@ -1,12 +1,26 @@
 import { useState } from 'react'
 import AboutModal from './AboutModal'
+import ContactModal from './ContactModal'
+
+const NAV_LINKS = [
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: "Who It's For", href: '#who-its-for' },
+  { label: 'Pricing', href: '#pricing' },
+]
+
+function scrollTo(id: string) {
+  const el = document.getElementById(id)
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 export default function NavBar() {
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [contactOpen, setContactOpen] = useState(false)
 
   return (
     <>
       {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
+      {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
 
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
@@ -22,7 +36,7 @@ export default function NavBar() {
         <div className="max-w-[1120px] mx-auto w-full" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
           {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div style={{
               width: '28px', height: '28px', borderRadius: '8px',
               background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)',
@@ -40,49 +54,14 @@ export default function NavBar() {
 
           {/* Nav links — desktop only */}
           <div className="hidden md:flex" style={{ gap: '28px', alignItems: 'center' }}>
-            {['How It Works', "Who It's For", 'Pricing'].map(label => (
-              <NavLink key={label} label={label} />
+            {NAV_LINKS.map(({ label, href }) => (
+              <NavLink key={label} label={label} onClick={() => scrollTo(href.replace('#', ''))} />
             ))}
-            <button
-              onClick={() => setAboutOpen(true)}
-              style={{
-                fontSize: '14px', fontWeight: 600, color: '#6B7280',
-                cursor: 'pointer', background: 'none', border: 'none', padding: 0,
-                transition: 'color .18s',
-              }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#0A0F1C'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#6B7280'}
-            >
-              About
-            </button>
-            <a
-              href="mailto:hello@talktolearn.app"
-              style={{
-                fontSize: '14px', fontWeight: 600, color: '#6B7280',
-                cursor: 'pointer', textDecoration: 'none',
-                transition: 'color .18s',
-              }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#0A0F1C'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#6B7280'}
-            >
-              Contact
-            </a>
+            <NavLink label="About" onClick={() => setAboutOpen(true)} />
+            <NavLink label="Contact" onClick={() => setContactOpen(true)} />
           </div>
 
-          {/* About — mobile only */}
-          <button
-            className="flex md:hidden"
-            onClick={() => setAboutOpen(true)}
-            style={{
-              fontSize: '13px', fontWeight: 700, color: '#1E4DD8',
-              background: 'rgba(30,77,216,.08)', border: '1px solid rgba(30,77,216,.18)',
-              borderRadius: '20px', padding: '6px 14px', cursor: 'pointer',
-            }}
-          >
-            About
-          </button>
-
-          {/* CTA */}
+          {/* Desktop CTA */}
           <button className="hidden md:block" style={{
             padding: '9px 22px', borderRadius: '50px',
             background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)',
@@ -100,39 +79,55 @@ export default function NavBar() {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'
             ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(30,77,216,.32)'
           }}
+          onClick={() => setContactOpen(true)}
           >
             Start for Free
           </button>
 
-          {/* Mobile CTA — smaller */}
-          <button className="flex md:hidden" style={{
-            padding: '8px 16px', borderRadius: '50px',
-            background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)',
-            color: '#FFFFFF', fontSize: '12px', fontWeight: 800,
-            border: 'none', cursor: 'pointer',
-          }}>
-            Start Free
-          </button>
+          {/* Mobile — About + CTA */}
+          <div className="flex md:hidden" style={{ gap: '8px', alignItems: 'center' }}>
+            <button
+              onClick={() => setAboutOpen(true)}
+              style={{
+                fontSize: '13px', fontWeight: 700, color: '#1E4DD8',
+                background: 'rgba(30,77,216,.08)', border: '1px solid rgba(30,77,216,.18)',
+                borderRadius: '20px', padding: '6px 14px', cursor: 'pointer',
+              }}
+            >
+              About
+            </button>
+            <button style={{
+              padding: '8px 16px', borderRadius: '50px',
+              background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)',
+              color: '#FFFFFF', fontSize: '12px', fontWeight: 800,
+              border: 'none', cursor: 'pointer',
+            }}>
+              Start Free
+            </button>
+          </div>
 
         </div>
       </nav>
 
-      {/* Spacer so content doesn't hide under fixed nav */}
+      {/* Spacer */}
       <div style={{ height: '60px' }} />
     </>
   )
 }
 
-function NavLink({ label }: { label: string }) {
+function NavLink({ label, onClick }: { label: string; onClick?: () => void }) {
   return (
-    <span style={{
-      fontSize: '14px', fontWeight: 600, color: '#6B7280',
-      cursor: 'pointer', transition: 'color .18s',
-    }}
-    onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#0A0F1C'}
-    onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#6B7280'}
+    <button
+      onClick={onClick}
+      style={{
+        fontSize: '14px', fontWeight: 600, color: '#6B7280',
+        cursor: 'pointer', background: 'none', border: 'none', padding: 0,
+        transition: 'color .18s', fontFamily: 'inherit',
+      }}
+      onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#0A0F1C'}
+      onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#6B7280'}
     >
       {label}
-    </span>
+    </button>
   )
 }

@@ -310,7 +310,7 @@ function FlashCard() {
 /* ─── section ────────────────────────────────────────────────────────────── */
 export default function CardFlowSection() {
   return (
-    <section className="py-20 md:py-28" style={{ background: `linear-gradient(180deg, ${T.bgSurface} 0%, #EEF2F8 100%)` }}>
+    <section id="how-it-works" className="py-20 md:py-28" style={{ background: `linear-gradient(180deg, ${T.bgSurface} 0%, #EEF2F8 100%)` }}>
       <style>{KF}</style>
       <div className="max-w-[1160px] mx-auto px-5">
 

@@ -70,7 +70,7 @@ const CARDS = [
 
 export default function WhoItsForSection() {
   return (
-    <section style={{ background: '#FFFFFF', padding: '108px 20px 120px' }}>
+    <section id="who-its-for" style={{ background: '#FFFFFF', padding: '108px 20px 120px' }}>
       <div className="max-w-[1120px] mx-auto">
 
         {/* Header */}

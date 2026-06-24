@@ -13,10 +13,15 @@ export default function HeroSection() {
         <div className="flex flex-col md:flex-row items-center gap-12 md:gap-20">
 
           <div className="flex-1 text-center md:text-left" style={{ animation: 'hero-fade .7s ease both' }}>
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2.5 bg-white/12 text-white text-[0.72rem] font-bold tracking-[0.12em] uppercase px-4 py-1.5 rounded-btn border border-white/25 backdrop-blur-sm mb-7">
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#BAE6FD', boxShadow: '0 0 7px #BAE6FD', display: 'inline-block', flexShrink: 0 }} />
-              The Speak-to-Learn Method
+            {/* Badges row */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '28px' }} className="md:justify-start">
+              <div className="inline-flex items-center gap-2.5 bg-white/12 text-white text-[0.72rem] font-bold tracking-[0.12em] uppercase px-4 py-1.5 rounded-btn border border-white/25 backdrop-blur-sm">
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#BAE6FD', boxShadow: '0 0 7px #BAE6FD', display: 'inline-block', flexShrink: 0 }} />
+                The Speak-to-Learn Method
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-[0.72rem] font-bold tracking-[0.10em] uppercase px-4 py-1.5 rounded-btn backdrop-blur-sm" style={{ background: 'linear-gradient(135deg,rgba(251,191,36,0.25),rgba(251,191,36,0.12))', border: '1px solid rgba(251,191,36,0.45)', color: '#FDE68A' }}>
+                🏆 #1 Learn-by-Talking App
+              </div>
             </div>
 
             {/* Headline */}

@@ -1,0 +1,105 @@
+import { useState } from 'react'
+
+type Status = 'idle' | 'sending' | 'sent' | 'error'
+
+export default function ContactModal({ onClose }: { onClose: () => void }) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [subject, setSubject] = useState('')
+  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState<Status>('idle')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('sending')
+    // Opens default mail client as fallback — replace with backend/Resend/Formspree later
+    const mailto = `mailto:hello@talktolearn.app?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`
+    window.location.href = mailto
+    setStatus('sent')
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%', padding: '11px 14px', borderRadius: '10px',
+    border: '1px solid rgba(0,0,0,0.12)', fontSize: '14px',
+    background: '#F9FAFB', outline: 'none', color: '#0A0F1C',
+    fontFamily: 'inherit', boxSizing: 'border-box',
+    transition: 'border-color .18s',
+  }
+
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 2000,
+        background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '20px',
+      }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div style={{
+        background: '#FFFFFF', borderRadius: '20px', padding: '36px 32px',
+        width: '100%', maxWidth: '480px',
+        boxShadow: '0 24px 80px rgba(0,0,0,0.18)',
+        animation: 'modal-in .25s cubic-bezier(.34,1.56,.64,1) both',
+      }}>
+        <style>{`@keyframes modal-in { from { opacity:0; transform:scale(.94) translateY(12px); } to { opacity:1; transform:none; } }`}</style>
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div>
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#0A0F1C', margin: 0, letterSpacing: '-.02em' }}>Get in Touch</h2>
+            <p style={{ fontSize: '13px', color: '#6B7280', margin: '4px 0 0' }}>We'd love to hear from you 💙</p>
+          </div>
+          <button onClick={onClose} style={{ background: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>✕</button>
+        </div>
+
+        {status === 'sent' ? (
+          <div style={{ textAlign: 'center', padding: '24px 0' }}>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>📬</div>
+            <p style={{ fontSize: '16px', fontWeight: 800, color: '#0A0F1C', marginBottom: '6px' }}>Message sent!</p>
+            <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '20px' }}>Your email client should have opened. We'll get back to you soon.</p>
+            <button onClick={onClose} style={{ padding: '10px 28px', borderRadius: '50px', background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)', color: '#fff', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '14px' }}>Close</button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>YOUR NAME</label>
+                <input style={inputStyle} placeholder="Francis" value={name} onChange={e => setName(e.target.value)} required />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>EMAIL</label>
+                <input style={inputStyle} type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
+              </div>
+            </div>
+
+            <div>
+              <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>SUBJECT</label>
+              <input style={inputStyle} placeholder="I'd love to..." value={subject} onChange={e => setSubject(e.target.value)} required />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>MESSAGE</label>
+              <textarea
+                style={{ ...inputStyle, minHeight: '110px', resize: 'vertical' }}
+                placeholder="Tell us what's on your mind..."
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                required
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
+              <button type="button" onClick={onClose} style={{ flex: 1, padding: '12px', borderRadius: '50px', border: '1px solid rgba(0,0,0,0.12)', background: 'transparent', fontSize: '14px', fontWeight: 700, color: '#6B7280', cursor: 'pointer' }}>
+                Cancel
+              </button>
+              <button type="submit" disabled={status === 'sending'} style={{ flex: 2, padding: '12px', borderRadius: '50px', background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)', color: '#fff', fontSize: '14px', fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(30,77,216,.35)' }}>
+                {status === 'sending' ? 'Opening...' : 'Send Message →'}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  )
+}
