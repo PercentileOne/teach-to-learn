@@ -41,8 +41,8 @@ const SKIN_TONES = ['#FBBF24','#F59E0B','#D97706','#B45309','#92400E','#78350F',
 type Mood = 'friendly' | 'professional' | 'tough'
 
 // A proper SVG person silhouette
-function PersonSVG({ sz, skinTone, shirtCol, pose }: {
-  sz: number; skinTone: string; shirtCol: string; pose: 'straight' | 'lean-l' | 'lean-r' | 'phone'
+function PersonSVG({ sz, skinTone, shirtCol, pose, mood }: {
+  sz: number; skinTone: string; shirtCol: string; pose: 'straight' | 'lean-l' | 'lean-r' | 'phone'; mood: Mood
 }) {
   const w = sz * 1.4
   const h = sz * 2.8
@@ -51,14 +51,74 @@ function PersonSVG({ sz, skinTone, shirtCol, pose }: {
   const neckW = sz * 0.22
   const shoulderW = sz * 0.72
   const bodyH = sz * 1.4
+  const fy = headR         // face centre y
+  const eyeY = fy - headR * 0.18
+  const eyeOff = headR * 0.32
+  const eyeR = Math.max(0.8, headR * 0.13)
+  const pupilR = eyeR * 0.55
+  // Hair colour — darker than skin
+  const hairCols = ['#3B1F0A','#1A0A00','#2C1810','#5C3317','#8B4513','#1C1C1C','#4A2C0A','#6B3A1F']
+  const hairIdx = (skinTone.charCodeAt(1) + skinTone.charCodeAt(3)) % hairCols.length
+  const hairCol = hairCols[hairIdx]
+
+  // Mouth shape per mood
+  const mouthY = fy + headR * 0.45
+  const mouthW = headR * 0.48
+  let mouthPath = ''
+  if (mood === 'friendly') {
+    // smile
+    mouthPath = `M ${hw - mouthW} ${mouthY} Q ${hw} ${mouthY + headR * 0.3} ${hw + mouthW} ${mouthY}`
+  } else if (mood === 'professional') {
+    // straight line
+    mouthPath = `M ${hw - mouthW * 0.8} ${mouthY} L ${hw + mouthW * 0.8} ${mouthY}`
+  } else {
+    // frown
+    mouthPath = `M ${hw - mouthW} ${mouthY + headR * 0.18} Q ${hw} ${mouthY - headR * 0.18} ${hw + mouthW} ${mouthY + headR * 0.18}`
+  }
+
+  // Eyebrows
+  const browY = eyeY - eyeR * 2.2
+  const browW = eyeR * 2.2
+  const lBrowPath = mood === 'tough'
+    ? `M ${hw - eyeOff - browW} ${browY - eyeR} L ${hw - eyeOff + browW * 0.3} ${browY + eyeR * 0.6}`
+    : `M ${hw - eyeOff - browW} ${browY} L ${hw - eyeOff + browW} ${browY + (mood === 'friendly' ? -eyeR * 0.4 : 0)}`
+  const rBrowPath = mood === 'tough'
+    ? `M ${hw + eyeOff + browW} ${browY - eyeR} L ${hw + eyeOff - browW * 0.3} ${browY + eyeR * 0.6}`
+    : `M ${hw + eyeOff - browW} ${browY} L ${hw + eyeOff + browW} ${browY + (mood === 'friendly' ? -eyeR * 0.4 : 0)}`
 
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ overflow: 'visible', display: 'block' }}>
+      {/* Hair */}
+      <ellipse cx={hw} cy={fy - headR * 0.55} rx={headR * 1.02} ry={headR * 0.72} fill={hairCol} />
       {/* Head */}
-      <ellipse cx={hw} cy={headR} rx={headR} ry={headR * 1.1} fill={skinTone} />
+      <ellipse cx={hw} cy={fy} rx={headR} ry={headR * 1.1} fill={skinTone} />
+      {/* Hair top overlap */}
+      <ellipse cx={hw} cy={fy - headR * 0.72} rx={headR * 0.95} ry={headR * 0.45} fill={hairCol} />
+
+      {/* Eyes whites */}
+      <ellipse cx={hw - eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
+      <ellipse cx={hw + eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
+      {/* Pupils */}
+      <circle cx={hw - eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
+      <circle cx={hw + eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
+      {/* Eye shine */}
+      <circle cx={hw - eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
+      <circle cx={hw + eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
+
+      {/* Eyebrows */}
+      <path d={lBrowPath} stroke={hairCol} strokeWidth={Math.max(0.6, sz * 0.04)} strokeLinecap="round" fill="none" />
+      <path d={rBrowPath} stroke={hairCol} strokeWidth={Math.max(0.6, sz * 0.04)} strokeLinecap="round" fill="none" />
+
+      {/* Nose — tiny dot/line */}
+      <ellipse cx={hw} cy={fy + headR * 0.18} rx={headR * 0.08} ry={headR * 0.06} fill={skinTone} style={{ filter: 'brightness(0.8)' }} />
+
+      {/* Mouth */}
+      <path d={mouthPath} stroke={mood === 'friendly' ? '#C2185B' : '#8B4513'} strokeWidth={Math.max(0.7, sz * 0.045)} strokeLinecap="round" fill="none" />
+
       {/* Neck */}
       <rect x={hw - neckW / 2} y={headR * 1.9} width={neckW} height={sz * 0.28} fill={skinTone} />
-      {/* Shoulders / body */}
+
+      {/* Body */}
       <path
         d={`M ${hw - shoulderW / 2} ${headR * 2.1 + sz * 0.2}
             Q ${hw - shoulderW / 2 - sz * 0.15} ${headR * 2.1 + sz * 0.35} ${hw - shoulderW / 2} ${headR * 2.1 + sz * 0.5}
@@ -69,14 +129,11 @@ function PersonSVG({ sz, skinTone, shirtCol, pose }: {
             Z`}
         fill={shirtCol}
       />
-      {/* Phone glow for phone pose */}
+
+      {/* Phone */}
       {pose === 'phone' && (
-        <rect
-          x={hw + shoulderW * 0.1} y={headR * 2.1 + sz * 0.6}
-          width={sz * 0.35} height={sz * 0.55} rx={sz * 0.05}
-          fill="#60A5FA" opacity={0.9}
-          style={{ animation: 'phone-glow 2s ease-in-out infinite' }}
-        />
+        <rect x={hw + shoulderW * 0.1} y={headR * 2.1 + sz * 0.6} width={sz * 0.35} height={sz * 0.55} rx={sz * 0.05}
+          fill="#60A5FA" opacity={0.9} style={{ animation: 'phone-glow 2s ease-in-out infinite' }} />
       )}
     </svg>
   )
@@ -116,8 +173,8 @@ function buildSeats(size: number, containerW: number) {
   return seats
 }
 
-function Silhouette({ x, y, sz, op, idx, shirtCol }: {
-  x: number; y: number; sz: number; op: number; idx: number; shirtCol: string
+function Silhouette({ x, y, sz, op, idx, shirtCol, mood }: {
+  x: number; y: number; sz: number; op: number; idx: number; shirtCol: string; mood: Mood
 }) {
   const { skinTone, pose, heightVariance, anim, dur, delay } = getSeatData(idx)
   const scaledSz = sz * heightVariance
@@ -129,7 +186,7 @@ function Silhouette({ x, y, sz, op, idx, shirtCol }: {
       animation: `${anim} ${dur}s ease-in-out ${delay}s infinite`,
       transformOrigin: 'bottom center',
     }}>
-      <PersonSVG sz={scaledSz} skinTone={skinTone} shirtCol={shirtCol} pose={pose} />
+      <PersonSVG sz={scaledSz} skinTone={skinTone} shirtCol={shirtCol} pose={pose} mood={mood} />
     </div>
   )
 }
@@ -281,7 +338,7 @@ export default function LiveStageSection() {
             {seats.length > 0 && (
               <div style={{ position: 'relative', height: audienceH, marginBottom: 8, transition: 'height 0.5s ease', zIndex: 3 }}>
                 {seats.map((s, i) => (
-                  <Silhouette key={i} {...s} shirtCol={getShirtCol(mood, s.idx)} />
+                  <Silhouette key={i} {...s} shirtCol={getShirtCol(mood, s.idx)} mood={mood} />
                 ))}
               </div>
             )}
