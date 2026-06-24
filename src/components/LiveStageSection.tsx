@@ -1,522 +1,537 @@
 import { useEffect, useRef, useState } from 'react'
 
+// ─── Keyframes for UI chrome only ────────────────────────────────────────────
 const KF = `
-@keyframes bob-0 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
-@keyframes bob-1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
-@keyframes bob-2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-@keyframes bob-3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-1.5px)} }
-@keyframes lean-l { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-2deg)} }
-@keyframes lean-r { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(2deg)} }
-@keyframes blink {
-  0%,94%,100%{transform:scaleY(1)}
-  96%,98%{transform:scaleY(0.08)}
-}
-@keyframes applause {
-  0%{transform:translateY(0) rotate(0deg)}
-  25%{transform:translateY(-6px) rotate(-15deg)}
-  50%{transform:translateY(0) rotate(0deg)}
-  75%{transform:translateY(-4px) rotate(12deg)}
-  100%{transform:translateY(0) rotate(0deg)}
+@keyframes interrupt-pop {
+  0%  { opacity:0; transform:translateX(-50%) translateY(10px) scale(.95) }
+  15% { opacity:1; transform:translateX(-50%) translateY(0)    scale(1)   }
+  80% { opacity:1 }
+  100%{ opacity:0; transform:translateX(-50%) translateY(-8px)            }
 }
 @keyframes applause-pop {
-  0%{opacity:0;transform:translateX(-50%) scale(0.7) translateY(0)}
-  20%{opacity:1;transform:translateX(-50%) scale(1.1) translateY(-4px)}
-  80%{opacity:1;transform:translateX(-50%) scale(1) translateY(0)}
-  100%{opacity:0;transform:translateX(-50%) scale(0.9) translateY(-10px)}
+  0%  { opacity:0; transform:translateX(-50%) scale(.7)  }
+  20% { opacity:1; transform:translateX(-50%) scale(1.1) }
+  80% { opacity:1; transform:translateX(-50%) scale(1)   }
+  100%{ opacity:0; transform:translateX(-50%) scale(.9)  }
 }
-@keyframes interrupt-pop { 0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(0.95)} 15%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)} 80%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-8px)} }
-@keyframes spotlight { 0%,100%{opacity:0.5} 50%{opacity:0.9} }
-@keyframes stage-in { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
-@keyframes wave { 0%,100%{transform:scaleY(0.15)} 50%{transform:scaleY(1)} }
-@keyframes cta-pulse { 0%,100%{box-shadow:0 8px 32px rgba(30,77,216,0.55)} 50%{box-shadow:0 8px 48px rgba(30,77,216,0.85)} }
-@keyframes phone-glow { 0%,100%{opacity:0} 10%,90%{opacity:0.9} }
+@keyframes wave    { 0%,100%{transform:scaleY(.15)} 50%{transform:scaleY(1)} }
+@keyframes cta-glow{ 0%,100%{box-shadow:0 8px 32px rgba(30,77,216,.55)} 50%{box-shadow:0 8px 52px rgba(30,77,216,.9)} }
+@keyframes stage-in{ from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
 `
 
+// ─── Config ───────────────────────────────────────────────────────────────────
 const SIZES = [
-  { label: 'Just Me', value: 0,    emoji: '🧘', desc: 'Solo — pure focus' },
-  { label: 'Small',   value: 5,    emoji: '👥', desc: '5 people' },
-  { label: 'Room',    value: 25,   emoji: '🏫', desc: '25 people' },
-  { label: 'Hall',    value: 100,  emoji: '🎤', desc: '100 people' },
-  { label: 'Arena',   value: 1000, emoji: '🏟', desc: '1,000 people' },
+  { label:'Just Me',  value:0,    emoji:'🧘', desc:'Solo — pure focus'    },
+  { label:'Small',    value:5,    emoji:'👥', desc:'5 people'             },
+  { label:'Room',     value:25,   emoji:'🏫', desc:'25 people'            },
+  { label:'Hall',     value:100,  emoji:'🎤', desc:'100 people'           },
+  { label:'Arena',    value:1000, emoji:'🏟', desc:'1,000 people'         },
 ]
 
 const MOODS = [
-  { value: 'friendly',     emoji: '😊', label: 'Friendly',     colour: '#10B981', tint: 'rgba(16,185,129,0.18)' },
-  { value: 'professional', emoji: '🧐', label: 'Professional', colour: '#3B82F6', tint: 'rgba(59,130,246,0.18)' },
-  { value: 'tough',        emoji: '😤', label: 'Tough',        colour: '#EF4444', tint: 'rgba(239,68,68,0.18)' },
+  { value:'friendly',     emoji:'😊', label:'Friendly',     colour:'#10B981', tint:'rgba(16,185,129,.18)',  overlay:'rgba(20,80,40,.08)'   },
+  { value:'professional', emoji:'🧐', label:'Professional', colour:'#3B82F6', tint:'rgba(59,130,246,.18)',  overlay:'rgba(30,50,100,.18)'  },
+  { value:'tough',        emoji:'😤', label:'Tough',        colour:'#EF4444', tint:'rgba(239,68,68,.18)',   overlay:'rgba(120,20,20,.28)'  },
 ]
 
-const INTERRUPTS: Record<string, string[]> = {
-  friendly:     ['"You\'re doing great! 👏"', '"Can you tell us more?"', '*warm applause* 👏', '"This is brilliant!"', '"Fascinating topic!"'],
-  professional: ['"Could you elaborate on that?"', '*quiet note-taking* ✍️', '"Interesting point."', '"Please continue."', '"Can you clarify?"'],
-  tough:        ['"Could you speak up? 🙉"', '"Sorry, what was that?"', '*cough cough* 😷', '📱 phone buzzes loudly', '"Get to the point!"', '"We\'re losing you..."'],
+const INTERRUPTS: Record<string,string[]> = {
+  friendly:     ['"You\'re doing great! 👏"','"Can you tell us more?"','*warm applause*','"This is brilliant!"'],
+  professional: ['"Could you elaborate?"','*quiet note-taking ✍️*','"Interesting point."','"Please continue."'],
+  tough:        ['"Could you speak up? 🙉"','"Sorry, what was that?"','*cough cough* 😷','📱 phone buzzes loudly','"Get to the point!"'],
 }
 
-type Mood = 'friendly' | 'professional' | 'tough'
-
-// Stable person assignment — 200 real portraits from randomuser.me
-function getPersonUrl(idx: number) {
-  const pseudo = (idx * 2654435761) >>> 0
-  const gender = pseudo % 2 === 0 ? 'men' : 'women'
-  const num = (pseudo % 70) + 1
-  return `https://randomuser.me/api/portraits/${gender}/${num}.jpg`
+const SHIRT_PALETTES: Record<string,string[]> = {
+  friendly:     ['#065F46','#047857','#1D4ED8','#7C3AED','#B45309','#0E7490','#065F46','#0369A1'],
+  professional: ['#1E3A5F','#1E40AF','#374151','#1F2937','#312E81','#1E3A5F','#0C4A6E','#292524'],
+  tough:        ['#7F1D1D','#991B1B','#1F2937','#374151','#4C1D95','#78350F','#111827','#7F1D1D'],
 }
 
-// Shirt colours per mood
-const SHIRT_PALETTES: Record<Mood, string[]> = {
-  friendly:     ['#065F46','#047857','#1D4ED8','#7C3AED','#B45309','#0E7490'],
-  professional: ['#1E3A5F','#1E40AF','#374151','#1F2937','#312E81','#1E3A5F'],
-  tough:        ['#7F1D1D','#991B1B','#1F2937','#374151','#78350F','#4C1D95'],
+// 30 real portraits — 15 men, 15 women
+const FACE_URLS = [
+  ...Array.from({length:15},(_,i)=>`https://randomuser.me/api/portraits/men/${i+1}.jpg`),
+  ...Array.from({length:15},(_,i)=>`https://randomuser.me/api/portraits/women/${i+1}.jpg`),
+]
+
+type Mood = 'friendly'|'professional'|'tough'
+
+// ─── Per-person animation state ───────────────────────────────────────────────
+type Person = {
+  x:number; y:number; faceR:number; opacity:number; blur:number
+  imgIdx:number; shirtColor:string
+  breathPhase:number; breathSpeed:number
+  blinkTimer:number; blinkProgress:number; blinking:boolean
+  swayPhase:number; swayAmp:number; swaySpeed:number
+  swayYPhase:number
+  applausePhase:number
 }
-function getShirtCol(mood: Mood, idx: number) {
+
+function pseudo(idx:number){ return (idx*2654435761)>>>0 }
+
+function buildPersons(size:number, W:number, H:number, mood:Mood): Person[] {
+  if(size===0) return []
+  const rows  = size<=5?1:size<=25?3:size<=100?5:7
+  const baseN = size<=5?size:size<=25?6:12
   const palette = SHIRT_PALETTES[mood]
-  return palette[idx % palette.length]
-}
+  const persons: Person[] = []
+  let idx=0
 
-function Person({ sz, personUrl, shirtCol, blinkDelay, applauding, moodFilter }: {
-  sz: number; personUrl: string; shirtCol: string
-  blinkDelay: number; applauding: boolean; moodFilter: string
-}) {
-  const faceSize = sz * 1.6
-  const bodyW = sz * 1.8
-  const bodyH = sz * 1.2
-  const shoulderCurve = sz * 0.3
+  for(let r=0;r<rows;r++){
+    const t   = rows===1?1:(r/(rows-1))          // 0=back, 1=front
+    const faceR = 10+t*18                         // 10px back → 28px front
+    const y   = (1-t)*H*0.72                      // back rows higher
+    const op  = 0.25+t*0.75
+    const blur= (1-t)*2.2
+    const count = Math.min(baseN+r*2, 22)
+    const gap   = W/(count+1)
+    const p0 = pseudo(idx)
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: bodyW }}>
-      {/* Real face photo */}
-      <div style={{ position: 'relative', width: faceSize, height: faceSize, marginBottom: -sz * 0.1 }}>
-        <img
-          src={personUrl}
-          alt=""
-          loading="lazy"
-          style={{
-            width: faceSize, height: faceSize,
-            borderRadius: '50%',
-            objectFit: 'cover',
-            display: 'block',
-            filter: moodFilter,
-            transition: 'filter 0.6s ease',
-          }}
-        />
-        {/* Blink overlay */}
-        <div style={{
-          position: 'absolute', inset: 0, borderRadius: '50%',
-          background: 'inherit',
-          animation: `blink ${3.2 + blinkDelay}s ease-in-out ${blinkDelay * 0.9}s infinite`,
-          pointerEvents: 'none',
-          // uses the parent bg to simulate eyelid
-          backgroundColor: 'transparent',
-          boxShadow: 'inset 0 0 0 0 transparent',
-        }} />
-      </div>
-
-      {/* Shoulders / body — SVG */}
-      <svg width={bodyW} height={bodyH + shoulderCurve} style={{ display: 'block', marginTop: -2 }}>
-        <path
-          d={`M ${bodyW * 0.08} ${shoulderCurve}
-              Q 0 ${shoulderCurve * 0.4} ${bodyW * 0.08} 0
-              L ${bodyW * 0.92} 0
-              Q ${bodyW} ${shoulderCurve * 0.4} ${bodyW * 0.92} ${shoulderCurve}
-              L ${bodyW} ${bodyH + shoulderCurve}
-              L 0 ${bodyH + shoulderCurve} Z`}
-          fill={shirtCol}
-          style={{ transition: 'fill 0.5s ease' }}
-        />
-      </svg>
-
-      {/* Applause */}
-      {applauding && (
-        <div style={{
-          fontSize: sz * 0.9, marginTop: -sz * 0.3,
-          animation: 'applause 0.4s ease-in-out infinite',
-          transformOrigin: 'center bottom',
-        }}>👏</div>
-      )}
-    </div>
-  )
-}
-
-// Per-seat data (stable, seeded by index)
-function getSeatData(idx: number) {
-  const pseudo = (idx * 2654435761) >>> 0
-  const heightVariance = 0.85 + ((pseudo >> 8) % 30) / 100
-  const animations = ['bob-0', 'bob-1', 'bob-2', 'bob-3']
-  const anim = animations[(pseudo >> 4) % 4]
-  const dur = 2.2 + ((pseudo >> 12) % 16) / 10
-  const delay = ((pseudo >> 6) % 28) / 10
-  return { heightVariance, anim, dur, delay }
-}
-
-function buildSeats(size: number, containerW: number) {
-  if (size === 0) return []
-  const rows = size <= 5 ? 1 : size <= 25 ? 3 : size <= 100 ? 5 : 7
-  const baseCount = size <= 5 ? size : size <= 25 ? 6 : 10
-  type Seat = { x: number; y: number; sz: number; op: number; idx: number }
-  const seats: Seat[] = []
-  let globalIdx = 0
-  for (let r = 0; r < rows; r++) {
-    const count = Math.min(baseCount + r * 2, 20)
-    const sz = Math.max(8, 28 - r * 3.2)
-    const rowH = sz * 2.8
-    const op = Math.max(0.18, 1 - r * 0.13)
-    const gap = (containerW - 24) / (count + 1)
-    for (let c = 0; c < count; c++) {
-      seats.push({ x: 12 + gap * (c + 1) - (sz * 0.7), y: r * (rowH * 0.72), sz, op, idx: globalIdx++ })
+    for(let c=0;c<count;c++){
+      const p = pseudo(idx)
+      persons.push({
+        x: gap*(c+1), y,
+        faceR, opacity:op, blur,
+        imgIdx:     p % FACE_URLS.length,
+        shirtColor: palette[p % palette.length],
+        breathPhase:  (p%628)/100,
+        breathSpeed:  0.007+(p%12)/1500,
+        blinkTimer:   2+(p%60)/12,
+        blinkProgress:0, blinking:false,
+        swayPhase:    (p0%628)/100,
+        swayAmp:      0.4+(p%12)/12,
+        swaySpeed:    0.003+(p%10)/2500,
+        swayYPhase:   (p%400)/100,
+        applausePhase:0,
+      })
+      idx++
     }
   }
-  return seats
+  return persons
 }
 
-const MOOD_FILTERS: Record<Mood, string> = {
-  friendly:     'brightness(1.05) saturate(1.1)',
-  professional: 'brightness(0.95) saturate(0.8) contrast(1.05)',
-  tough:        'brightness(0.85) saturate(0.6) contrast(1.15) hue-rotate(340deg)',
-}
+// ─── Canvas audience renderer ─────────────────────────────────────────────────
+function AudienceCanvas({size,mood,applauding}:{size:number;mood:Mood;applauding:boolean}){
+  const canvasRef  = useRef<HTMLCanvasElement>(null)
+  const images     = useRef<HTMLImageElement[]>([])
+  const persons    = useRef<Person[]>([])
+  const animId     = useRef(0)
+  const lastT      = useRef(0)
+  const loadedN    = useRef(0)
+  const [ready, setReady] = useState(false)
+  const moodRef    = useRef(mood)
+  const appRef     = useRef(applauding)
+  const sizeRef    = useRef(size)
 
-function Silhouette({ x, y, sz, op, idx, shirtCol, mood, applauding }: {
-  x: number; y: number; sz: number; op: number; idx: number; shirtCol: string
-  mood: Mood; applauding: boolean
-}) {
-  const { heightVariance, anim, dur, delay } = getSeatData(idx)
-  const scaledSz = sz * heightVariance
-  const blinkDelay = (idx * 1.3) % 4
-  const personUrl = getPersonUrl(idx)
+  moodRef.current = mood
+  appRef.current  = applauding
+
+  // Preload face images once
+  useEffect(()=>{
+    if(images.current.length) return
+    FACE_URLS.forEach((url,i)=>{
+      const img = new Image()
+      img.crossOrigin='anonymous'
+      img.onload = img.onerror = ()=>{
+        loadedN.current++
+        if(loadedN.current===FACE_URLS.length) setReady(true)
+      }
+      img.src=url
+      images.current[i]=img
+    })
+  },[])
+
+  // Rebuild persons when size/mood change
+  useEffect(()=>{
+    const cv=canvasRef.current; if(!cv) return
+    persons.current = buildPersons(size,cv.width,cv.height,mood)
+    sizeRef.current = size
+  },[size,mood])
+
+  // Canvas resize handler
+  useEffect(()=>{
+    const cv=canvasRef.current; if(!cv) return
+    const obs=new ResizeObserver(()=>{
+      const rect=cv.getBoundingClientRect()
+      cv.width=rect.width*devicePixelRatio
+      cv.height=rect.height*devicePixelRatio
+      persons.current=buildPersons(sizeRef.current,cv.width,cv.height,moodRef.current)
+    })
+    obs.observe(cv)
+    return ()=>obs.disconnect()
+  },[])
+
+  // Main render loop
+  useEffect(()=>{
+    if(!ready) return
+    const cv=canvasRef.current; if(!cv) return
+    const ctx=cv.getContext('2d'); if(!ctx) return
+
+    if(!persons.current.length && sizeRef.current>0){
+      persons.current=buildPersons(sizeRef.current,cv.width,cv.height,moodRef.current)
+    }
+
+
+    const render=(time:number)=>{
+      const dt=Math.min((time-lastT.current)/1000,0.05)
+      lastT.current=time
+      const mood=moodRef.current
+      const app=appRef.current
+      const W=cv.width, H=cv.height
+
+      ctx.clearRect(0,0,W,H)
+
+      // Subtle ambient gradient (stage floor)
+      const grad=ctx.createLinearGradient(0,0,0,H)
+      grad.addColorStop(0,'rgba(0,0,0,0)')
+      grad.addColorStop(1,'rgba(0,0,0,0.45)')
+      ctx.fillStyle=grad
+      ctx.fillRect(0,0,W,H)
+
+      const ps=persons.current
+      // Draw back→front (already ordered by buildPersons)
+      for(let i=0;i<ps.length;i++){
+        const p=ps[i]
+
+        // Update animation state
+        p.breathPhase  += p.breathSpeed*dt*60
+        p.swayPhase    += p.swaySpeed*dt*60
+        p.swayYPhase   += p.swaySpeed*0.7*dt*60
+        p.applausePhase+= 0.15*dt*60
+
+        if(!p.blinking){
+          p.blinkTimer-=dt
+          if(p.blinkTimer<=0){ p.blinking=true; p.blinkProgress=0 }
+        } else {
+          p.blinkProgress+=dt/0.16   // ~160ms blink
+          if(p.blinkProgress>=1){
+            p.blinking=false
+            p.blinkTimer=2.5+Math.random()*5
+          }
+        }
+
+        const breathScale = 1+Math.sin(p.breathPhase)*0.011
+        const swayX = Math.sin(p.swayPhase)*p.swayAmp
+        const swayY = Math.sin(p.swayYPhase)*p.swayAmp*0.45
+        const cx = p.x+swayX
+        const cy = p.y+swayY
+        const r  = p.faceR*breathScale
+
+        ctx.save()
+        ctx.globalAlpha=p.opacity
+
+        // Depth-of-field blur for back rows
+        if(p.blur>0.3) ctx.filter=`blur(${p.blur}px)`
+
+        // ── Shoulders / shirt ──────────────────────────────────────
+        const bW=r*2.5, bH=r*2.2, bY=cy+r*0.82
+        ctx.fillStyle=p.shirtColor
+        ctx.beginPath()
+        ctx.moveTo(cx-bW/2, bY+bH)
+        ctx.lineTo(cx-bW/2, bY+r*0.35)
+        ctx.quadraticCurveTo(cx-bW/2,bY, cx-r*0.35,bY)
+        ctx.lineTo(cx+r*0.35, bY)
+        ctx.quadraticCurveTo(cx+bW/2,bY, cx+bW/2,bY+r*0.35)
+        ctx.lineTo(cx+bW/2, bY+bH)
+        ctx.closePath()
+        ctx.fill()
+
+        // ── Neck ──────────────────────────────────────────────────
+        ctx.fillStyle='rgba(180,110,60,0.6)'
+        ctx.fillRect(cx-r*0.22, cy+r*0.82, r*0.44, r*0.55)
+
+        // ── Face circle ───────────────────────────────────────────
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(cx,cy,r,0,Math.PI*2)
+        ctx.clip()
+
+        const img=images.current[p.imgIdx]
+        if(img?.complete&&img.naturalWidth){
+          ctx.drawImage(img,cx-r,cy-r,r*2,r*2)
+        } else {
+          ctx.fillStyle='#B87333'; ctx.fill()
+        }
+
+        // Mood colour tint over face
+        const ovCol = mood==='professional'?'rgba(20,40,90,0.18)':
+                      mood==='tough'       ?'rgba(100,10,10,0.28)':'rgba(0,0,0,0)'
+        if(ovCol!=='rgba(0,0,0,0)'){
+          ctx.fillStyle=ovCol; ctx.fillRect(cx-r,cy-r,r*2,r*2)
+        }
+
+        // ── Blink ────────────────────────────────────────────────
+        if(p.blinking){
+          const prog = Math.sin(p.blinkProgress*Math.PI)  // 0→1→0
+          const lidH = r*0.52*prog
+          const eyeY = cy-r*0.12
+          // top lid
+          ctx.fillStyle='rgba(150,90,40,0.97)'
+          ctx.beginPath()
+          ctx.ellipse(cx, eyeY-lidH*0.5, r*0.72, lidH*0.6+1, 0, 0, Math.PI*2)
+          ctx.fill()
+          // bottom lid
+          ctx.fillStyle='rgba(130,75,30,0.8)'
+          ctx.beginPath()
+          ctx.ellipse(cx, eyeY+lidH*0.25, r*0.65, lidH*0.35+0.5, 0, 0, Math.PI*2)
+          ctx.fill()
+        }
+
+        ctx.restore() // unclip
+
+        // ── Applause 👏 ───────────────────────────────────────────
+        if(app){
+          const bounce = Math.abs(Math.sin(p.applausePhase))*r*0.9
+          ctx.font=`${r*1.1}px serif`
+          ctx.textAlign='center'
+          ctx.textBaseline='middle'
+          ctx.fillText('👏', cx, cy+r*2.8-bounce)
+        }
+
+        ctx.restore()
+      }
+
+      animId.current=requestAnimationFrame(render)
+    }
+
+    animId.current=requestAnimationFrame(render)
+    return ()=>cancelAnimationFrame(animId.current)
+  },[ready])
+
+  const H = size===0?0:size<=5?120:size<=25?180:size<=100?240:300
 
   return (
-    <div style={{
-      position: 'absolute', left: x, top: y, opacity: op,
-      animation: `${anim} ${dur}s ease-in-out ${delay}s infinite`,
-      transformOrigin: 'bottom center',
-    }}>
-      <Person sz={scaledSz} personUrl={personUrl} shirtCol={shirtCol}
-        blinkDelay={blinkDelay} applauding={applauding}
-        moodFilter={MOOD_FILTERS[mood]} />
-    </div>
+    <canvas ref={canvasRef}
+      style={{width:'100%',height:H,display:'block',transition:'height .5s ease'}}
+    />
   )
 }
 
-
-
-function WaveBar({ i, active }: { i: number; active: boolean }) {
-  return (
-    <div style={{
-      width: 3, height: 34, borderRadius: 2,
-      background: active ? '#1E4DD8' : 'rgba(255,255,255,0.12)',
-      margin: '0 2px',
-      animation: active ? `wave ${0.38 + i * 0.06}s ease-in-out ${i * 0.035}s infinite` : 'none',
-      transformOrigin: 'center',
-      transition: 'background 0.3s',
-    }} />
-  )
+// ─── Wave bar ────────────────────────────────────────────────────────────────
+function WaveBar({i,active}:{i:number;active:boolean}){
+  return <div style={{
+    width:3,height:34,borderRadius:2,margin:'0 2px',
+    background:active?'#1E4DD8':'rgba(255,255,255,0.12)',
+    animation:active?`wave ${.38+i*.06}s ease-in-out ${i*.035}s infinite`:'none',
+    transformOrigin:'center', transition:'background .3s',
+  }}/>
 }
 
-export default function LiveStageSection() {
-  const [sizeIdx, setSizeIdx] = useState(3)
-  const [mood, setMood] = useState<Mood>('professional')
-  const [interruptions, setInterruptions] = useState(false)
-  const [speaking, setSpeaking] = useState(false)
-  const [applauding, setApplauding] = useState(false)
-  const [interrupt, setInterrupt] = useState<string | null>(null)
-  const [seconds, setSeconds] = useState(0)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const intRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [containerW, setContainerW] = useState(600)
+// ─── Main section ─────────────────────────────────────────────────────────────
+export default function LiveStageSection(){
+  const [sizeIdx,  setSizeIdx]    = useState(3)
+  const [mood,     setMood]       = useState<Mood>('professional')
+  const [interruptions,setInt]    = useState(false)
+  const [speaking, setSpeaking]   = useState(false)
+  const [applauding,setApplauding]= useState(false)
+  const [interrupt,setInterrupt]  = useState<string|null>(null)
+  const [seconds,  setSeconds]    = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval>|null>(null)
+  const intRef   = useRef<ReturnType<typeof setTimeout>|null>(null)
 
-  const selected = SIZES[sizeIdx]
-  const moodData = MOODS.find(m => m.value === mood)!
-  const seats = buildSeats(selected.value, containerW)
-  const lastSeat = seats[seats.length - 1]
-  const audienceH = lastSeat ? lastSeat.y + lastSeat.sz * 2.8 + 12 : 0
+  const selected  = SIZES[sizeIdx]
+  const moodData  = MOODS.find(m=>m.value===mood)!
 
-  useEffect(() => {
-    const obs = new ResizeObserver(e => setContainerW(e[0].contentRect.width))
-    if (containerRef.current) obs.observe(containerRef.current)
-    return () => obs.disconnect()
-  }, [])
+  // Timer
+  useEffect(()=>{
+    if(speaking){ timerRef.current=setInterval(()=>setSeconds(s=>s+1),1000) }
+    else { clearInterval(timerRef.current!) }
+    return ()=>clearInterval(timerRef.current!)
+  },[speaking])
 
-  useEffect(() => {
-    if (speaking) {
-      timerRef.current = setInterval(() => setSeconds(s => s + 1), 1000)
-    } else {
-      clearInterval(timerRef.current!)
-    }
-    return () => clearInterval(timerRef.current!)
-  }, [speaking])
-
-  useEffect(() => {
-    if (!speaking || !interruptions || selected.value === 0) {
-      clearTimeout(intRef.current!)
-      setInterrupt(null)
-      return
-    }
-    const schedule = () => {
-      const delay = (mood === 'tough' ? 3500 : 7000) + Math.random() * 5000
-      intRef.current = setTimeout(() => {
-        const list = INTERRUPTS[mood]
-        setInterrupt(list[Math.floor(Math.random() * list.length)])
-        setTimeout(() => { setInterrupt(null); schedule() }, 3800)
-      }, delay)
+  // Interruptions
+  useEffect(()=>{
+    if(!speaking||!interruptions||selected.value===0){ clearTimeout(intRef.current!); setInterrupt(null); return }
+    const schedule=()=>{
+      const delay=(mood==='tough'?3500:7000)+Math.random()*5000
+      intRef.current=setTimeout(()=>{
+        const list=INTERRUPTS[mood]
+        setInterrupt(list[Math.floor(Math.random()*list.length)])
+        setTimeout(()=>{ setInterrupt(null); schedule() },3800)
+      },delay)
     }
     schedule()
-    return () => clearTimeout(intRef.current!)
-  }, [speaking, interruptions, mood, selected.value])
+    return ()=>clearTimeout(intRef.current!)
+  },[speaking,interruptions,mood,selected.value])
 
-  const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+  const fmt=(s:number)=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`
+
+  const handleMic=()=>{
+    if(speaking){
+      setSpeaking(false); setSeconds(0)
+      if(mood==='friendly'&&selected.value>0){
+        setApplauding(true)
+        setTimeout(()=>setApplauding(false),4500)
+      }
+    } else {
+      setSpeaking(true); setApplauding(false)
+    }
+  }
 
   return (
-    <section style={{ background: 'linear-gradient(180deg,#060D1A 0%,#0A0F1C 100%)', padding: '100px 20px 120px', overflow: 'hidden' }}>
+    <section style={{background:'linear-gradient(180deg,#060D1A 0%,#0A0F1C 100%)',padding:'100px 20px 120px',overflow:'hidden'}}>
       <style>{KF}</style>
-      <div style={{ maxWidth: 1120, margin: '0 auto' }}>
+      <div style={{maxWidth:1120,margin:'0 auto'}}>
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 64, animation: 'stage-in .7s ease both' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.30)',
-            borderRadius: 20, padding: '6px 18px', marginBottom: 20,
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 800, color: '#FDE68A', letterSpacing: '0.08em' }}>🎭 LIVE STAGE — TRY IT NOW</span>
+        <div style={{textAlign:'center',marginBottom:64,animation:'stage-in .7s ease both'}}>
+          <div style={{display:'inline-flex',alignItems:'center',gap:8,background:'rgba(251,191,36,.12)',border:'1px solid rgba(251,191,36,.30)',borderRadius:20,padding:'6px 18px',marginBottom:20}}>
+            <span style={{fontSize:13,fontWeight:800,color:'#FDE68A',letterSpacing:'.08em'}}>🎭 LIVE STAGE — TRY IT NOW</span>
           </div>
-          <h2 style={{ fontSize: 'clamp(2.4rem,5vw,3.6rem)', fontWeight: 900, color: '#FFF', letterSpacing: '-0.04em', marginBottom: 16, lineHeight: 1.05 }}>
-            Practice to a crowd.<br />Build real confidence.
+          <h2 style={{fontSize:'clamp(2.4rem,5vw,3.6rem)',fontWeight:900,color:'#FFF',letterSpacing:'-.04em',marginBottom:16,lineHeight:1.05}}>
+            Practice to a crowd.<br/>Build real confidence.
           </h2>
-          <p style={{ fontSize: 'clamp(1rem,2vw,1.2rem)', color: 'rgba(255,255,255,0.55)', maxWidth: 520, margin: '0 auto', lineHeight: 1.75 }}>
-            Set your audience, choose their mood, and speak. Your nervous system can't tell the difference.{' '}
-            <span style={{ color: '#FDE68A', fontWeight: 700 }}>The confidence you build here is real.</span>
+          <p style={{fontSize:'clamp(1rem,2vw,1.2rem)',color:'rgba(255,255,255,.55)',maxWidth:520,margin:'0 auto',lineHeight:1.75}}>
+            Set your audience, choose their mood, and speak.{' '}
+            <span style={{color:'#FDE68A',fontWeight:700}}>The confidence you build here is real.</span>
           </p>
         </div>
 
         {/* Demo card */}
-        <div style={{
-          background: 'rgba(255,255,255,0.03)', borderRadius: 28,
-          border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden',
-          boxShadow: '0 40px 120px rgba(0,0,0,0.6)',
-        }}>
+        <div style={{background:'rgba(255,255,255,.03)',borderRadius:28,border:'1px solid rgba(255,255,255,.08)',overflow:'hidden',boxShadow:'0 40px 120px rgba(0,0,0,.6)'}}>
 
           {/* Stage */}
-          <div ref={containerRef} style={{
-            background: 'linear-gradient(180deg,#0D1829 0%,#080E1C 100%)',
-            padding: '40px 12px 32px', borderBottom: '1px solid rgba(255,255,255,0.06)',
-            position: 'relative', minHeight: 320, overflow: 'hidden',
-          }}>
+          <div style={{background:'linear-gradient(180deg,#0D1829 0%,#080E1C 100%)',padding:'32px 16px 28px',borderBottom:'1px solid rgba(255,255,255,.06)',position:'relative',overflow:'hidden'}}>
 
-            {/* Floor gradient — gives depth */}
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%',
-              background: 'linear-gradient(180deg, transparent, rgba(0,0,0,0.55))',
-              pointerEvents: 'none', zIndex: 2,
-            }} />
+            {/* Spotlight */}
+            <div style={{position:'absolute',top:0,left:'50%',transform:'translateX(-50%)',width:'60%',height:'80%',background:`radial-gradient(ellipse at top,${moodData.tint} 0%,transparent 72%)`,transition:'background .8s ease',pointerEvents:'none'}}/>
 
-            {/* Spotlight cone */}
-            <div style={{
-              position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50%)',
-              width: '55%', height: '80%',
-              background: `radial-gradient(ellipse at top, ${moodData.tint} 0%, transparent 72%)`,
-              animation: speaking ? 'spotlight 3s ease-in-out infinite' : 'none',
-              transition: 'background 0.8s ease',
-              pointerEvents: 'none', zIndex: 1,
-            }} />
+            {/* Floor gradient */}
+            <div style={{position:'absolute',bottom:0,left:0,right:0,height:'28%',background:'linear-gradient(transparent,rgba(0,0,0,.5))',pointerEvents:'none',zIndex:2}}/>
 
-            {/* Audience status */}
-            <div style={{ textAlign: 'center', marginBottom: 16, position: 'relative', zIndex: 3 }}>
-              {selected.value > 0
-                ? <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.50)' }}>
-                    {selected.emoji} {selected.value.toLocaleString()} {selected.label === 'Just Me' ? 'person' : 'people'} &nbsp;·&nbsp; {moodData.emoji} {moodData.label}
-                    {interruptions ? ' &nbsp;·&nbsp; 🔔 interruptions on' : ''}
+            {/* Status */}
+            <div style={{textAlign:'center',marginBottom:12,position:'relative',zIndex:3}}>
+              {selected.value>0
+                ?<div style={{fontSize:12,fontWeight:700,color:'rgba(255,255,255,.45)'}}>
+                    {selected.emoji} {selected.value.toLocaleString()} people · {moodData.emoji} {moodData.label}
+                    {interruptions?' · 🔔 interruptions on':''}
                   </div>
-                : <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.28)', fontStyle: 'italic' }}>Solo — no audience, pure focus</div>
+                :<div style={{fontSize:12,color:'rgba(255,255,255,.25)',fontStyle:'italic'}}>Solo — no audience, pure focus</div>
               }
             </div>
 
-            {/* Audience silhouettes */}
-            {seats.length > 0 && (
-              <div style={{ position: 'relative', height: audienceH, marginBottom: 8, transition: 'height 0.5s ease', zIndex: 3 }}>
-                {seats.map((s, i) => (
-                  <Silhouette key={i} {...s} shirtCol={getShirtCol(mood, s.idx)}
-                    mood={mood} applauding={applauding} />
-                ))}
-              </div>
-            )}
+            {/* Canvas audience */}
+            <div style={{position:'relative',zIndex:3}}>
+              <AudienceCanvas size={selected.value} mood={mood} applauding={applauding}/>
+            </div>
 
             {/* Applause banner */}
-            {applauding && (
-              <div style={{
-                position: 'absolute', bottom: 100, left: '50%',
-                background: 'rgba(16,185,129,0.18)', border: '1px solid rgba(16,185,129,0.50)',
-                borderRadius: 22, padding: '12px 28px',
-                animation: 'applause-pop 4s ease forwards',
-                zIndex: 10, whiteSpace: 'nowrap',
-              }}>
-                <span style={{ fontSize: 16, fontWeight: 800, color: '#6EE7B7' }}>👏 The crowd loves it!</span>
+            {applauding&&(
+              <div style={{position:'absolute',bottom:100,left:'50%',background:'rgba(16,185,129,.16)',border:'1px solid rgba(16,185,129,.5)',borderRadius:22,padding:'11px 28px',animation:'applause-pop 4.5s ease forwards',zIndex:10,whiteSpace:'nowrap'}}>
+                <span style={{fontSize:16,fontWeight:800,color:'#6EE7B7'}}>👏 The crowd loves it!</span>
               </div>
             )}
 
-            {/* Interruption bubble — floats above crowd */}
-            {interrupt && (
-              <div style={{
-                position: 'absolute',
-                bottom: selected.value > 0 ? 100 : 80,
-                left: '50%',
-                background: 'rgba(251,191,36,0.16)', border: '1px solid rgba(251,191,36,0.45)',
-                borderRadius: 22, padding: '11px 24px',
-                animation: 'interrupt-pop 3.8s ease forwards',
-                zIndex: 10, whiteSpace: 'nowrap',
-              }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#FDE68A' }}>{interrupt}</span>
+            {/* Interruption bubble */}
+            {interrupt&&(
+              <div style={{position:'absolute',bottom:90,left:'50%',background:'rgba(251,191,36,.15)',border:'1px solid rgba(251,191,36,.45)',borderRadius:22,padding:'11px 24px',animation:'interrupt-pop 3.8s ease forwards',zIndex:10,whiteSpace:'nowrap'}}>
+                <span style={{fontSize:14,fontWeight:700,color:'#FDE68A'}}>{interrupt}</span>
               </div>
             )}
 
-            {/* Waveform + mic + timer — at the bottom */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, position: 'relative', zIndex: 4, marginTop: selected.value > 0 ? 8 : 60 }}>
-              <div style={{ display: 'flex', alignItems: 'center', height: 40 }}>
-                {Array.from({ length: 22 }).map((_, i) => <WaveBar key={i} i={i} active={speaking} />)}
+            {/* Waveform + mic */}
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:14,position:'relative',zIndex:4,marginTop:16}}>
+              <div style={{display:'flex',alignItems:'center',height:40}}>
+                {Array.from({length:22}).map((_,i)=><WaveBar key={i} i={i} active={speaking}/>)}
               </div>
-
-              {speaking && (
-                <div style={{ fontSize: 30, fontWeight: 900, color: '#FFF', letterSpacing: -1, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+              {speaking&&(
+                <div style={{fontSize:30,fontWeight:900,color:'#FFF',letterSpacing:-1,fontVariantNumeric:'tabular-nums',lineHeight:1}}>
                   {fmt(seconds)}
                 </div>
               )}
-
-              <button
-                onClick={() => {
-                  if (speaking) {
-                    setSpeaking(false)
-                    setSeconds(0)
-                    if (mood === 'friendly' && selected.value > 0) {
-                      setApplauding(true)
-                      setTimeout(() => setApplauding(false), 4000)
-                    }
-                  } else {
-                    setSpeaking(true)
-                    setApplauding(false)
-                  }
-                }}
-                style={{
-                  width: 76, height: 76, borderRadius: '50%', border: 'none', cursor: 'pointer', fontSize: 30,
-                  background: speaking ? '#DC2626' : '#1E4DD8',
-                  animation: speaking ? 'cta-pulse 1.4s ease-in-out infinite' : 'none',
-                  boxShadow: speaking ? '0 0 32px rgba(220,38,38,0.6)' : '0 8px 32px rgba(30,77,216,0.55)',
-                  transition: 'background 0.3s, box-shadow 0.3s',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                {speaking ? '⏹' : '🎙'}
+              <button onClick={handleMic} style={{
+                width:76,height:76,borderRadius:'50%',border:'none',cursor:'pointer',fontSize:30,
+                background:speaking?'#DC2626':'#1E4DD8',
+                boxShadow:speaking?'0 0 32px rgba(220,38,38,.6)':'0 8px 32px rgba(30,77,216,.55)',
+                transition:'background .3s,box-shadow .3s',
+                display:'flex',alignItems:'center',justifyContent:'center',
+              }}>
+                {speaking?'⏹':'🎙'}
               </button>
-              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.30)' }}>
-                {speaking ? 'TAP TO STOP' : 'TAP TO START SPEAKING'}
+              <div style={{fontSize:11,fontWeight:800,letterSpacing:'.14em',color:'rgba(255,255,255,.28)'}}>
+                {speaking?'TAP TO STOP':'TAP TO START SPEAKING'}
               </div>
             </div>
           </div>
 
           {/* Controls */}
-          <div style={{ padding: '32px 28px 36px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 32 }}>
+          <div style={{padding:'32px 28px 36px',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:32}}>
 
             {/* Size */}
             <div>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.28)', marginBottom: 14 }}>AUDIENCE SIZE</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                {SIZES.map((s, i) => (
-                  <button key={s.value} onClick={() => setSizeIdx(i)} style={{
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '9px 14px', borderRadius: 11, border: 'none', cursor: 'pointer', textAlign: 'left',
-                    background: sizeIdx === i ? 'rgba(30,77,216,0.22)' : 'rgba(255,255,255,0.03)',
-                    outline: sizeIdx === i ? '1px solid rgba(30,77,216,0.60)' : '1px solid transparent',
-                    transition: 'all 0.2s ease',
+              <div style={{fontSize:10,fontWeight:800,letterSpacing:'.18em',color:'rgba(255,255,255,.28)',marginBottom:14}}>AUDIENCE SIZE</div>
+              <div style={{display:'flex',flexDirection:'column',gap:5}}>
+                {SIZES.map((s,i)=>(
+                  <button key={s.value} onClick={()=>setSizeIdx(i)} style={{
+                    display:'flex',alignItems:'center',gap:10,padding:'9px 14px',borderRadius:11,border:'none',cursor:'pointer',textAlign:'left',
+                    background:sizeIdx===i?'rgba(30,77,216,.22)':'rgba(255,255,255,.03)',
+                    outline:sizeIdx===i?'1px solid rgba(30,77,216,.60)':'1px solid transparent',
+                    transition:'all .2s ease',
                   }}>
-                    <span style={{ fontSize: 15 }}>{s.emoji}</span>
-                    <span style={{ fontSize: 13, fontWeight: sizeIdx === i ? 800 : 500, color: sizeIdx === i ? '#FFF' : 'rgba(255,255,255,0.40)' }}>{s.label}</span>
-                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.22)', marginLeft: 'auto' }}>{s.desc}</span>
+                    <span style={{fontSize:15}}>{s.emoji}</span>
+                    <span style={{fontSize:13,fontWeight:sizeIdx===i?800:500,color:sizeIdx===i?'#FFF':'rgba(255,255,255,.40)'}}>{s.label}</span>
+                    <span style={{fontSize:11,color:'rgba(255,255,255,.22)',marginLeft:'auto'}}>{s.desc}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Mood + toggle */}
+            {/* Mood + interruptions */}
             <div>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.28)', marginBottom: 14 }}>CROWD MOOD</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {MOODS.map(m => (
-                  <button key={m.value} onClick={() => setMood(m.value as Mood)} style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '11px 16px', borderRadius: 13, border: 'none', cursor: 'pointer', textAlign: 'left',
-                    background: mood === m.value ? `${m.colour}1A` : 'rgba(255,255,255,0.03)',
-                    outline: mood === m.value ? `1px solid ${m.colour}55` : '1px solid transparent',
-                    transition: 'all 0.25s ease',
+              <div style={{fontSize:10,fontWeight:800,letterSpacing:'.18em',color:'rgba(255,255,255,.28)',marginBottom:14}}>CROWD MOOD</div>
+              <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                {MOODS.map(m=>(
+                  <button key={m.value} onClick={()=>setMood(m.value as Mood)} style={{
+                    display:'flex',alignItems:'center',gap:12,padding:'11px 16px',borderRadius:13,border:'none',cursor:'pointer',textAlign:'left',
+                    background:mood===m.value?`${m.colour}1A`:'rgba(255,255,255,.03)',
+                    outline:mood===m.value?`1px solid ${m.colour}55`:'1px solid transparent',
+                    transition:'all .25s ease',
                   }}>
-                    <span style={{ fontSize: 22 }}>{m.emoji}</span>
+                    <span style={{fontSize:22}}>{m.emoji}</span>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 800, color: mood === m.value ? '#FFF' : 'rgba(255,255,255,0.40)', marginBottom: 2 }}>{m.label}</div>
-                      <div style={{ fontSize: 11, color: mood === m.value ? m.colour : 'rgba(255,255,255,0.22)' }}>
-                        {m.value === 'friendly' ? 'Warm and supportive' : m.value === 'professional' ? 'Attentive, neutral' : 'Earn their attention'}
+                      <div style={{fontSize:13,fontWeight:800,color:mood===m.value?'#FFF':'rgba(255,255,255,.40)',marginBottom:2}}>{m.label}</div>
+                      <div style={{fontSize:11,color:mood===m.value?m.colour:'rgba(255,255,255,.25)'}}>
+                        {m.value==='friendly'?'Warm and supportive':m.value==='professional'?'Attentive, neutral':'Earn their attention'}
                       </div>
                     </div>
-                    {mood === m.value && <div style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: m.colour, flexShrink: 0 }} />}
+                    {mood===m.value&&<div style={{marginLeft:'auto',width:8,height:8,borderRadius:'50%',background:m.colour,flexShrink:0}}/>}
                   </button>
                 ))}
               </div>
-
-              <div style={{
-                marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '12px 16px', borderRadius: 13,
-                background: 'rgba(255,255,255,0.03)', outline: '1px solid rgba(255,255,255,0.06)',
-              }}>
+              <div style={{marginTop:12,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',borderRadius:13,background:'rgba(255,255,255,.03)',outline:'1px solid rgba(255,255,255,.06)'}}>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#FFF', marginBottom: 2 }}>🔔 Interruptions</div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)' }}>Coughs · whispers · phones</div>
+                  <div style={{fontSize:13,fontWeight:700,color:'#FFF',marginBottom:2}}>🔔 Interruptions</div>
+                  <div style={{fontSize:11,color:'rgba(255,255,255,.28)'}}>Coughs · whispers · phones</div>
                 </div>
-                <button onClick={() => setInterruptions(v => !v)} style={{
-                  width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer',
-                  background: interruptions ? '#1E4DD8' : 'rgba(255,255,255,0.12)',
-                  position: 'relative', transition: 'background 0.25s ease', flexShrink: 0,
-                }}>
-                  <div style={{
-                    position: 'absolute', top: 3, width: 20, height: 20, borderRadius: '50%',
-                    background: '#FFF', transition: 'left 0.25s ease', left: interruptions ? 21 : 3,
-                  }} />
+                <button onClick={()=>setInt(v=>!v)} style={{width:44,height:26,borderRadius:13,border:'none',cursor:'pointer',background:interruptions?'#1E4DD8':'rgba(255,255,255,.12)',position:'relative',transition:'background .25s ease',flexShrink:0}}>
+                  <div style={{position:'absolute',top:3,width:20,height:20,borderRadius:'50%',background:'#FFF',transition:'left .25s ease',left:interruptions?21:3}}/>
                 </button>
               </div>
             </div>
           </div>
 
           {/* CTA footer */}
-          <div style={{
-            borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 28px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16,
-          }}>
+          <div style={{borderTop:'1px solid rgba(255,255,255,.06)',padding:'24px 28px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:16}}>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#FFF', marginBottom: 4 }}>Ready to take the real stage?</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)' }}>Download TalkToLearn and speak to the world.</div>
+              <div style={{fontSize:15,fontWeight:800,color:'#FFF',marginBottom:4}}>Ready to take the real stage?</div>
+              <div style={{fontSize:13,color:'rgba(255,255,255,.38)'}}>Download TalkToLearn and speak to the world.</div>
             </div>
-            <a href="#pricing" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '14px 28px', borderRadius: 50, textDecoration: 'none',
-              background: '#1E4DD8', color: '#FFF', fontWeight: 800, fontSize: 14,
-              boxShadow: '0 8px 32px rgba(30,77,216,0.55)',
-              animation: 'cta-pulse 2.5s ease-in-out infinite',
-            }}>
+            <a href="#pricing" style={{display:'inline-flex',alignItems:'center',gap:8,padding:'14px 28px',borderRadius:50,textDecoration:'none',background:'#1E4DD8',color:'#FFF',fontWeight:800,fontSize:14,animation:'cta-glow 2.5s ease-in-out infinite'}}>
               🎭 Get TalkToLearn Free
             </a>
           </div>
         </div>
 
         {/* Stats */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'center', marginTop: 48 }}>
+        <div style={{display:'flex',flexWrap:'wrap',gap:16,justifyContent:'center',marginTop:48}}>
           {[
-            { emoji: '🏟', stat: '1,000', label: 'Max audience size' },
-            { emoji: '😤', stat: '3',     label: 'Crowd moods' },
-            { emoji: '💬', stat: '∞',     label: 'Interruption types' },
-            { emoji: '🧠', stat: '100%',  label: 'Real confidence gained' },
-          ].map(s => (
-            <div key={s.stat} style={{
-              background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-              borderRadius: 16, padding: '20px 28px', textAlign: 'center', minWidth: 130,
-            }}>
-              <div style={{ fontSize: 22, marginBottom: 6 }}>{s.emoji}</div>
-              <div style={{ fontSize: 22, fontWeight: 900, color: '#FFF', marginBottom: 4 }}>{s.stat}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontWeight: 600 }}>{s.label}</div>
+            {emoji:'🏟',stat:'1,000',label:'Max audience size'},
+            {emoji:'😤',stat:'3',    label:'Crowd moods'},
+            {emoji:'💬',stat:'∞',   label:'Interruption types'},
+            {emoji:'🧠',stat:'100%',label:'Real confidence gained'},
+          ].map(s=>(
+            <div key={s.stat} style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.07)',borderRadius:16,padding:'20px 28px',textAlign:'center',minWidth:130}}>
+              <div style={{fontSize:22,marginBottom:6}}>{s.emoji}</div>
+              <div style={{fontSize:22,fontWeight:900,color:'#FFF',marginBottom:4}}>{s.stat}</div>
+              <div style={{fontSize:11,color:'rgba(255,255,255,.35)',fontWeight:600}}>{s.label}</div>
             </div>
           ))}
         </div>
