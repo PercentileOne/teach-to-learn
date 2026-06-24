@@ -7,6 +7,23 @@ const KF = `
 @keyframes bob-3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-1.5px)} }
 @keyframes lean-l { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-2deg)} }
 @keyframes lean-r { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(2deg)} }
+@keyframes blink {
+  0%,94%,100%{transform:scaleY(1)}
+  96%,98%{transform:scaleY(0.08)}
+}
+@keyframes applause {
+  0%{transform:translateY(0) rotate(0deg)}
+  25%{transform:translateY(-6px) rotate(-15deg)}
+  50%{transform:translateY(0) rotate(0deg)}
+  75%{transform:translateY(-4px) rotate(12deg)}
+  100%{transform:translateY(0) rotate(0deg)}
+}
+@keyframes applause-pop {
+  0%{opacity:0;transform:translateX(-50%) scale(0.7) translateY(0)}
+  20%{opacity:1;transform:translateX(-50%) scale(1.1) translateY(-4px)}
+  80%{opacity:1;transform:translateX(-50%) scale(1) translateY(0)}
+  100%{opacity:0;transform:translateX(-50%) scale(0.9) translateY(-10px)}
+}
 @keyframes interrupt-pop { 0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(0.95)} 15%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)} 80%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-8px)} }
 @keyframes spotlight { 0%,100%{opacity:0.5} 50%{opacity:0.9} }
 @keyframes stage-in { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
@@ -41,8 +58,9 @@ const SKIN_TONES = ['#FBBF24','#F59E0B','#D97706','#B45309','#92400E','#78350F',
 type Mood = 'friendly' | 'professional' | 'tough'
 
 // A proper SVG person silhouette
-function PersonSVG({ sz, skinTone, shirtCol, pose, mood }: {
-  sz: number; skinTone: string; shirtCol: string; pose: 'straight' | 'lean-l' | 'lean-r' | 'phone'; mood: Mood
+function PersonSVG({ sz, skinTone, shirtCol, pose, mood, blinkDelay, applauding }: {
+  sz: number; skinTone: string; shirtCol: string; pose: 'straight' | 'lean-l' | 'lean-r' | 'phone'
+  mood: Mood; blinkDelay: number; applauding: boolean
 }) {
   const w = sz * 1.4
   const h = sz * 2.8
@@ -95,15 +113,24 @@ function PersonSVG({ sz, skinTone, shirtCol, pose, mood }: {
       {/* Hair top overlap */}
       <ellipse cx={hw} cy={fy - headR * 0.72} rx={headR * 0.95} ry={headR * 0.45} fill={hairCol} />
 
-      {/* Eyes whites */}
-      <ellipse cx={hw - eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
-      <ellipse cx={hw + eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
-      {/* Pupils */}
-      <circle cx={hw - eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
-      <circle cx={hw + eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
-      {/* Eye shine */}
-      <circle cx={hw - eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
-      <circle cx={hw + eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
+      {/* Eyes — with blink */}
+      <g style={{ transformOrigin: `${hw - eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7}s infinite` }}>
+        <ellipse cx={hw - eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
+        <circle cx={hw - eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
+        <circle cx={hw - eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
+      </g>
+      <g style={{ transformOrigin: `${hw + eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7 + 0.04}s infinite` }}>
+        <ellipse cx={hw + eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
+        <circle cx={hw + eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
+        <circle cx={hw + eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
+      </g>
+      {/* Eyelid overlay for blink */}
+      <g style={{ transformOrigin: `${hw - eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7}s infinite` }}>
+        <ellipse cx={hw - eyeOff} cy={eyeY - eyeR * 0.1} rx={eyeR * 1.35} ry={eyeR * 0.55} fill={skinTone} style={{ transformOrigin: `${hw - eyeOff}px ${eyeY - eyeR}px` }} />
+      </g>
+      <g style={{ transformOrigin: `${hw + eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7 + 0.04}s infinite` }}>
+        <ellipse cx={hw + eyeOff} cy={eyeY - eyeR * 0.1} rx={eyeR * 1.35} ry={eyeR * 0.55} fill={skinTone} style={{ transformOrigin: `${hw + eyeOff}px ${eyeY - eyeR}px` }} />
+      </g>
 
       {/* Eyebrows */}
       <path d={lBrowPath} stroke={hairCol} strokeWidth={Math.max(0.6, sz * 0.04)} strokeLinecap="round" fill="none" />
@@ -131,9 +158,16 @@ function PersonSVG({ sz, skinTone, shirtCol, pose, mood }: {
       />
 
       {/* Phone */}
-      {pose === 'phone' && (
+      {pose === 'phone' && !applauding && (
         <rect x={hw + shoulderW * 0.1} y={headR * 2.1 + sz * 0.6} width={sz * 0.35} height={sz * 0.55} rx={sz * 0.05}
           fill="#60A5FA" opacity={0.9} style={{ animation: 'phone-glow 2s ease-in-out infinite' }} />
+      )}
+      {/* Applause hands */}
+      {applauding && (
+        <>
+          <text x={hw - sz * 0.55} y={headR * 2.1 + sz * 0.85} fontSize={sz * 0.75} textAnchor="middle"
+            style={{ animation: `applause ${0.45}s ease-in-out infinite`, transformOrigin: `${hw - sz * 0.3}px ${headR * 2.1 + sz * 0.6}px` }}>👏</text>
+        </>
       )}
     </svg>
   )
@@ -173,20 +207,22 @@ function buildSeats(size: number, containerW: number) {
   return seats
 }
 
-function Silhouette({ x, y, sz, op, idx, shirtCol, mood }: {
-  x: number; y: number; sz: number; op: number; idx: number; shirtCol: string; mood: Mood
+function Silhouette({ x, y, sz, op, idx, shirtCol, mood, applauding, rippleDelay }: {
+  x: number; y: number; sz: number; op: number; idx: number; shirtCol: string
+  mood: Mood; applauding: boolean; rippleDelay: number
 }) {
   const { skinTone, pose, heightVariance, anim, dur, delay } = getSeatData(idx)
   const scaledSz = sz * heightVariance
+  const blinkDelay = (idx * 1.3) % 4
   return (
     <div style={{
-      position: 'absolute',
-      left: x, top: y,
-      opacity: op,
+      position: 'absolute', left: x, top: y, opacity: op,
       animation: `${anim} ${dur}s ease-in-out ${delay}s infinite`,
       transformOrigin: 'bottom center',
+      transition: `opacity ${0.3 + rippleDelay}s ease`,
     }}>
-      <PersonSVG sz={scaledSz} skinTone={skinTone} shirtCol={shirtCol} pose={pose} mood={mood} />
+      <PersonSVG sz={scaledSz} skinTone={skinTone} shirtCol={shirtCol} pose={pose}
+        mood={mood} blinkDelay={blinkDelay} applauding={applauding} />
     </div>
   )
 }
@@ -221,6 +257,7 @@ export default function LiveStageSection() {
   const [mood, setMood] = useState<Mood>('professional')
   const [interruptions, setInterruptions] = useState(false)
   const [speaking, setSpeaking] = useState(false)
+  const [applauding, setApplauding] = useState(false)
   const [interrupt, setInterrupt] = useState<string | null>(null)
   const [seconds, setSeconds] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -338,8 +375,23 @@ export default function LiveStageSection() {
             {seats.length > 0 && (
               <div style={{ position: 'relative', height: audienceH, marginBottom: 8, transition: 'height 0.5s ease', zIndex: 3 }}>
                 {seats.map((s, i) => (
-                  <Silhouette key={i} {...s} shirtCol={getShirtCol(mood, s.idx)} mood={mood} />
+                  <Silhouette key={i} {...s} shirtCol={getShirtCol(mood, s.idx)}
+                    mood={mood} applauding={applauding}
+                    rippleDelay={(s.x / containerW) * 0.6} />
                 ))}
+              </div>
+            )}
+
+            {/* Applause banner */}
+            {applauding && (
+              <div style={{
+                position: 'absolute', bottom: 100, left: '50%',
+                background: 'rgba(16,185,129,0.18)', border: '1px solid rgba(16,185,129,0.50)',
+                borderRadius: 22, padding: '12px 28px',
+                animation: 'applause-pop 4s ease forwards',
+                zIndex: 10, whiteSpace: 'nowrap',
+              }}>
+                <span style={{ fontSize: 16, fontWeight: 800, color: '#6EE7B7' }}>👏 The crowd loves it!</span>
               </div>
             )}
 
@@ -371,7 +423,19 @@ export default function LiveStageSection() {
               )}
 
               <button
-                onClick={() => { setSpeaking(v => !v); if (speaking) setSeconds(0) }}
+                onClick={() => {
+                  if (speaking) {
+                    setSpeaking(false)
+                    setSeconds(0)
+                    if (mood === 'friendly' && selected.value > 0) {
+                      setApplauding(true)
+                      setTimeout(() => setApplauding(false), 4000)
+                    }
+                  } else {
+                    setSpeaking(true)
+                    setApplauding(false)
+                  }
+                }}
                 style={{
                   width: 76, height: 76, borderRadius: '50%', border: 'none', cursor: 'pointer', fontSize: 30,
                   background: speaking ? '#DC2626' : '#1E4DD8',
