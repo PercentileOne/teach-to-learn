@@ -46,11 +46,10 @@ const SHIRT_PALETTES: Record<string,string[]> = {
   tough:        ['#7F1D1D','#991B1B','#1F2937','#374151','#4C1D95','#78350F','#111827','#7F1D1D'],
 }
 
-// 30 real portraits — 15 men, 15 women
-const FACE_URLS = [
-  ...Array.from({length:15},(_,i)=>`https://randomuser.me/api/portraits/men/${i+1}.jpg`),
-  ...Array.from({length:15},(_,i)=>`https://randomuser.me/api/portraits/women/${i+1}.jpg`),
-]
+// 70 real face portraits — pravatar.cc is CORS-safe for canvas drawImage
+const FACE_URLS = Array.from({length:70},(_,i)=>
+  `https://i.pravatar.cc/150?img=${i+1}`
+)
 
 type Mood = 'friendly'|'professional'|'tough'
 
@@ -129,7 +128,6 @@ function AudienceCanvas({size,mood,applauding}:{size:number;mood:Mood;applauding
     if(images.current.length) return
     FACE_URLS.forEach((url,i)=>{
       const img = new Image()
-      img.crossOrigin='anonymous'
       img.onload = img.onerror = ()=>{
         loadedN.current++
         if(loadedN.current===FACE_URLS.length) setReady(true)
