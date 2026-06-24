@@ -52,139 +52,100 @@ const INTERRUPTS: Record<string, string[]> = {
   tough:        ['"Could you speak up? 🙉"', '"Sorry, what was that?"', '*cough cough* 😷', '📱 phone buzzes loudly', '"Get to the point!"', '"We\'re losing you..."'],
 }
 
-// Skin tone variety
-const SKIN_TONES = ['#FBBF24','#F59E0B','#D97706','#B45309','#92400E','#78350F','#FCD34D','#E8A87C']
-
 type Mood = 'friendly' | 'professional' | 'tough'
 
-// A proper SVG person silhouette
-function PersonSVG({ sz, skinTone, shirtCol, pose, mood, blinkDelay, applauding }: {
-  sz: number; skinTone: string; shirtCol: string; pose: 'straight' | 'lean-l' | 'lean-r' | 'phone'
-  mood: Mood; blinkDelay: number; applauding: boolean
+// Stable person assignment — 200 real portraits from randomuser.me
+function getPersonUrl(idx: number) {
+  const pseudo = (idx * 2654435761) >>> 0
+  const gender = pseudo % 2 === 0 ? 'men' : 'women'
+  const num = (pseudo % 70) + 1
+  return `https://randomuser.me/api/portraits/${gender}/${num}.jpg`
+}
+
+// Shirt colours per mood
+const SHIRT_PALETTES: Record<Mood, string[]> = {
+  friendly:     ['#065F46','#047857','#1D4ED8','#7C3AED','#B45309','#0E7490'],
+  professional: ['#1E3A5F','#1E40AF','#374151','#1F2937','#312E81','#1E3A5F'],
+  tough:        ['#7F1D1D','#991B1B','#1F2937','#374151','#78350F','#4C1D95'],
+}
+function getShirtCol(mood: Mood, idx: number) {
+  const palette = SHIRT_PALETTES[mood]
+  return palette[idx % palette.length]
+}
+
+function Person({ sz, personUrl, shirtCol, blinkDelay, applauding, moodFilter }: {
+  sz: number; personUrl: string; shirtCol: string
+  blinkDelay: number; applauding: boolean; moodFilter: string
 }) {
-  const w = sz * 1.4
-  const h = sz * 2.8
-  const hw = w / 2
-  const headR = sz * 0.42
-  const neckW = sz * 0.22
-  const shoulderW = sz * 0.72
-  const bodyH = sz * 1.4
-  const fy = headR         // face centre y
-  const eyeY = fy - headR * 0.18
-  const eyeOff = headR * 0.32
-  const eyeR = Math.max(0.8, headR * 0.13)
-  const pupilR = eyeR * 0.55
-  // Hair colour — darker than skin
-  const hairCols = ['#3B1F0A','#1A0A00','#2C1810','#5C3317','#8B4513','#1C1C1C','#4A2C0A','#6B3A1F']
-  const hairIdx = (skinTone.charCodeAt(1) + skinTone.charCodeAt(3)) % hairCols.length
-  const hairCol = hairCols[hairIdx]
-
-  // Mouth shape per mood
-  const mouthY = fy + headR * 0.45
-  const mouthW = headR * 0.48
-  let mouthPath = ''
-  if (mood === 'friendly') {
-    // smile
-    mouthPath = `M ${hw - mouthW} ${mouthY} Q ${hw} ${mouthY + headR * 0.3} ${hw + mouthW} ${mouthY}`
-  } else if (mood === 'professional') {
-    // straight line
-    mouthPath = `M ${hw - mouthW * 0.8} ${mouthY} L ${hw + mouthW * 0.8} ${mouthY}`
-  } else {
-    // frown
-    mouthPath = `M ${hw - mouthW} ${mouthY + headR * 0.18} Q ${hw} ${mouthY - headR * 0.18} ${hw + mouthW} ${mouthY + headR * 0.18}`
-  }
-
-  // Eyebrows
-  const browY = eyeY - eyeR * 2.2
-  const browW = eyeR * 2.2
-  const lBrowPath = mood === 'tough'
-    ? `M ${hw - eyeOff - browW} ${browY - eyeR} L ${hw - eyeOff + browW * 0.3} ${browY + eyeR * 0.6}`
-    : `M ${hw - eyeOff - browW} ${browY} L ${hw - eyeOff + browW} ${browY + (mood === 'friendly' ? -eyeR * 0.4 : 0)}`
-  const rBrowPath = mood === 'tough'
-    ? `M ${hw + eyeOff + browW} ${browY - eyeR} L ${hw + eyeOff - browW * 0.3} ${browY + eyeR * 0.6}`
-    : `M ${hw + eyeOff - browW} ${browY} L ${hw + eyeOff + browW} ${browY + (mood === 'friendly' ? -eyeR * 0.4 : 0)}`
+  const faceSize = sz * 1.6
+  const bodyW = sz * 1.8
+  const bodyH = sz * 1.2
+  const shoulderCurve = sz * 0.3
 
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ overflow: 'visible', display: 'block' }}>
-      {/* Hair */}
-      <ellipse cx={hw} cy={fy - headR * 0.55} rx={headR * 1.02} ry={headR * 0.72} fill={hairCol} />
-      {/* Head */}
-      <ellipse cx={hw} cy={fy} rx={headR} ry={headR * 1.1} fill={skinTone} />
-      {/* Hair top overlap */}
-      <ellipse cx={hw} cy={fy - headR * 0.72} rx={headR * 0.95} ry={headR * 0.45} fill={hairCol} />
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: bodyW }}>
+      {/* Real face photo */}
+      <div style={{ position: 'relative', width: faceSize, height: faceSize, marginBottom: -sz * 0.1 }}>
+        <img
+          src={personUrl}
+          alt=""
+          loading="lazy"
+          style={{
+            width: faceSize, height: faceSize,
+            borderRadius: '50%',
+            objectFit: 'cover',
+            display: 'block',
+            filter: moodFilter,
+            transition: 'filter 0.6s ease',
+          }}
+        />
+        {/* Blink overlay */}
+        <div style={{
+          position: 'absolute', inset: 0, borderRadius: '50%',
+          background: 'inherit',
+          animation: `blink ${3.2 + blinkDelay}s ease-in-out ${blinkDelay * 0.9}s infinite`,
+          pointerEvents: 'none',
+          // uses the parent bg to simulate eyelid
+          backgroundColor: 'transparent',
+          boxShadow: 'inset 0 0 0 0 transparent',
+        }} />
+      </div>
 
-      {/* Eyes — with blink */}
-      <g style={{ transformOrigin: `${hw - eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7}s infinite` }}>
-        <ellipse cx={hw - eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
-        <circle cx={hw - eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
-        <circle cx={hw - eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
-      </g>
-      <g style={{ transformOrigin: `${hw + eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7 + 0.04}s infinite` }}>
-        <ellipse cx={hw + eyeOff} cy={eyeY} rx={eyeR * 1.3} ry={eyeR} fill="white" />
-        <circle cx={hw + eyeOff} cy={eyeY} r={pupilR} fill="#1C1C1C" />
-        <circle cx={hw + eyeOff + pupilR * 0.35} cy={eyeY - pupilR * 0.35} r={pupilR * 0.3} fill="white" />
-      </g>
-      {/* Eyelid overlay for blink */}
-      <g style={{ transformOrigin: `${hw - eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7}s infinite` }}>
-        <ellipse cx={hw - eyeOff} cy={eyeY - eyeR * 0.1} rx={eyeR * 1.35} ry={eyeR * 0.55} fill={skinTone} style={{ transformOrigin: `${hw - eyeOff}px ${eyeY - eyeR}px` }} />
-      </g>
-      <g style={{ transformOrigin: `${hw + eyeOff}px ${eyeY}px`, animation: `blink ${3.5 + blinkDelay}s ease-in-out ${blinkDelay * 0.7 + 0.04}s infinite` }}>
-        <ellipse cx={hw + eyeOff} cy={eyeY - eyeR * 0.1} rx={eyeR * 1.35} ry={eyeR * 0.55} fill={skinTone} style={{ transformOrigin: `${hw + eyeOff}px ${eyeY - eyeR}px` }} />
-      </g>
+      {/* Shoulders / body — SVG */}
+      <svg width={bodyW} height={bodyH + shoulderCurve} style={{ display: 'block', marginTop: -2 }}>
+        <path
+          d={`M ${bodyW * 0.08} ${shoulderCurve}
+              Q 0 ${shoulderCurve * 0.4} ${bodyW * 0.08} 0
+              L ${bodyW * 0.92} 0
+              Q ${bodyW} ${shoulderCurve * 0.4} ${bodyW * 0.92} ${shoulderCurve}
+              L ${bodyW} ${bodyH + shoulderCurve}
+              L 0 ${bodyH + shoulderCurve} Z`}
+          fill={shirtCol}
+          style={{ transition: 'fill 0.5s ease' }}
+        />
+      </svg>
 
-      {/* Eyebrows */}
-      <path d={lBrowPath} stroke={hairCol} strokeWidth={Math.max(0.6, sz * 0.04)} strokeLinecap="round" fill="none" />
-      <path d={rBrowPath} stroke={hairCol} strokeWidth={Math.max(0.6, sz * 0.04)} strokeLinecap="round" fill="none" />
-
-      {/* Nose — tiny dot/line */}
-      <ellipse cx={hw} cy={fy + headR * 0.18} rx={headR * 0.08} ry={headR * 0.06} fill={skinTone} style={{ filter: 'brightness(0.8)' }} />
-
-      {/* Mouth */}
-      <path d={mouthPath} stroke={mood === 'friendly' ? '#C2185B' : '#8B4513'} strokeWidth={Math.max(0.7, sz * 0.045)} strokeLinecap="round" fill="none" />
-
-      {/* Neck */}
-      <rect x={hw - neckW / 2} y={headR * 1.9} width={neckW} height={sz * 0.28} fill={skinTone} />
-
-      {/* Body */}
-      <path
-        d={`M ${hw - shoulderW / 2} ${headR * 2.1 + sz * 0.2}
-            Q ${hw - shoulderW / 2 - sz * 0.15} ${headR * 2.1 + sz * 0.35} ${hw - shoulderW / 2} ${headR * 2.1 + sz * 0.5}
-            L ${hw - shoulderW / 2} ${headR * 2.1 + bodyH}
-            L ${hw + shoulderW / 2} ${headR * 2.1 + bodyH}
-            L ${hw + shoulderW / 2} ${headR * 2.1 + sz * 0.5}
-            Q ${hw + shoulderW / 2 + sz * 0.15} ${headR * 2.1 + sz * 0.35} ${hw + shoulderW / 2} ${headR * 2.1 + sz * 0.2}
-            Z`}
-        fill={shirtCol}
-      />
-
-      {/* Phone */}
-      {pose === 'phone' && !applauding && (
-        <rect x={hw + shoulderW * 0.1} y={headR * 2.1 + sz * 0.6} width={sz * 0.35} height={sz * 0.55} rx={sz * 0.05}
-          fill="#60A5FA" opacity={0.9} style={{ animation: 'phone-glow 2s ease-in-out infinite' }} />
-      )}
-      {/* Applause hands */}
+      {/* Applause */}
       {applauding && (
-        <>
-          <text x={hw - sz * 0.55} y={headR * 2.1 + sz * 0.85} fontSize={sz * 0.75} textAnchor="middle"
-            style={{ animation: `applause ${0.45}s ease-in-out infinite`, transformOrigin: `${hw - sz * 0.3}px ${headR * 2.1 + sz * 0.6}px` }}>👏</text>
-        </>
+        <div style={{
+          fontSize: sz * 0.9, marginTop: -sz * 0.3,
+          animation: 'applause 0.4s ease-in-out infinite',
+          transformOrigin: 'center bottom',
+        }}>👏</div>
       )}
-    </svg>
+    </div>
   )
 }
 
 // Per-seat data (stable, seeded by index)
 function getSeatData(idx: number) {
   const pseudo = (idx * 2654435761) >>> 0
-  const skinTone = SKIN_TONES[pseudo % SKIN_TONES.length]
-  const poses: Array<'straight' | 'lean-l' | 'lean-r' | 'phone'> = ['straight', 'straight', 'straight', 'lean-l', 'lean-r', 'phone']
-  const pose = poses[pseudo % poses.length]
-  const heightVariance = 0.85 + ((pseudo >> 8) % 30) / 100  // 0.85–1.15
-  const animations = ['bob-0', 'bob-1', 'bob-2', 'bob-3', 'lean-l', 'lean-r']
-  const anim = animations[(pseudo >> 4) % 4]  // mostly bob
+  const heightVariance = 0.85 + ((pseudo >> 8) % 30) / 100
+  const animations = ['bob-0', 'bob-1', 'bob-2', 'bob-3']
+  const anim = animations[(pseudo >> 4) % 4]
   const dur = 2.2 + ((pseudo >> 12) % 16) / 10
   const delay = ((pseudo >> 6) % 28) / 10
-  return { skinTone, pose, heightVariance, anim, dur, delay }
+  return { heightVariance, anim, dur, delay }
 }
 
 function buildSeats(size: number, containerW: number) {
@@ -207,37 +168,35 @@ function buildSeats(size: number, containerW: number) {
   return seats
 }
 
-function Silhouette({ x, y, sz, op, idx, shirtCol, mood, applauding, rippleDelay }: {
+const MOOD_FILTERS: Record<Mood, string> = {
+  friendly:     'brightness(1.05) saturate(1.1)',
+  professional: 'brightness(0.95) saturate(0.8) contrast(1.05)',
+  tough:        'brightness(0.85) saturate(0.6) contrast(1.15) hue-rotate(340deg)',
+}
+
+function Silhouette({ x, y, sz, op, idx, shirtCol, mood, applauding }: {
   x: number; y: number; sz: number; op: number; idx: number; shirtCol: string
-  mood: Mood; applauding: boolean; rippleDelay: number
+  mood: Mood; applauding: boolean
 }) {
-  const { skinTone, pose, heightVariance, anim, dur, delay } = getSeatData(idx)
+  const { heightVariance, anim, dur, delay } = getSeatData(idx)
   const scaledSz = sz * heightVariance
   const blinkDelay = (idx * 1.3) % 4
+  const personUrl = getPersonUrl(idx)
+
   return (
     <div style={{
       position: 'absolute', left: x, top: y, opacity: op,
       animation: `${anim} ${dur}s ease-in-out ${delay}s infinite`,
       transformOrigin: 'bottom center',
-      transition: `opacity ${0.3 + rippleDelay}s ease`,
     }}>
-      <PersonSVG sz={scaledSz} skinTone={skinTone} shirtCol={shirtCol} pose={pose}
-        mood={mood} blinkDelay={blinkDelay} applauding={applauding} />
+      <Person sz={scaledSz} personUrl={personUrl} shirtCol={shirtCol}
+        blinkDelay={blinkDelay} applauding={applauding}
+        moodFilter={MOOD_FILTERS[mood]} />
     </div>
   )
 }
 
-// Shirt colours per mood
-const SHIRT_PALETTES: Record<Mood, string[]> = {
-  friendly:     ['#065F46','#047857','#059669','#1D4ED8','#7C3AED','#B45309'],
-  professional: ['#1E3A5F','#1E40AF','#374151','#1F2937','#312E81','#1E3A5F'],
-  tough:        ['#7F1D1D','#991B1B','#1F2937','#374151','#78350F','#7F1D1D'],
-}
 
-function getShirtCol(mood: Mood, idx: number) {
-  const palette = SHIRT_PALETTES[mood]
-  return palette[idx % palette.length]
-}
 
 function WaveBar({ i, active }: { i: number; active: boolean }) {
   return (
@@ -376,8 +335,7 @@ export default function LiveStageSection() {
               <div style={{ position: 'relative', height: audienceH, marginBottom: 8, transition: 'height 0.5s ease', zIndex: 3 }}>
                 {seats.map((s, i) => (
                   <Silhouette key={i} {...s} shirtCol={getShirtCol(mood, s.idx)}
-                    mood={mood} applauding={applauding}
-                    rippleDelay={(s.x / containerW) * 0.6} />
+                    mood={mood} applauding={applauding} />
                 ))}
               </div>
             )}
