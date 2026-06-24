@@ -46,10 +46,57 @@ const SHIRT_PALETTES: Record<string,string[]> = {
   tough:        ['#7F1D1D','#991B1B','#1F2937','#374151','#4C1D95','#78350F','#111827','#7F1D1D'],
 }
 
-// 70 real face portraits — pravatar.cc is CORS-safe for canvas drawImage
-const FACE_URLS = Array.from({length:70},(_,i)=>
-  `https://i.pravatar.cc/150?img=${i+1}`
+// 20 real face portraits — small pool, all pre-rendered to sprites
+const FACE_URLS = Array.from({length:20},(_,i)=>
+  `https://i.pravatar.cc/80?img=${i+1}`
 )
+
+// Sprite cache — each face+shirt pre-rendered once, blitted every frame
+const spriteCache = new Map<string,HTMLCanvasElement>()
+
+function getSprite(img:HTMLImageElement, shirtColor:string, r:number): HTMLCanvasElement {
+  const key=`${img.src}|${shirtColor}|${r}`
+  if(spriteCache.has(key)) return spriteCache.get(key)!
+
+  const bW=r*2.6, bH=r*2.4, nH=r*0.5
+  const totalW=bW, totalH=r*2+nH+bH
+  const cx=totalW/2, cy=r
+
+  const oc=document.createElement('canvas')
+  oc.width=Math.ceil(totalW); oc.height=Math.ceil(totalH)
+  const c=oc.getContext('2d')!
+
+  // Shirt / shoulders
+  c.fillStyle=shirtColor
+  c.beginPath()
+  c.moveTo(cx-bW/2, totalH)
+  c.lineTo(cx-bW/2, cy+r+nH+r*0.3)
+  c.quadraticCurveTo(cx-bW/2, cy+r+nH, cx-r*0.35, cy+r+nH)
+  c.lineTo(cx+r*0.35, cy+r+nH)
+  c.quadraticCurveTo(cx+bW/2, cy+r+nH, cx+bW/2, cy+r+nH+r*0.3)
+  c.lineTo(cx+bW/2, totalH)
+  c.closePath()
+  c.fill()
+
+  // Neck
+  c.fillStyle='rgba(170,110,60,0.55)'
+  c.fillRect(cx-r*0.22, cy+r*0.9, r*0.44, nH)
+
+  // Face circle
+  c.save()
+  c.beginPath()
+  c.arc(cx,cy,r,0,Math.PI*2)
+  c.clip()
+  if(img.complete&&img.naturalWidth){
+    c.drawImage(img,cx-r,cy-r,r*2,r*2)
+  } else {
+    c.fillStyle='#B87333'; c.fill()
+  }
+  c.restore()
+
+  spriteCache.set(key,oc)
+  return oc
+}
 
 type Mood = 'friendly'|'professional'|'tough'
 
@@ -66,40 +113,37 @@ type Person = {
 
 function pseudo(idx:number){ return (idx*2654435761)>>>0 }
 
+// Cap visible persons — canvas can't do 1000 faces smoothly; imply scale via blur+density
+function visibleCount(size:number){ return size<=5?size:size<=25?25:size<=100?60:100 }
+
 function buildPersons(size:number, W:number, H:number, mood:Mood): Person[] {
   if(size===0) return []
+  const total = visibleCount(size)
   const rows  = size<=5?1:size<=25?3:size<=100?5:7
-  const baseN = size<=5?size:size<=25?6:12
   const palette = SHIRT_PALETTES[mood]
   const persons: Person[] = []
   let idx=0
 
   for(let r=0;r<rows;r++){
-    const t   = rows===1?1:(r/(rows-1))          // 0=back, 1=front
-    const faceR = 10+t*18                         // 10px back → 28px front
-    const y   = (1-t)*H*0.72                      // back rows higher
-    const op  = 0.25+t*0.75
-    const blur= (1-t)*2.2
-    const count = Math.min(baseN+r*2, 22)
-    const gap   = W/(count+1)
-    const p0 = pseudo(idx)
+    const t      = rows===1?1:(r/(rows-1))
+    const faceR  = Math.round(8+t*16)   // integer radius → sharper sprite cache hits
+    const y      = (1-t)*H*0.75
+    const op     = 0.22+t*0.78
+    const blur   = (1-t)*1.8
+    const rowN   = Math.round(total/rows + (rows-1-r)*1.5)
+    const count  = Math.min(rowN,20)
+    const gap    = W/(count+1)
 
     for(let c=0;c<count;c++){
-      const p = pseudo(idx)
+      const p=pseudo(idx)
       persons.push({
-        x: gap*(c+1), y,
-        faceR, opacity:op, blur,
-        imgIdx:     p % FACE_URLS.length,
-        shirtColor: palette[p % palette.length],
-        breathPhase:  (p%628)/100,
-        breathSpeed:  0.007+(p%12)/1500,
-        blinkTimer:   2+(p%60)/12,
-        blinkProgress:0, blinking:false,
-        swayPhase:    (p0%628)/100,
-        swayAmp:      0.4+(p%12)/12,
-        swaySpeed:    0.003+(p%10)/2500,
-        swayYPhase:   (p%400)/100,
-        applausePhase:0,
+        x:gap*(c+1), y, faceR, opacity:op, blur,
+        imgIdx:     p%FACE_URLS.length,
+        shirtColor: palette[p%palette.length],
+        breathPhase: (p%628)/100, breathSpeed: 0.006+(p%10)/1600,
+        blinkTimer:  1.5+(p%70)/14, blinkProgress:0, blinking:false,
+        swayPhase:   (p%628)/100, swayAmp:0.3+(p%10)/14, swaySpeed:0.0025+(p%8)/2800,
+        swayYPhase:  (p%400)/100, applausePhase:0,
       })
       idx++
     }
@@ -168,120 +212,76 @@ function AudienceCanvas({size,mood,applauding}:{size:number;mood:Mood;applauding
     }
 
 
+    const FRAME_MS=1000/30  // 30fps — smooth enough, half the CPU
+
     const render=(time:number)=>{
+      if(time-lastT.current<FRAME_MS){ animId.current=requestAnimationFrame(render); return }
       const dt=Math.min((time-lastT.current)/1000,0.05)
       lastT.current=time
-      const mood=moodRef.current
       const app=appRef.current
       const W=cv.width, H=cv.height
 
       ctx.clearRect(0,0,W,H)
-
-      // Subtle ambient gradient (stage floor)
       const grad=ctx.createLinearGradient(0,0,0,H)
       grad.addColorStop(0,'rgba(0,0,0,0)')
-      grad.addColorStop(1,'rgba(0,0,0,0.45)')
-      ctx.fillStyle=grad
-      ctx.fillRect(0,0,W,H)
+      grad.addColorStop(1,'rgba(0,0,0,0.5)')
+      ctx.fillStyle=grad; ctx.fillRect(0,0,W,H)
 
       const ps=persons.current
-      // Draw back→front (already ordered by buildPersons)
-      for(let i=0;i<ps.length;i++){
-        const p=ps[i]
-
-        // Update animation state
-        p.breathPhase  += p.breathSpeed*dt*60
-        p.swayPhase    += p.swaySpeed*dt*60
-        p.swayYPhase   += p.swaySpeed*0.7*dt*60
-        p.applausePhase+= 0.15*dt*60
+      for(const p of ps){
+        p.breathPhase   += p.breathSpeed*dt*60
+        p.swayPhase     += p.swaySpeed*dt*60
+        p.swayYPhase    += p.swaySpeed*0.65*dt*60
+        p.applausePhase += 0.12*dt*60
 
         if(!p.blinking){
           p.blinkTimer-=dt
           if(p.blinkTimer<=0){ p.blinking=true; p.blinkProgress=0 }
         } else {
-          p.blinkProgress+=dt/0.16   // ~160ms blink
-          if(p.blinkProgress>=1){
-            p.blinking=false
-            p.blinkTimer=2.5+Math.random()*5
-          }
+          p.blinkProgress+=dt/0.15
+          if(p.blinkProgress>=1){ p.blinking=false; p.blinkTimer=2+Math.random()*5 }
         }
 
-        const breathScale = 1+Math.sin(p.breathPhase)*0.011
-        const swayX = Math.sin(p.swayPhase)*p.swayAmp
-        const swayY = Math.sin(p.swayYPhase)*p.swayAmp*0.45
-        const cx = p.x+swayX
-        const cy = p.y+swayY
-        const r  = p.faceR*breathScale
+        const scale=1+Math.sin(p.breathPhase)*0.010
+        const cx=p.x+Math.sin(p.swayPhase)*p.swayAmp
+        const cy=p.y+Math.sin(p.swayYPhase)*p.swayAmp*0.4
+        const r=p.faceR
 
         ctx.save()
         ctx.globalAlpha=p.opacity
+        if(p.blur>0.4) ctx.filter=`blur(${p.blur.toFixed(1)}px)`
 
-        // Depth-of-field blur for back rows
-        if(p.blur>0.3) ctx.filter=`blur(${p.blur}px)`
-
-        // ── Shoulders / shirt ──────────────────────────────────────
-        const bW=r*2.5, bH=r*2.2, bY=cy+r*0.82
-        ctx.fillStyle=p.shirtColor
-        ctx.beginPath()
-        ctx.moveTo(cx-bW/2, bY+bH)
-        ctx.lineTo(cx-bW/2, bY+r*0.35)
-        ctx.quadraticCurveTo(cx-bW/2,bY, cx-r*0.35,bY)
-        ctx.lineTo(cx+r*0.35, bY)
-        ctx.quadraticCurveTo(cx+bW/2,bY, cx+bW/2,bY+r*0.35)
-        ctx.lineTo(cx+bW/2, bY+bH)
-        ctx.closePath()
-        ctx.fill()
-
-        // ── Neck ──────────────────────────────────────────────────
-        ctx.fillStyle='rgba(180,110,60,0.6)'
-        ctx.fillRect(cx-r*0.22, cy+r*0.82, r*0.44, r*0.55)
-
-        // ── Face circle ───────────────────────────────────────────
-        ctx.save()
-        ctx.beginPath()
-        ctx.arc(cx,cy,r,0,Math.PI*2)
-        ctx.clip()
-
+        // Blit sprite (face+shirt pre-rendered — no clip per frame)
         const img=images.current[p.imgIdx]
-        if(img?.complete&&img.naturalWidth){
-          ctx.drawImage(img,cx-r,cy-r,r*2,r*2)
+        const sprite=(img?.complete&&img.naturalWidth)?getSprite(img,p.shirtColor,r):null
+        if(sprite){
+          const sw=sprite.width*scale, sh=sprite.height*scale
+          ctx.drawImage(sprite,cx-sw/2,cy-r*scale,sw,sh)
         } else {
-          ctx.fillStyle='#B87333'; ctx.fill()
+          ctx.fillStyle='#5B4030'
+          ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill()
         }
 
-        // Mood colour tint over face
-        const ovCol = mood==='professional'?'rgba(20,40,90,0.18)':
-                      mood==='tough'       ?'rgba(100,10,10,0.28)':'rgba(0,0,0,0)'
-        if(ovCol!=='rgba(0,0,0,0)'){
-          ctx.fillStyle=ovCol; ctx.fillRect(cx-r,cy-r,r*2,r*2)
-        }
-
-        // ── Blink ────────────────────────────────────────────────
+        // Blink overlay on top of sprite
         if(p.blinking){
-          const prog = Math.sin(p.blinkProgress*Math.PI)  // 0→1→0
-          const lidH = r*0.52*prog
-          const eyeY = cy-r*0.12
-          // top lid
-          ctx.fillStyle='rgba(150,90,40,0.97)'
+          const prog=Math.sin(p.blinkProgress*Math.PI)
+          const lidH=r*0.5*prog*scale
+          const eyeY=cy-r*0.1*scale
+          ctx.fillStyle='rgba(140,85,45,0.95)'
           ctx.beginPath()
-          ctx.ellipse(cx, eyeY-lidH*0.5, r*0.72, lidH*0.6+1, 0, 0, Math.PI*2)
+          ctx.ellipse(cx,eyeY-lidH*0.4,r*0.7*scale,Math.max(0.1,lidH*0.65),0,0,Math.PI*2)
           ctx.fill()
-          // bottom lid
-          ctx.fillStyle='rgba(130,75,30,0.8)'
+          ctx.fillStyle='rgba(120,70,35,0.75)'
           ctx.beginPath()
-          ctx.ellipse(cx, eyeY+lidH*0.25, r*0.65, lidH*0.35+0.5, 0, 0, Math.PI*2)
+          ctx.ellipse(cx,eyeY+lidH*0.25,r*0.65*scale,Math.max(0.1,lidH*0.3),0,0,Math.PI*2)
           ctx.fill()
         }
 
-        ctx.restore() // unclip
-
-        // ── Applause 👏 ───────────────────────────────────────────
         if(app){
-          const bounce = Math.abs(Math.sin(p.applausePhase))*r*0.9
-          ctx.font=`${r*1.1}px serif`
-          ctx.textAlign='center'
-          ctx.textBaseline='middle'
-          ctx.fillText('👏', cx, cy+r*2.8-bounce)
+          const bounce=Math.abs(Math.sin(p.applausePhase))*r*scale
+          ctx.font=`${Math.round(r*scale*1.1)}px serif`
+          ctx.textAlign='center'; ctx.textBaseline='middle'
+          ctx.fillText('👏',cx,cy+r*scale*3.2-bounce)
         }
 
         ctx.restore()
