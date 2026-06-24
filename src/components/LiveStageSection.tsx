@@ -4,12 +4,15 @@ const KF = `
 @keyframes bob-0 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
 @keyframes bob-1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
 @keyframes bob-2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-@keyframes bob-3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-1px)} }
-@keyframes interrupt-pop { 0%{opacity:0;transform:translateY(10px) scale(0.95)} 15%{opacity:1;transform:translateY(0) scale(1)} 80%{opacity:1} 100%{opacity:0;transform:translateY(-6px)} }
-@keyframes spotlight { 0%,100%{opacity:0.6} 50%{opacity:1} }
+@keyframes bob-3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-1.5px)} }
+@keyframes lean-l { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-2deg)} }
+@keyframes lean-r { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(2deg)} }
+@keyframes interrupt-pop { 0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(0.95)} 15%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)} 80%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-8px)} }
+@keyframes spotlight { 0%,100%{opacity:0.5} 50%{opacity:0.9} }
 @keyframes stage-in { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
-@keyframes wave { 0%,100%{transform:scaleY(0.2)} 50%{transform:scaleY(1)} }
-@keyframes cta-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(30,77,216,0.5)} 50%{box-shadow:0 0 0 16px rgba(30,77,216,0)} }
+@keyframes wave { 0%,100%{transform:scaleY(0.15)} 50%{transform:scaleY(1)} }
+@keyframes cta-pulse { 0%,100%{box-shadow:0 8px 32px rgba(30,77,216,0.55)} 50%{box-shadow:0 8px 48px rgba(30,77,216,0.85)} }
+@keyframes phone-glow { 0%,100%{opacity:0} 10%,90%{opacity:0.9} }
 `
 
 const SIZES = [
@@ -21,61 +24,137 @@ const SIZES = [
 ]
 
 const MOODS = [
-  { value: 'friendly',     emoji: '😊', label: 'Friendly',     colour: '#10B981', bodyCol: '#065F46' },
-  { value: 'professional', emoji: '🧐', label: 'Professional', colour: '#3B82F6', bodyCol: '#1E3A5F' },
-  { value: 'tough',        emoji: '😤', label: 'Tough',        colour: '#EF4444', bodyCol: '#7F1D1D' },
+  { value: 'friendly',     emoji: '😊', label: 'Friendly',     colour: '#10B981', tint: 'rgba(16,185,129,0.18)' },
+  { value: 'professional', emoji: '🧐', label: 'Professional', colour: '#3B82F6', tint: 'rgba(59,130,246,0.18)' },
+  { value: 'tough',        emoji: '😤', label: 'Tough',        colour: '#EF4444', tint: 'rgba(239,68,68,0.18)' },
 ]
 
 const INTERRUPTS: Record<string, string[]> = {
-  friendly:     ['"You\'re doing great! 👏"', '"Can you tell us more?"', '*warm applause*', '"This is brilliant!"'],
-  professional: ['"Could you elaborate?"', '*quiet note-taking*', '"Interesting point."', '"Please continue."'],
-  tough:        ['"Could you speak up? 🙉"', '"Sorry, what was that?"', '*cough cough*', '📱 phone buzzes loudly', '"Get to the point!"'],
+  friendly:     ['"You\'re doing great! 👏"', '"Can you tell us more?"', '*warm applause* 👏', '"This is brilliant!"', '"Fascinating topic!"'],
+  professional: ['"Could you elaborate on that?"', '*quiet note-taking* ✍️', '"Interesting point."', '"Please continue."', '"Can you clarify?"'],
+  tough:        ['"Could you speak up? 🙉"', '"Sorry, what was that?"', '*cough cough* 😷', '📱 phone buzzes loudly', '"Get to the point!"', '"We\'re losing you..."'],
 }
+
+// Skin tone variety
+const SKIN_TONES = ['#FBBF24','#F59E0B','#D97706','#B45309','#92400E','#78350F','#FCD34D','#E8A87C']
 
 type Mood = 'friendly' | 'professional' | 'tough'
 
+// A proper SVG person silhouette
+function PersonSVG({ sz, skinTone, shirtCol, pose }: {
+  sz: number; skinTone: string; shirtCol: string; pose: 'straight' | 'lean-l' | 'lean-r' | 'phone'
+}) {
+  const w = sz * 1.4
+  const h = sz * 2.8
+  const hw = w / 2
+  const headR = sz * 0.42
+  const neckW = sz * 0.22
+  const shoulderW = sz * 0.72
+  const bodyH = sz * 1.4
+
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ overflow: 'visible', display: 'block' }}>
+      {/* Head */}
+      <ellipse cx={hw} cy={headR} rx={headR} ry={headR * 1.1} fill={skinTone} />
+      {/* Neck */}
+      <rect x={hw - neckW / 2} y={headR * 1.9} width={neckW} height={sz * 0.28} fill={skinTone} />
+      {/* Shoulders / body */}
+      <path
+        d={`M ${hw - shoulderW / 2} ${headR * 2.1 + sz * 0.2}
+            Q ${hw - shoulderW / 2 - sz * 0.15} ${headR * 2.1 + sz * 0.35} ${hw - shoulderW / 2} ${headR * 2.1 + sz * 0.5}
+            L ${hw - shoulderW / 2} ${headR * 2.1 + bodyH}
+            L ${hw + shoulderW / 2} ${headR * 2.1 + bodyH}
+            L ${hw + shoulderW / 2} ${headR * 2.1 + sz * 0.5}
+            Q ${hw + shoulderW / 2 + sz * 0.15} ${headR * 2.1 + sz * 0.35} ${hw + shoulderW / 2} ${headR * 2.1 + sz * 0.2}
+            Z`}
+        fill={shirtCol}
+      />
+      {/* Phone glow for phone pose */}
+      {pose === 'phone' && (
+        <rect
+          x={hw + shoulderW * 0.1} y={headR * 2.1 + sz * 0.6}
+          width={sz * 0.35} height={sz * 0.55} rx={sz * 0.05}
+          fill="#60A5FA" opacity={0.9}
+          style={{ animation: 'phone-glow 2s ease-in-out infinite' }}
+        />
+      )}
+    </svg>
+  )
+}
+
+// Per-seat data (stable, seeded by index)
+function getSeatData(idx: number) {
+  const pseudo = (idx * 2654435761) >>> 0
+  const skinTone = SKIN_TONES[pseudo % SKIN_TONES.length]
+  const poses: Array<'straight' | 'lean-l' | 'lean-r' | 'phone'> = ['straight', 'straight', 'straight', 'lean-l', 'lean-r', 'phone']
+  const pose = poses[pseudo % poses.length]
+  const heightVariance = 0.85 + ((pseudo >> 8) % 30) / 100  // 0.85–1.15
+  const animations = ['bob-0', 'bob-1', 'bob-2', 'bob-3', 'lean-l', 'lean-r']
+  const anim = animations[(pseudo >> 4) % 4]  // mostly bob
+  const dur = 2.2 + ((pseudo >> 12) % 16) / 10
+  const delay = ((pseudo >> 6) % 28) / 10
+  return { skinTone, pose, heightVariance, anim, dur, delay }
+}
+
 function buildSeats(size: number, containerW: number) {
   if (size === 0) return []
-  const rows = size <= 5 ? 1 : size <= 25 ? 2 : size <= 100 ? 4 : 6
-  const perRow = size <= 5 ? size : size <= 25 ? Math.ceil(size / rows) : 14
-  const seats: { x: number; y: number; sz: number; op: number; animIdx: number }[] = []
+  const rows = size <= 5 ? 1 : size <= 25 ? 3 : size <= 100 ? 5 : 7
+  const baseCount = size <= 5 ? size : size <= 25 ? 6 : 10
+  type Seat = { x: number; y: number; sz: number; op: number; idx: number }
+  const seats: Seat[] = []
+  let globalIdx = 0
   for (let r = 0; r < rows; r++) {
-    const count = Math.min(perRow + r * 2, 18)
-    const sz = Math.max(10, 20 - r * 2)
-    const op = Math.max(0.25, 1 - r * 0.13)
-    const gap = (containerW - 32) / (count + 1)
+    const count = Math.min(baseCount + r * 2, 20)
+    const sz = Math.max(8, 28 - r * 3.2)
+    const rowH = sz * 2.8
+    const op = Math.max(0.18, 1 - r * 0.13)
+    const gap = (containerW - 24) / (count + 1)
     for (let c = 0; c < count; c++) {
-      seats.push({ x: 16 + gap * (c + 1) - sz / 2, y: r * 36, sz, op, animIdx: r * 20 + c })
+      seats.push({ x: 12 + gap * (c + 1) - (sz * 0.7), y: r * (rowH * 0.72), sz, op, idx: globalIdx++ })
     }
   }
   return seats
 }
 
-function Silhouette({ x, y, sz, op, animIdx, bodyCol }: {
-  x: number; y: number; sz: number; op: number; animIdx: number; bodyCol: string
+function Silhouette({ x, y, sz, op, idx, shirtCol }: {
+  x: number; y: number; sz: number; op: number; idx: number; shirtCol: string
 }) {
-  const dur = 2.4 + (animIdx % 5) * 0.35
-  const delay = (animIdx * 0.13) % 3
+  const { skinTone, pose, heightVariance, anim, dur, delay } = getSeatData(idx)
+  const scaledSz = sz * heightVariance
   return (
     <div style={{
-      position: 'absolute', left: x, top: y, opacity: op,
-      animation: `bob-${animIdx % 4} ${dur}s ease-in-out ${delay}s infinite`,
-      transition: 'left 0.6s ease, top 0.6s ease',
+      position: 'absolute',
+      left: x, top: y,
+      opacity: op,
+      animation: `${anim} ${dur}s ease-in-out ${delay}s infinite`,
+      transformOrigin: 'bottom center',
     }}>
-      <div style={{ width: sz * 0.65, height: sz * 0.65, borderRadius: '50%', background: '#D97706', margin: '0 auto 1px' }} />
-      <div style={{ width: sz, height: sz * 0.85, borderRadius: 3, background: bodyCol, transition: 'background 0.5s ease' }} />
+      <PersonSVG sz={scaledSz} skinTone={skinTone} shirtCol={shirtCol} pose={pose} />
     </div>
   )
+}
+
+// Shirt colours per mood
+const SHIRT_PALETTES: Record<Mood, string[]> = {
+  friendly:     ['#065F46','#047857','#059669','#1D4ED8','#7C3AED','#B45309'],
+  professional: ['#1E3A5F','#1E40AF','#374151','#1F2937','#312E81','#1E3A5F'],
+  tough:        ['#7F1D1D','#991B1B','#1F2937','#374151','#78350F','#7F1D1D'],
+}
+
+function getShirtCol(mood: Mood, idx: number) {
+  const palette = SHIRT_PALETTES[mood]
+  return palette[idx % palette.length]
 }
 
 function WaveBar({ i, active }: { i: number; active: boolean }) {
   return (
     <div style={{
-      width: 3, height: 32, borderRadius: 2,
-      background: '#1E4DD8', opacity: active ? 0.9 : 0.2,
+      width: 3, height: 34, borderRadius: 2,
+      background: active ? '#1E4DD8' : 'rgba(255,255,255,0.12)',
       margin: '0 2px',
-      animation: active ? `wave ${0.4 + i * 0.07}s ease-in-out ${i * 0.04}s infinite` : 'none',
+      animation: active ? `wave ${0.38 + i * 0.06}s ease-in-out ${i * 0.035}s infinite` : 'none',
       transformOrigin: 'center',
+      transition: 'background 0.3s',
     }} />
   )
 }
@@ -90,17 +169,16 @@ export default function LiveStageSection() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const intRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [containerW, setContainerW] = useState(560)
+  const [containerW, setContainerW] = useState(600)
 
   const selected = SIZES[sizeIdx]
   const moodData = MOODS.find(m => m.value === mood)!
   const seats = buildSeats(selected.value, containerW)
-  const audienceH = selected.value === 0 ? 0 : Math.max(80, 36 * (seats.length > 0 ? Math.ceil(seats[seats.length - 1].y / 36) + 1 : 1) + 24)
+  const lastSeat = seats[seats.length - 1]
+  const audienceH = lastSeat ? lastSeat.y + lastSeat.sz * 2.8 + 12 : 0
 
   useEffect(() => {
-    const obs = new ResizeObserver(entries => {
-      setContainerW(entries[0].contentRect.width)
-    })
+    const obs = new ResizeObserver(e => setContainerW(e[0].contentRect.width))
     if (containerRef.current) obs.observe(containerRef.current)
     return () => obs.disconnect()
   }, [])
@@ -117,14 +195,15 @@ export default function LiveStageSection() {
   useEffect(() => {
     if (!speaking || !interruptions || selected.value === 0) {
       clearTimeout(intRef.current!)
+      setInterrupt(null)
       return
     }
     const schedule = () => {
-      const delay = (mood === 'tough' ? 4000 : 8000) + Math.random() * 6000
+      const delay = (mood === 'tough' ? 3500 : 7000) + Math.random() * 5000
       intRef.current = setTimeout(() => {
         const list = INTERRUPTS[mood]
         setInterrupt(list[Math.floor(Math.random() * list.length)])
-        setTimeout(() => { setInterrupt(null); schedule() }, 3500)
+        setTimeout(() => { setInterrupt(null); schedule() }, 3800)
       }, delay)
     }
     schedule()
@@ -134,7 +213,7 @@ export default function LiveStageSection() {
   const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
 
   return (
-    <section style={{ background: 'linear-gradient(180deg,#07111F 0%,#0A0F1C 100%)', padding: '100px 20px 120px', overflow: 'hidden' }}>
+    <section style={{ background: 'linear-gradient(180deg,#060D1A 0%,#0A0F1C 100%)', padding: '100px 20px 120px', overflow: 'hidden' }}>
       <style>{KF}</style>
       <div style={{ maxWidth: 1120, margin: '0 auto' }}>
 
@@ -156,149 +235,158 @@ export default function LiveStageSection() {
           </p>
         </div>
 
-        {/* Interactive demo card */}
+        {/* Demo card */}
         <div style={{
           background: 'rgba(255,255,255,0.03)', borderRadius: 28,
           border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden',
-          boxShadow: '0 40px 120px rgba(0,0,0,0.5)',
+          boxShadow: '0 40px 120px rgba(0,0,0,0.6)',
         }}>
 
-          {/* Stage area */}
+          {/* Stage */}
           <div ref={containerRef} style={{
-            background: 'linear-gradient(180deg,#0D1526 0%,#080E1C 100%)',
-            padding: '36px 16px 28px', borderBottom: '1px solid rgba(255,255,255,0.06)',
-            position: 'relative', minHeight: 280,
+            background: 'linear-gradient(180deg,#0D1829 0%,#080E1C 100%)',
+            padding: '40px 12px 32px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+            position: 'relative', minHeight: 320, overflow: 'hidden',
           }}>
-            {/* Spotlight */}
+
+            {/* Floor gradient — gives depth */}
             <div style={{
-              position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-              width: '60%', height: '70%',
-              background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.055) 0%, transparent 70%)',
-              animation: speaking ? 'spotlight 3s ease-in-out infinite' : 'none',
-              pointerEvents: 'none',
+              position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%',
+              background: 'linear-gradient(180deg, transparent, rgba(0,0,0,0.55))',
+              pointerEvents: 'none', zIndex: 2,
             }} />
 
-            {/* Audience status bar */}
-            <div style={{ textAlign: 'center', marginBottom: 20 }}>
+            {/* Spotlight cone */}
+            <div style={{
+              position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50%)',
+              width: '55%', height: '80%',
+              background: `radial-gradient(ellipse at top, ${moodData.tint} 0%, transparent 72%)`,
+              animation: speaking ? 'spotlight 3s ease-in-out infinite' : 'none',
+              transition: 'background 0.8s ease',
+              pointerEvents: 'none', zIndex: 1,
+            }} />
+
+            {/* Audience status */}
+            <div style={{ textAlign: 'center', marginBottom: 16, position: 'relative', zIndex: 3 }}>
               {selected.value > 0
-                ? <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.45)' }}>
-                    {selected.emoji} {selected.value.toLocaleString()} people · {moodData.emoji} {moodData.label}
-                    {interruptions ? ' · 🔔 interruptions on' : ''}
+                ? <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.50)' }}>
+                    {selected.emoji} {selected.value.toLocaleString()} {selected.label === 'Just Me' ? 'person' : 'people'} &nbsp;·&nbsp; {moodData.emoji} {moodData.label}
+                    {interruptions ? ' &nbsp;·&nbsp; 🔔 interruptions on' : ''}
                   </div>
-                : <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.30)', fontStyle: 'italic' }}>Solo practice — no audience</div>
+                : <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.28)', fontStyle: 'italic' }}>Solo — no audience, pure focus</div>
               }
             </div>
 
             {/* Audience silhouettes */}
             {seats.length > 0 && (
-              <div style={{ position: 'relative', height: audienceH, marginBottom: 16, transition: 'height 0.5s ease' }}>
+              <div style={{ position: 'relative', height: audienceH, marginBottom: 8, transition: 'height 0.5s ease', zIndex: 3 }}>
                 {seats.map((s, i) => (
-                  <Silhouette key={i} {...s} bodyCol={moodData.bodyCol} />
+                  <Silhouette key={i} {...s} shirtCol={getShirtCol(mood, s.idx)} />
                 ))}
               </div>
             )}
 
-            {/* Interruption bubble */}
+            {/* Interruption bubble — floats above crowd */}
             {interrupt && (
               <div style={{
-                position: selected.value > 0 ? 'absolute' : 'relative',
-                bottom: selected.value > 0 ? 80 : undefined,
-                left: '50%', transform: 'translateX(-50%)',
-                background: 'rgba(251,191,36,0.14)', border: '1px solid rgba(251,191,36,0.40)',
-                borderRadius: 20, padding: '10px 22px', whiteSpace: 'nowrap',
-                animation: 'interrupt-pop 3.5s ease forwards',
-                zIndex: 10,
+                position: 'absolute',
+                bottom: selected.value > 0 ? 100 : 80,
+                left: '50%',
+                background: 'rgba(251,191,36,0.16)', border: '1px solid rgba(251,191,36,0.45)',
+                borderRadius: 22, padding: '11px 24px',
+                animation: 'interrupt-pop 3.8s ease forwards',
+                zIndex: 10, whiteSpace: 'nowrap',
               }}>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#FDE68A' }}>{interrupt}</span>
               </div>
             )}
 
-            {/* Waveform + mic */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, marginTop: selected.value > 0 ? 0 : 40 }}>
-              {/* Waveform */}
+            {/* Waveform + mic + timer — at the bottom */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, position: 'relative', zIndex: 4, marginTop: selected.value > 0 ? 8 : 60 }}>
               <div style={{ display: 'flex', alignItems: 'center', height: 40 }}>
-                {Array.from({ length: 20 }).map((_, i) => <WaveBar key={i} i={i} active={speaking} />)}
+                {Array.from({ length: 22 }).map((_, i) => <WaveBar key={i} i={i} active={speaking} />)}
               </div>
 
-              {/* Timer */}
               {speaking && (
-                <div style={{ fontSize: 28, fontWeight: 900, color: '#FFF', letterSpacing: -1, fontVariantNumeric: 'tabular-nums' }}>
+                <div style={{ fontSize: 30, fontWeight: 900, color: '#FFF', letterSpacing: -1, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
                   {fmt(seconds)}
                 </div>
               )}
 
-              {/* Mic button */}
               <button
                 onClick={() => { setSpeaking(v => !v); if (speaking) setSeconds(0) }}
                 style={{
-                  width: 72, height: 72, borderRadius: '50%', border: 'none', cursor: 'pointer', fontSize: 28,
+                  width: 76, height: 76, borderRadius: '50%', border: 'none', cursor: 'pointer', fontSize: 30,
                   background: speaking ? '#DC2626' : '#1E4DD8',
-                  boxShadow: speaking ? '0 0 0 0 rgba(220,38,38,0.4)' : '0 8px 32px rgba(30,77,216,0.55)',
-                  animation: speaking ? 'cta-pulse 1.5s ease-in-out infinite' : 'none',
-                  transition: 'background 0.3s ease',
+                  animation: speaking ? 'cta-pulse 1.4s ease-in-out infinite' : 'none',
+                  boxShadow: speaking ? '0 0 32px rgba(220,38,38,0.6)' : '0 8px 32px rgba(30,77,216,0.55)',
+                  transition: 'background 0.3s, box-shadow 0.3s',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
                 {speaking ? '⏹' : '🎙'}
               </button>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.35)', letterSpacing: 1 }}>
-                {speaking ? 'TAP TO STOP' : 'TAP TO SPEAK'}
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.30)' }}>
+                {speaking ? 'TAP TO STOP' : 'TAP TO START SPEAKING'}
               </div>
             </div>
           </div>
 
           {/* Controls */}
-          <div style={{ padding: '32px 28px 36px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 32 }}>
+          <div style={{ padding: '32px 28px 36px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 32 }}>
 
-            {/* Audience size */}
+            {/* Size */}
             <div>
               <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.28)', marginBottom: 14 }}>AUDIENCE SIZE</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                 {SIZES.map((s, i) => (
                   <button key={s.value} onClick={() => setSizeIdx(i)} style={{
                     display: 'flex', alignItems: 'center', gap: 10,
                     padding: '9px 14px', borderRadius: 11, border: 'none', cursor: 'pointer', textAlign: 'left',
-                    background: sizeIdx === i ? 'rgba(30,77,216,0.20)' : 'rgba(255,255,255,0.03)',
-                    outline: sizeIdx === i ? '1px solid rgba(30,77,216,0.55)' : '1px solid transparent',
+                    background: sizeIdx === i ? 'rgba(30,77,216,0.22)' : 'rgba(255,255,255,0.03)',
+                    outline: sizeIdx === i ? '1px solid rgba(30,77,216,0.60)' : '1px solid transparent',
                     transition: 'all 0.2s ease',
                   }}>
-                    <span style={{ fontSize: 16 }}>{s.emoji}</span>
-                    <span style={{ fontSize: 13, fontWeight: sizeIdx === i ? 800 : 500, color: sizeIdx === i ? '#FFF' : 'rgba(255,255,255,0.45)' }}>{s.label}</span>
-                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginLeft: 'auto' }}>{s.desc}</span>
+                    <span style={{ fontSize: 15 }}>{s.emoji}</span>
+                    <span style={{ fontSize: 13, fontWeight: sizeIdx === i ? 800 : 500, color: sizeIdx === i ? '#FFF' : 'rgba(255,255,255,0.40)' }}>{s.label}</span>
+                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.22)', marginLeft: 'auto' }}>{s.desc}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Mood */}
+            {/* Mood + toggle */}
             <div>
               <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.28)', marginBottom: 14 }}>CROWD MOOD</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {MOODS.map(m => (
                   <button key={m.value} onClick={() => setMood(m.value as Mood)} style={{
                     display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '12px 16px', borderRadius: 13, border: 'none', cursor: 'pointer', textAlign: 'left',
-                    background: mood === m.value ? `${m.colour}18` : 'rgba(255,255,255,0.03)',
+                    padding: '11px 16px', borderRadius: 13, border: 'none', cursor: 'pointer', textAlign: 'left',
+                    background: mood === m.value ? `${m.colour}1A` : 'rgba(255,255,255,0.03)',
                     outline: mood === m.value ? `1px solid ${m.colour}55` : '1px solid transparent',
                     transition: 'all 0.25s ease',
                   }}>
                     <span style={{ fontSize: 22 }}>{m.emoji}</span>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 800, color: mood === m.value ? '#FFF' : 'rgba(255,255,255,0.45)', marginBottom: 2 }}>{m.label}</div>
-                      <div style={{ fontSize: 11, color: mood === m.value ? m.colour : 'rgba(255,255,255,0.25)' }}>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: mood === m.value ? '#FFF' : 'rgba(255,255,255,0.40)', marginBottom: 2 }}>{m.label}</div>
+                      <div style={{ fontSize: 11, color: mood === m.value ? m.colour : 'rgba(255,255,255,0.22)' }}>
                         {m.value === 'friendly' ? 'Warm and supportive' : m.value === 'professional' ? 'Attentive, neutral' : 'Earn their attention'}
                       </div>
                     </div>
-                    {mood === m.value && <div style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: m.colour }} />}
+                    {mood === m.value && <div style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: '50%', background: m.colour, flexShrink: 0 }} />}
                   </button>
                 ))}
               </div>
 
-              {/* Interruptions toggle */}
-              <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: 13, background: 'rgba(255,255,255,0.03)', outline: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{
+                marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '12px 16px', borderRadius: 13,
+                background: 'rgba(255,255,255,0.03)', outline: '1px solid rgba(255,255,255,0.06)',
+              }}>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#FFF', marginBottom: 2 }}>🔔 Interruptions</div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.30)' }}>Coughs · whispers · phones</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)' }}>Coughs · whispers · phones</div>
                 </div>
                 <button onClick={() => setInterruptions(v => !v)} style={{
                   width: 44, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer',
@@ -307,39 +395,35 @@ export default function LiveStageSection() {
                 }}>
                   <div style={{
                     position: 'absolute', top: 3, width: 20, height: 20, borderRadius: '50%',
-                    background: '#FFF', transition: 'left 0.25s ease',
-                    left: interruptions ? 21 : 3,
+                    background: '#FFF', transition: 'left 0.25s ease', left: interruptions ? 21 : 3,
                   }} />
                 </button>
               </div>
             </div>
-
           </div>
 
           {/* CTA footer */}
           <div style={{
-            borderTop: '1px solid rgba(255,255,255,0.06)',
-            padding: '24px 28px',
+            borderTop: '1px solid rgba(255,255,255,0.06)', padding: '24px 28px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16,
           }}>
             <div>
               <div style={{ fontSize: 15, fontWeight: 800, color: '#FFF', marginBottom: 4 }}>Ready to take the real stage?</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.40)' }}>Download TalkToLearn and speak to the world.</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)' }}>Download TalkToLearn and speak to the world.</div>
             </div>
             <a href="#pricing" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '14px 28px', borderRadius: 50, textDecoration: 'none',
               background: '#1E4DD8', color: '#FFF', fontWeight: 800, fontSize: 14,
-              boxShadow: '0 8px 32px rgba(30,77,216,0.50)',
+              boxShadow: '0 8px 32px rgba(30,77,216,0.55)',
               animation: 'cta-pulse 2.5s ease-in-out infinite',
             }}>
               🎭 Get TalkToLearn Free
             </a>
           </div>
-
         </div>
 
-        {/* Stats row */}
+        {/* Stats */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'center', marginTop: 48 }}>
           {[
             { emoji: '🏟', stat: '1,000', label: 'Max audience size' },
@@ -357,7 +441,6 @@ export default function LiveStageSection() {
             </div>
           ))}
         </div>
-
       </div>
     </section>
   )
