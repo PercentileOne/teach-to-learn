@@ -247,6 +247,10 @@ No other text.`,
         <div style={{ fontSize: 28, marginBottom: 8 }}>🎯</div>
         <div style={{ fontSize: 16, fontWeight: 800, color: '#FFF', marginBottom: 4 }}>Panel Call Q&A</div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>The panel will ask you 5 real questions. Answer out loud.</div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 8, padding: '4px 10px', borderRadius: 20, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)' }}>
+          <span style={{ fontSize: 11 }}>🌐</span>
+          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.30)', fontWeight: 600 }}>Best experienced in Chrome or Edge</span>
+        </div>
       </div>
       <div style={{ marginBottom: 16 }}>
         <label style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.15em', color: 'rgba(255,255,255,0.35)', display: 'block', marginBottom: 8 }}>
