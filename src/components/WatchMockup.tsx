@@ -15,23 +15,40 @@ const ANIM = `
 @keyframes watch-bar-7 { 0%,100% { transform:scaleY(.4);  } 50% { transform:scaleY(.8);  } }
 `
 
-// ── Screen: Recording ─────────────────────────────────────────────────────────
-function RecordingScreen() {
+// ── Screen 1: Speaking (mirrors phone TalkScreen) ─────────────────────────────
+function TalkScreen() {
+  const CIRC = 2 * Math.PI * 24
   const delays = [0, 0.15, 0.07, 0.22, 0.1, 0.18, 0.05, 0.2]
   return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:6 }}>
-      <div style={{ fontFamily:'monospace', fontSize:14, fontWeight:900, color:'#4F8EF7', letterSpacing:'-0.03em' }}>
-        00:42
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:5, padding:'4px 4px' }}>
+      {/* Countdown ring */}
+      <div style={{ position:'relative', width:48, height:48 }}>
+        <svg viewBox="0 0 52 52" style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}>
+          <circle cx="26" cy="26" r="24" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="4" />
+          <circle cx="26" cy="26" r="24" fill="none" stroke="#1E4DD8" strokeWidth="4"
+            strokeDasharray={CIRC} strokeDashoffset={CIRC * 0.35}
+            strokeLinecap="round"
+            style={{ filter:'drop-shadow(0 0 4px #1E4DD8)' }}
+          />
+        </svg>
+        <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+          <span style={{ fontSize:13, fontWeight:900, color:'#FFF', letterSpacing:'-0.5px', lineHeight:1 }}>1:20</span>
+          <span style={{ fontSize:6, color:'rgba(255,255,255,0.40)' }}>remaining</span>
+        </div>
       </div>
-      <svg width="43" height="20" viewBox="0 0 43 20">
+
+      {/* Waveform */}
+      <svg width="43" height="16" viewBox="0 0 43 16">
         {delays.map((d, i) => (
-          <rect key={i} x={i * 5.5} y={0} width={3} height={20} rx={1.5} fill="#4F8EF7"
+          <rect key={i} x={i * 5.5} y={0} width={3} height={16} rx={1.5} fill="#4F8EF7"
             style={{ animation:`watch-bar-${i} .65s ${d}s ease-in-out infinite`, transformOrigin:'center bottom', transformBox:'fill-box' }}
           />
         ))}
       </svg>
-      <div style={{ width:18, height:18, borderRadius:'50%', background:'rgba(239,68,68,0.85)', border:'1.5px solid rgba(239,68,68,0.4)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 8px rgba(239,68,68,0.5)' }}>
-        <div style={{ width:6, height:6, borderRadius:1, background:'#fff' }} />
+
+      {/* Speaking button */}
+      <div style={{ background:'#1E4DD8', borderRadius:20, padding:'4px 10px', fontSize:8, fontWeight:800, color:'#FFF', boxShadow:'0 2px 8px rgba(30,77,216,0.55)', display:'flex', alignItems:'center', gap:3 }}>
+        🎙 Speaking…
       </div>
     </div>
   )
@@ -88,33 +105,25 @@ function ResultsScreen() {
   )
 }
 
-// ── Cycle controller ──────────────────────────────────────────────────────────
-// The watch syncs with the phone: phone shows results on screen 5 (index 4),
-// so the watch shows results at the same point in the cycle.
-const SCREENS = ['recording', 'recording', 'recording', 'recording', 'results'] as const
-type ScreenId = typeof SCREENS[number]
-
+// ── Cycle controller — alternates speaking → results → speaking → … ───────────
 function AnimatedWatch() {
-  const [current, setCurrent] = useState<ScreenId>('recording')
+  const [showResults, setShowResults] = useState(false)
   const [opacity, setOpacity] = useState(1)
-  const idx = { current: 0 }
 
   useEffect(() => {
-    const cycle = () => {
+    const t = setInterval(() => {
       setOpacity(0)
       setTimeout(() => {
-        idx.current = (idx.current + 1) % SCREENS.length
-        setCurrent(SCREENS[idx.current])
+        setShowResults(prev => !prev)
         setOpacity(1)
       }, FADE_MS)
-    }
-    const t = setInterval(cycle, SCREEN_MS)
+    }, SCREEN_MS)
     return () => clearInterval(t)
   }, [])
 
   return (
     <div style={{ transition:`opacity ${FADE_MS}ms ease`, opacity, height:'100%' }}>
-      {current === 'results' ? <ResultsScreen /> : <RecordingScreen />}
+      {showResults ? <ResultsScreen /> : <TalkScreen />}
     </div>
   )
 }
