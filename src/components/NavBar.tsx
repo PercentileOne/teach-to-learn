@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { track } from '../analytics'
 import AboutModal from './AboutModal'
 import ContactModal from './ContactModal'
+import LanguageSelector from './LanguageSelector'
 
 const NAV_LINKS = [
   { label: 'How It Works', href: '#how-it-works' },
@@ -70,28 +71,31 @@ export default function NavBar() {
             <NavLink label="Contact" onClick={() => setContactOpen(true)} />
           </div>
 
-          {/* Desktop CTA */}
-          <button className="hidden md:block" style={{
-            padding: '9px 22px', borderRadius: '50px',
-            background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)',
-            color: '#FFFFFF', fontSize: '13.5px', fontWeight: 800,
-            border: 'none', cursor: 'pointer',
-            boxShadow: '0 2px 10px rgba(30,77,216,.32)',
-            transition: 'transform .18s, box-shadow .18s',
-            letterSpacing: '.01em',
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'
-            ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(30,77,216,.42)'
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'
-            ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(30,77,216,.32)'
-          }}
-          onClick={() => { track('cta_launching_soon'); openContact() }}
-          >
-            Launching Soon
-          </button>
+          {/* Language selector + Desktop CTA */}
+          <div className="hidden md:flex" style={{ alignItems: 'center', gap: '12px' }}>
+            <LanguageSelector />
+            <button style={{
+              padding: '9px 22px', borderRadius: '50px',
+              background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)',
+              color: '#FFFFFF', fontSize: '13.5px', fontWeight: 800,
+              border: 'none', cursor: 'pointer',
+              boxShadow: '0 2px 10px rgba(30,77,216,.32)',
+              transition: 'transform .18s, box-shadow .18s',
+              letterSpacing: '.01em',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'
+              ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(30,77,216,.42)'
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'
+              ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(30,77,216,.32)'
+            }}
+            onClick={() => { track('cta_launching_soon'); openContact() }}
+            >
+              Launching Soon
+            </button>
+          </div>
 
           {/* Mobile — About + CTA */}
           <div className="flex md:hidden" style={{ gap: '8px', alignItems: 'center' }}>
