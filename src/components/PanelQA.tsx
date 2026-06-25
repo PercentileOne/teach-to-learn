@@ -6,18 +6,13 @@ type Phase = 'setup' | 'generating' | 'asking' | 'answering' | 'scoring' | 'resu
 interface QA { question: string; answer: string; scores?: Scores }
 interface Scores { clarity: number; confidence: number; relevance: number; depth: number }
 
+// ElevenLabs voice IDs — each panelist has a distinct character
 const PANELISTS = [
-  { name: 'Lord Warren',  title: 'Chairman',       emoji: '👔' },
-  { name: 'Diana Stone',  title: 'Senior Partner',  emoji: '🧠' },
-  { name: 'R. Blake',     title: 'Chief Examiner',  emoji: '🤨' },
-  { name: 'Lady Warren',  title: 'Vice Chairman',   emoji: '👁' },
+  { name: 'Lord Warren',  title: 'Chairman',      emoji: '👔', voiceId: 'VR6AewLTigWG4xSOukaG' }, // Arnold — deep, crisp
+  { name: 'Diana Stone',  title: 'Senior Partner', emoji: '🧠', voiceId: '21m00Tcm4TlvDq8ikWAM' }, // Rachel — calm, precise
+  { name: 'R. Blake',     title: 'Chief Examiner', emoji: '🤨', voiceId: 'yoZ06aMxZJJ28mfd3POQ' }, // Sam — raspy, cold
+  { name: 'Lady Warren',  title: 'Vice Chairman',  emoji: '👁', voiceId: 'AZnzlk1XvdvUeBnXmlld' }, // Domi — strong, commanding
 ]
-
-const VOICE_SETTINGS: Record<Mood, { pitch: number; rate: number }> = {
-  friendly:     { pitch: 1.1, rate: 0.95 },
-  professional: { pitch: 1.0, rate: 0.90 },
-  tough:        { pitch: 0.85, rate: 0.85 },
-}
 
 const MOOD_COLOR: Record<Mood, string> = {
   friendly:     '#10B981',
@@ -25,21 +20,46 @@ const MOOD_COLOR: Record<Mood, string> = {
   tough:        '#EF4444',
 }
 
+// ElevenLabs voice settings per mood
+const MOOD_VOICE: Record<Mood, { stability: number; similarity_boost: number; style: number; speed: number }> = {
+  friendly:     { stability: 0.75, similarity_boost: 0.80, style: 0.20, speed: 1.00 },
+  professional: { stability: 0.85, similarity_boost: 0.75, style: 0.10, speed: 0.92 },
+  tough:        { stability: 0.45, similarity_boost: 0.90, style: 0.40, speed: 0.88 },
+}
+
 const HIRED_THRESHOLD = 70
 
-function speak(text: string, mood: Mood) {
-  window.speechSynthesis.cancel()
-  const u = new SpeechSynthesisUtterance(text)
-  const vs = VOICE_SETTINGS[mood]
-  u.pitch = vs.pitch
-  u.rate  = vs.rate
-  u.volume = 1
-  // Try to pick a deeper/authoritative voice
-  const voices = window.speechSynthesis.getVoices()
-  const preferred = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('male'))
-    || voices.find(v => v.lang.startsWith('en'))
-  if (preferred) u.voice = preferred
-  window.speechSynthesis.speak(u)
+let currentAudio: HTMLAudioElement | null = null
+
+async function speak(text: string, mood: Mood, voiceId: string) {
+  // Stop any playing audio
+  if (currentAudio) { currentAudio.pause(); currentAudio = null }
+
+  try {
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text,
+        model_id: 'eleven_turbo_v2',
+        voice_settings: MOOD_VOICE[mood],
+      }),
+    })
+    if (!res.ok) throw new Error('ElevenLabs error')
+    const blob = await res.blob()
+    const url  = URL.createObjectURL(blob)
+    currentAudio = new Audio(url)
+    currentAudio.play()
+  } catch {
+    // Fallback to browser TTS if ElevenLabs fails
+    window.speechSynthesis.cancel()
+    const u = new SpeechSynthesisUtterance(text)
+    u.rate = mood === 'tough' ? 0.85 : 0.92
+    window.speechSynthesis.speak(u)
+  }
 }
 
 export default function PanelQA({ mood }: { mood: Mood }) {
@@ -107,11 +127,11 @@ Rules:
     const q = questions[qIndex]
     const asker = PANELISTS[askerIdx % PANELISTS.length]
     const prefix = mood === 'tough'
-      ? `${asker.name} here. `
+      ? `${asker.name}. `
       : mood === 'friendly'
       ? `Hi, I'm ${asker.name}. `
-      : `${asker.name}, ${asker.title}. `
-    setTimeout(() => speak(prefix + q, mood), 600)
+      : `${asker.name}. `
+    setTimeout(() => speak(prefix + q, mood, asker.voiceId), 600)
   }, [phase, qIndex])
 
   // ── Speech recognition ─────────────────────────────────────────────────────
@@ -133,6 +153,7 @@ Rules:
     setListening(true)
     setTranscript('')
     setPhase('answering')
+    if (currentAudio) { currentAudio.pause(); currentAudio = null }
     window.speechSynthesis.cancel()
   }
 
@@ -200,6 +221,7 @@ No other text.`,
     : 0
 
   const reset = () => {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null }
     window.speechSynthesis.cancel()
     setPhase('setup'); setTopic(''); setQuestions([]); setQIndex(0)
     setQaLog([]); setTranscript(''); setFinalScore(null); setError('')

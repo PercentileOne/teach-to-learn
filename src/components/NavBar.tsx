@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AboutModal from './AboutModal'
 import ContactModal from './ContactModal'
 
@@ -13,9 +13,17 @@ function scrollTo(id: string) {
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+export function openContact() { window.dispatchEvent(new CustomEvent('open-contact')) }
+
 export default function NavBar() {
   const [aboutOpen, setAboutOpen] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
+
+  useEffect(() => {
+    const handler = () => setContactOpen(true)
+    window.addEventListener('open-contact', handler)
+    return () => window.removeEventListener('open-contact', handler)
+  }, [])
 
   return (
     <>
@@ -79,7 +87,7 @@ export default function NavBar() {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'
             ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(30,77,216,.32)'
           }}
-          onClick={() => setContactOpen(true)}
+          onClick={openContact}
           >
             Launching Soon
           </button>
