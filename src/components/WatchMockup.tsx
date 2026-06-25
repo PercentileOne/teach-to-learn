@@ -1,26 +1,33 @@
 const ANIM = `
 @keyframes watch-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
-@keyframes watch-pulse { 0%,100% { opacity:.7; transform:scaleX(1); } 50% { opacity:1; transform:scaleX(1.06); } }
-@keyframes watch-bar { 0%,100% { height:6px; } 50% { height:18px; } }
+@keyframes watch-bar-0 { 0%,100% { transform:scaleY(.35); } 50% { transform:scaleY(1); } }
+@keyframes watch-bar-1 { 0%,100% { transform:scaleY(.5);  } 50% { transform:scaleY(.9); } }
+@keyframes watch-bar-2 { 0%,100% { transform:scaleY(.6);  } 50% { transform:scaleY(1); } }
+@keyframes watch-bar-3 { 0%,100% { transform:scaleY(.3);  } 50% { transform:scaleY(.85); } }
+@keyframes watch-bar-4 { 0%,100% { transform:scaleY(.7);  } 50% { transform:scaleY(1); } }
+@keyframes watch-bar-5 { 0%,100% { transform:scaleY(.45); } 50% { transform:scaleY(.95); } }
+@keyframes watch-bar-6 { 0%,100% { transform:scaleY(.55); } 50% { transform:scaleY(1); } }
+@keyframes watch-bar-7 { 0%,100% { transform:scaleY(.4);  } 50% { transform:scaleY(.8); } }
 `
 
-// Tiny waveform bars that animate independently
+// Bars anchored at the bottom — grow upward
 function WaveBars() {
   const delays = [0, 0.15, 0.07, 0.22, 0.1, 0.18, 0.05, 0.2]
+  const maxH = 20
   return (
-    <svg width="40" height="20" viewBox="0 0 40 20" style={{ overflow: 'visible' }}>
+    <svg width="43" height={maxH} viewBox={`0 0 43 ${maxH}`}>
       {delays.map((d, i) => (
         <rect
           key={i}
-          x={i * 5}
-          y={7}
+          x={i * 5.5}
+          y={0}
           width={3}
-          height={6}
+          height={maxH}
           rx={1.5}
           fill="#4F8EF7"
           style={{
-            animation: `watch-bar .6s ${d}s ease-in-out infinite`,
-            transformOrigin: 'center',
+            animation: `watch-bar-${i} .65s ${d}s ease-in-out infinite`,
+            transformOrigin: 'center bottom',
             transformBox: 'fill-box',
           }}
         />
