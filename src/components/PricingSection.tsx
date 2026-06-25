@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { openContact } from './NavBar'
 import { track } from '../analytics'
 import { Rocket } from 'lucide-react'
@@ -115,6 +116,7 @@ function CheckIcon({ dark }: { dark?: boolean }) {
 }
 
 export default function PricingSection() {
+  const { t } = useTranslation()
   const [annual, setAnnual] = useState(false)
 
   return (
@@ -132,7 +134,7 @@ export default function PricingSection() {
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#1E4DD8', display: 'inline-block' }}/>
             <Rocket size={11} color='#1E4DD8' strokeWidth={2.5} />
             <span style={{ fontSize: '0.67rem', fontWeight: 800, letterSpacing: '.15em', textTransform: 'uppercase' as const, color: '#1E4DD8' }}>
-              Launching Soon — Pricing Preview
+              {t('pricing.badge')}
             </span>
           </div>
 
@@ -141,11 +143,11 @@ export default function PricingSection() {
             fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1.07,
             color: '#0A0F1C', margin: '0 0 14px',
           }}>
-            Simple, fair, and built for everyone
+            {t('pricing.title')}
           </h2>
 
           <p style={{ fontSize: 'clamp(1rem,2vw,1.15rem)', color: '#6B7280', lineHeight: 1.65, maxWidth: '400px', margin: '0 auto 32px' }}>
-            Start free. Upgrade when you're ready.
+            {t('pricing.subtitle')}
           </p>
 
           {/* Social proof */}
@@ -185,7 +187,7 @@ export default function PricingSection() {
                 fontSize: '13px', fontWeight: 700, transition: 'all .2s',
               }}
             >
-              Monthly
+              {t('pricing.monthly')}
             </button>
             <button
               onClick={() => setAnnual(true)}
@@ -197,14 +199,14 @@ export default function PricingSection() {
                 display: 'flex', alignItems: 'center', gap: '7px',
               }}
             >
-              Annual
+              {t('pricing.annual')}
               <span style={{
                 padding: '2px 8px', borderRadius: '20px',
                 background: annual ? 'rgba(255,255,255,.20)' : 'rgba(45,158,106,.12)',
                 color: annual ? '#FFFFFF' : '#2D9E6A',
                 fontSize: '10px', fontWeight: 800, letterSpacing: '.06em',
               }}>
-                Save 25%
+                {t('pricing.save')}
               </span>
             </button>
           </div>
@@ -314,10 +316,10 @@ export default function PricingSection() {
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1' }}
                   onClick={() => { track('cta_notify_pricing', { plan: plan.name }); openContact() }}
                 >
-                  <Rocket size={14} strokeWidth={2} /> Notify Me at Launch
+                  <Rocket size={14} strokeWidth={2} /> {t('pricing.notifyButton')}
                 </button>
                 <p style={{ fontSize: '11px', textAlign: 'center', marginTop: '10px', color: dark ? 'rgba(255,255,255,.35)' : '#9CA3AF' }}>
-                  Launching soon · Be first to know
+                  {t('pricing.launchingSoon')}
                 </p>
               </div>
             )
@@ -334,10 +336,10 @@ export default function PricingSection() {
             fontWeight: 900, letterSpacing: '-.02em', color: '#0A0F1C',
             margin: '0 0 10px',
           }}>
-            Ready to feel the difference?
+            {t('pricing.bottomTitle')}
           </h3>
           <p style={{ fontSize: '16px', color: '#6B7280', marginBottom: '28px', lineHeight: 1.6 }}>
-            Start free today. No credit card needed. No commitment. Just talk.
+            {t('pricing.bottomSubtitle')}
           </p>
           <button style={{
             padding: '16px 40px', borderRadius: '50px',
@@ -356,10 +358,10 @@ export default function PricingSection() {
             ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 18px rgba(30,77,216,.38)'
           }}
           >
-            Start for Free — No Credit Card Needed
+            {t('pricing.bottomCta')}
           </button>
           <p style={{ fontSize: '13px', color: '#9CA3AF', marginTop: '12px' }}>
-            Cancel anytime. No commitment.
+            {t('pricing.bottomNote')}
           </p>
         </div>
 

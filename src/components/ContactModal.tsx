@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { track } from '../analytics'
 import { X, Rocket, Mail, AlertCircle, Send, RotateCcw } from 'lucide-react'
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
 export default function ContactModal({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [subject, setSubject] = useState('')
@@ -53,11 +55,11 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
-            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#0A0F1C', margin: 0, letterSpacing: '-.02em' }}>Get in Touch</h2>
-            <p style={{ fontSize: '13px', color: '#6B7280', margin: '4px 0 0' }}>We'd love to hear from you 💙</p>
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#0A0F1C', margin: 0, letterSpacing: '-.02em' }}>{t('contact.title')}</h2>
+            <p style={{ fontSize: '13px', color: '#6B7280', margin: '4px 0 0' }}>{t('contact.subtitle')}</p>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 8, padding: '3px 10px', borderRadius: 20, background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.35)' }}>
               <Rocket size={11} color='#D97706' strokeWidth={2.5} />
-              <span style={{ fontSize: 11, fontWeight: 800, color: '#D97706', letterSpacing: '0.06em' }}>Launching Soon</span>
+              <span style={{ fontSize: 11, fontWeight: 800, color: '#D97706', letterSpacing: '0.06em' }}>{t('contact.badge')}</span>
             </div>
           </div>
           <button onClick={onClose} style={{ background: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><X size={14} color='#6B7280' strokeWidth={2.5} /></button>
@@ -70,9 +72,9 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
                 <Mail size={26} color='#10B981' strokeWidth={1.8} />
               </div>
             </div>
-            <p style={{ fontSize: '16px', fontWeight: 800, color: '#0A0F1C', marginBottom: '6px' }}>Message sent!</p>
-            <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '20px' }}>Thanks for reaching out — we'll get back to you soon.</p>
-            <button onClick={onClose} style={{ padding: '10px 28px', borderRadius: '50px', background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)', color: '#fff', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '14px' }}>Close</button>
+            <p style={{ fontSize: '16px', fontWeight: 800, color: '#0A0F1C', marginBottom: '6px' }}>{t('contact.successTitle')}</p>
+            <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '20px' }}>{t('contact.successBody')}</p>
+            <button onClick={onClose} style={{ padding: '10px 28px', borderRadius: '50px', background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)', color: '#fff', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '14px' }}>{t('contact.close')}</button>
           </div>
         ) : status === 'error' ? (
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
@@ -81,33 +83,33 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
                 <AlertCircle size={26} color='#EF4444' strokeWidth={1.8} />
               </div>
             </div>
-            <p style={{ fontSize: '16px', fontWeight: 800, color: '#0A0F1C', marginBottom: '6px' }}>Something went wrong</p>
-            <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '20px' }}>Please try again or email us directly at francis@talktolearn.app</p>
-            <button onClick={() => setStatus('idle')} style={{ padding: '10px 28px', borderRadius: '50px', background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)', color: '#fff', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '14px' }}>Try Again</button>
+            <p style={{ fontSize: '16px', fontWeight: 800, color: '#0A0F1C', marginBottom: '6px' }}>{t('contact.errorTitle')}</p>
+            <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '20px' }}>{t('contact.errorBody')}</p>
+            <button onClick={() => setStatus('idle')} style={{ padding: '10px 28px', borderRadius: '50px', background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)', color: '#fff', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '14px' }}>{t('contact.tryAgain')}</button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'flex', gap: '12px' }}>
               <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>YOUR NAME</label>
-                <input style={inputStyle} placeholder="Francis" value={name} onChange={e => setName(e.target.value)} required />
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>{t('contact.nameLabel')}</label>
+                <input style={inputStyle} placeholder={t('contact.namePlaceholder')} value={name} onChange={e => setName(e.target.value)} required />
               </div>
               <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>EMAIL</label>
-                <input style={inputStyle} type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
+                <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>{t('contact.emailLabel')}</label>
+                <input style={inputStyle} type="email" placeholder={t('contact.emailPlaceholder')} value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
             </div>
 
             <div>
-              <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>SUBJECT</label>
-              <input style={inputStyle} placeholder="I'd love to..." value={subject} onChange={e => setSubject(e.target.value)} required />
+              <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>{t('contact.subjectLabel')}</label>
+              <input style={inputStyle} placeholder={t('contact.subjectPlaceholder')} value={subject} onChange={e => setSubject(e.target.value)} required />
             </div>
 
             <div>
-              <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>MESSAGE</label>
+              <label style={{ fontSize: '11px', fontWeight: 700, color: '#6B7280', letterSpacing: '.06em', display: 'block', marginBottom: '5px' }}>{t('contact.messageLabel')}</label>
               <textarea
                 style={{ ...inputStyle, minHeight: '110px', resize: 'vertical' }}
-                placeholder="Tell us what's on your mind..."
+                placeholder={t('contact.messagePlaceholder')}
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 required
@@ -116,12 +118,12 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
               <button type="button" onClick={onClose} style={{ flex: 1, padding: '12px', borderRadius: '50px', border: '1px solid rgba(0,0,0,0.12)', background: 'transparent', fontSize: '14px', fontWeight: 700, color: '#6B7280', cursor: 'pointer' }}>
-                Cancel
+                {t('contact.cancel')}
               </button>
               <button type="submit" disabled={status === 'sending'} style={{ flex: 2, padding: '12px', borderRadius: '50px', background: 'linear-gradient(135deg,#1E4DD8,#2A5BFF)', color: '#fff', fontSize: '14px', fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(30,77,216,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
                 {status === 'sending'
-                  ? <><RotateCcw size={14} style={{ animation: 'spin 1s linear infinite' }} /> Sending...</>
-                  : <><Send size={14} strokeWidth={2} /> Send Message</>}
+                  ? <><RotateCcw size={14} style={{ animation: 'spin 1s linear infinite' }} /> {t('contact.sending')}</>
+                  : <><Send size={14} strokeWidth={2} /> {t('contact.sendButton')}</>}
               </button>
             </div>
           </form>

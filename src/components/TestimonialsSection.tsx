@@ -1,48 +1,7 @@
-const TESTIMONIALS = [
-  {
-    quote: 'TalkToLearn changed everything for me. My understanding of Azure Cloud Services improved dramatically — I can talk about it confidently for an hour now. Speaking it out loud made the concepts finally click.',
-    name: 'Marcus T.',
-    role: 'Cloud Engineer',
-    accent: '#60A5FA',
-  },
-  {
-    quote: 'I passed my interview thanks to TalkToLearn. Practising under pressure made the real thing feel easy. I didn\'t just memorise answers — I understood what I was talking about.',
-    name: 'Priya S.',
-    role: 'Software Developer',
-    accent: '#A78BFA',
-  },
-  {
-    quote: 'I used TalkToLearn to revise for my exams. Explaining topics out loud helped me remember them so much better. It\'s like the knowledge finally stuck.',
-    name: 'Jordan K.',
-    role: 'University Student',
-    accent: '#34D399',
-  },
-  {
-    quote: 'I rehearsed my presentation with TalkToLearn and it was a game-changer. Speaking under pressure helped me organise my thoughts and deliver with confidence.',
-    name: 'Rachel M.',
-    role: 'Marketing Director',
-    accent: '#FDE68A',
-  },
-  {
-    quote: 'I\'ve tried videos, books, and courses. Nothing helped me understand as quickly as talking out loud. TalkToLearn made me realise I learn best with my voice.',
-    name: 'Daniel O.',
-    role: 'Self-directed Learner',
-    accent: '#F9A8D4',
-  },
-  {
-    quote: 'Explaining my ideas out loud helped me refine them. TalkToLearn is now part of my creative process — it forces clarity.',
-    name: 'Amara J.',
-    role: 'Content Creator',
-    accent: '#6EE7B7',
-  },
-  {
-    quote: 'TalkToLearn has been incredible for my child. Their confidence has grown so much — they\'re speaking more clearly, explaining their ideas, and actually enjoying learning. Hearing them talk through topics out loud has been amazing. It\'s like their voice finally unlocked their understanding.',
-    name: 'Sarah B.',
-    role: 'Parent',
-    accent: '#FCA5A5',
-    featured: true,
-  },
-]
+import { useTranslation } from 'react-i18next'
+
+const ACCENTS = ['#60A5FA', '#A78BFA', '#34D399', '#FDE68A', '#F9A8D4', '#6EE7B7']
+const FEATURED_ACCENT = '#FCA5A5'
 
 function QuoteIcon({ color }: { color: string }) {
   return (
@@ -66,8 +25,16 @@ function InitialBubble({ name, color }: { name: string; color: string }) {
 }
 
 export default function TestimonialsSection() {
-  const regular = TESTIMONIALS.filter(t => !t.featured)
-  const featured = TESTIMONIALS.find(t => t.featured)!
+  const { t } = useTranslation()
+
+  const regular = [
+    { quoteKey: 'testimonials.t1Quote', nameKey: 'testimonials.t1Name', roleKey: 'testimonials.t1Role', accent: ACCENTS[0] },
+    { quoteKey: 'testimonials.t2Quote', nameKey: 'testimonials.t2Name', roleKey: 'testimonials.t2Role', accent: ACCENTS[1] },
+    { quoteKey: 'testimonials.t3Quote', nameKey: 'testimonials.t3Name', roleKey: 'testimonials.t3Role', accent: ACCENTS[2] },
+    { quoteKey: 'testimonials.t4Quote', nameKey: 'testimonials.t4Name', roleKey: 'testimonials.t4Role', accent: ACCENTS[3] },
+    { quoteKey: 'testimonials.t5Quote', nameKey: 'testimonials.t5Name', roleKey: 'testimonials.t5Role', accent: ACCENTS[4] },
+    { quoteKey: 'testimonials.t6Quote', nameKey: 'testimonials.t6Name', roleKey: 'testimonials.t6Role', accent: ACCENTS[5] },
+  ]
 
   return (
     <section style={{ background: '#F8FAFC', padding: '108px 20px 120px' }}>
@@ -82,7 +49,7 @@ export default function TestimonialsSection() {
           }}>
             <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#1E4DD8', display: 'inline-block' }} />
             <span style={{ fontSize: '0.67rem', fontWeight: 800, letterSpacing: '.15em', textTransform: 'uppercase' as const, color: '#1E4DD8' }}>
-              What People Are Saying
+              {t('testimonials.badge')}
             </span>
           </div>
 
@@ -91,50 +58,53 @@ export default function TestimonialsSection() {
             fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1.07,
             color: '#0A0F1C', margin: '0 0 14px',
           }}>
-            Real results from real learners.
+            {t('testimonials.title')}
           </h2>
 
           <p style={{ fontSize: 'clamp(1rem,2vw,1.1rem)', color: '#6B7280', lineHeight: 1.65, maxWidth: 460, margin: '0 auto' }}>
-            Real stories from people who learned faster by talking out loud.
+            {t('testimonials.subtitle')}
           </p>
         </div>
 
         {/* 3-column grid of regular cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
-          {regular.map((t) => (
-            <div
-              key={t.name}
-              style={{
-                background: '#FFFFFF',
-                border: '1px solid #E8EDF5',
-                borderRadius: 20,
-                padding: '28px 28px 24px',
-                boxShadow: '0 2px 6px rgba(0,0,0,.03), 0 8px 24px rgba(0,0,0,.06)',
-                display: 'flex', flexDirection: 'column', gap: 16,
-                transition: 'transform .22s ease, box-shadow .22s ease',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'
-                ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 12px rgba(0,0,0,.06), 0 18px 44px rgba(0,0,0,.10)'
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'
-                ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 6px rgba(0,0,0,.03), 0 8px 24px rgba(0,0,0,.06)'
-              }}
-            >
-              <QuoteIcon color={t.accent} />
-              <p style={{ fontSize: 15, color: '#1A2332', lineHeight: 1.72, margin: 0, flex: 1, fontWeight: 400 }}>
-                "{t.quote}"
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 8, borderTop: '1px solid #F0F2F7' }}>
-                <InitialBubble name={t.name} color={t.accent} />
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#0A0F1C' }}>{t.name}</div>
-                  <div style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 500 }}>{t.role}</div>
+          {regular.map((item) => {
+            const name = t(item.nameKey)
+            return (
+              <div
+                key={item.quoteKey}
+                style={{
+                  background: '#FFFFFF',
+                  border: '1px solid #E8EDF5',
+                  borderRadius: 20,
+                  padding: '28px 28px 24px',
+                  boxShadow: '0 2px 6px rgba(0,0,0,.03), 0 8px 24px rgba(0,0,0,.06)',
+                  display: 'flex', flexDirection: 'column', gap: 16,
+                  transition: 'transform .22s ease, box-shadow .22s ease',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'
+                  ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 12px rgba(0,0,0,.06), 0 18px 44px rgba(0,0,0,.10)'
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'
+                  ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 6px rgba(0,0,0,.03), 0 8px 24px rgba(0,0,0,.06)'
+                }}
+              >
+                <QuoteIcon color={item.accent} />
+                <p style={{ fontSize: 15, color: '#1A2332', lineHeight: 1.72, margin: 0, flex: 1, fontWeight: 400 }}>
+                  "{t(item.quoteKey)}"
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 8, borderTop: '1px solid #F0F2F7' }}>
+                  <InitialBubble name={name} color={item.accent} />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#0A0F1C' }}>{name}</div>
+                    <div style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 500 }}>{t(item.roleKey)}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* Featured parent testimonial — full width */}
@@ -147,22 +117,21 @@ export default function TestimonialsSection() {
           display: 'flex', flexDirection: 'column', gap: 20,
           position: 'relative', overflow: 'hidden',
         }}>
-          {/* Subtle glow */}
           <div style={{ position: 'absolute', top: 0, right: 0, width: '40%', height: '100%', background: 'radial-gradient(ellipse at right,rgba(252,165,165,.06) 0%,transparent 70%)', pointerEvents: 'none' }} />
 
-          <QuoteIcon color={featured.accent} />
+          <QuoteIcon color={FEATURED_ACCENT} />
 
           <p style={{ fontSize: 'clamp(1.05rem,2vw,1.22rem)', color: 'rgba(255,255,255,0.92)', lineHeight: 1.80, margin: 0, fontWeight: 400, maxWidth: 800 }}>
-            "{featured.quote}"
+            "{t('testimonials.t7Quote')}"
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 4 }}>
-            <div style={{ width: 40, height: 40, borderRadius: '50%', background: `${featured.accent}25`, border: `1px solid ${featured.accent}50`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: featured.accent }}>
-              {featured.name.charAt(0)}
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: `${FEATURED_ACCENT}25`, border: `1px solid ${FEATURED_ACCENT}50`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, color: FEATURED_ACCENT }}>
+              {t('testimonials.t7Name').charAt(0)}
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#FFF' }}>{featured.name}</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>{featured.role}</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: '#FFF' }}>{t('testimonials.t7Name')}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>{t('testimonials.t7Role')}</div>
             </div>
           </div>
         </div>
@@ -170,7 +139,7 @@ export default function TestimonialsSection() {
         {/* Closing tagline */}
         <div style={{ textAlign: 'center', paddingTop: 52, borderTop: '1px solid #E8EDF5', marginTop: 52 }}>
           <p style={{ fontSize: 15, fontStyle: 'italic', color: '#9CA3AF' }}>
-            Speak It. To Understand It.
+            {t('testimonials.tagline')}
           </p>
         </div>
 
