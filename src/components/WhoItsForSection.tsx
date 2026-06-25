@@ -1,7 +1,7 @@
 const CARDS = [
   {
-    title: 'Students',
-    desc: 'Master any topic by explaining it out loud. Perfect for revision, presentations, and real understanding.',
+    title: 'Students who want to learn faster',
+    desc: 'Master any subject by explaining it out loud. Perfect for revision, exams, and real understanding.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
@@ -9,8 +9,8 @@ const CARDS = [
     ),
   },
   {
-    title: 'Parents',
-    desc: 'Help your child build confidence — privately, safely, at home, and at their own pace.',
+    title: 'Professionals preparing for presentations',
+    desc: 'Speak with clarity and conviction. Practise your pitch, meeting, or keynote — until it feels effortless.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -19,8 +19,8 @@ const CARDS = [
     ),
   },
   {
-    title: 'Teachers',
-    desc: 'Give students a powerful new way to learn and express themselves — beyond reading and writing.',
+    title: 'Creators and educators refining ideas',
+    desc: 'Rehearse scripts, hooks, and lessons before you record. Hear yourself improve in real time.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>
@@ -29,8 +29,8 @@ const CARDS = [
     ),
   },
   {
-    title: 'Creators',
-    desc: 'Practice scripts, hooks, and storytelling — before you hit record. Hear yourself improve in real time.',
+    title: 'Anyone who learns better by talking',
+    desc: 'If reading and watching videos never quite sticks — talking it out loud is the method that actually works.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -39,8 +39,8 @@ const CARDS = [
     ),
   },
   {
-    title: 'Certification Seekers',
-    desc: 'AWS, CompTIA, CFA, PMP, CISSP — study the domains, test yourself, share your score. Never buy another certification book again.',
+    title: 'People who want to build real confidence',
+    desc: 'Speaking under pressure — and being scored on it — is the fastest way to build the kind of confidence that lasts.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
@@ -48,8 +48,8 @@ const CARDS = [
     ),
   },
   {
-    title: 'Professionals',
-    desc: 'Speak with clarity in meetings, pitches, and interviews — and post your scores on LinkedIn to prove you know your stuff.',
+    title: 'Certification seekers',
+    desc: 'AWS · CompTIA · CFA · PMP — study the domains, test yourself out loud, and share your score. No more passive reading.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
@@ -58,8 +58,8 @@ const CARDS = [
     ),
   },
   {
-    title: 'Coaches & Trainers',
-    desc: 'Give clients structured, measurable feedback on their speaking — backed by AI-powered scoring.',
+    title: 'Coaches and trainers',
+    desc: 'Give clients structured, measurable feedback on their speaking and thinking — backed by AI-powered scoring.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
@@ -91,11 +91,11 @@ export default function WhoItsForSection() {
             fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1.07,
             color: '#0A0F1C', margin: '0 0 14px',
           }}>
-            Anyone who speaks can learn faster.
+            Who It's For
           </h2>
 
-          <p style={{ fontSize: 'clamp(1rem,2vw,1.15rem)', color: '#6B7280', lineHeight: 1.65, maxWidth: '520px', margin: '0 auto' }}>
-            The Teach to Learn Principle works for every age, every subject, and every goal.
+          <p style={{ fontSize: 'clamp(1rem,2vw,1.15rem)', color: '#6B7280', lineHeight: 1.65, maxWidth: '480px', margin: '0 auto' }}>
+            If you can speak, you can learn faster. It works for every subject, every level, every goal.
           </p>
         </div>
 
@@ -136,7 +136,7 @@ export default function WhoItsForSection() {
         {/* Tagline */}
         <div style={{ textAlign: 'center', borderTop: '1px solid #F0F2F7', paddingTop: '44px' }}>
           <p style={{ fontSize: '17px', fontStyle: 'italic', color: '#9CA3AF', fontWeight: 400 }}>
-            "If you speak, you can learn. If you learn, you can grow."
+            "If you can say it, you know it."
           </p>
         </div>
 

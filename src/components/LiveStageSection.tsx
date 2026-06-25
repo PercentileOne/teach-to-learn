@@ -26,11 +26,11 @@ export default function LiveStageSection() {
             <span style={{ fontSize: 13, fontWeight: 800, color: '#FDE68A', letterSpacing: '.08em' }}>PANEL CALL — TRY IT NOW</span>
           </div>
           <h2 style={{ fontSize: 'clamp(2.4rem,5vw,3.6rem)', fontWeight: 900, color: '#FFF', letterSpacing: '-.04em', marginBottom: 16, lineHeight: 1.05 }}>
-            Answer on your subject.<br />Under real pressure.
+            Speak. Get scored.<br />Learn faster.
           </h2>
           <p style={{ fontSize: 'clamp(1rem,2vw,1.2rem)', color: 'rgba(255,255,255,.55)', maxWidth: 520, margin: '0 auto', lineHeight: 1.75 }}>
-            Join a Panel Call and speak about any subject.{' '}
-            <span style={{ color: '#FDE68A', fontWeight: 700 }}>Your heart rate goes up the moment you see the grid. That's the point.</span>
+            Pick any subject. The panel asks real questions. You speak — and AI scores your clarity, confidence, relevance, and depth.{' '}
+            <span style={{ color: '#FDE68A', fontWeight: 700 }}>That pressure is the learning.</span>
           </p>
         </div>
 
@@ -52,8 +52,8 @@ export default function LiveStageSection() {
           {/* CTA footer */}
           <div style={{ borderTop: '1px solid rgba(255,255,255,.06)', padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#FFF', marginBottom: 4 }}>Ready to take the real stage?</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.38)' }}>Join the waitlist and be first when we launch.</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#FFF', marginBottom: 4 }}>Ready to learn by talking?</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.38)' }}>Launching soon — register your interest for early access.</div>
             </div>
             <button onClick={() => { track('cta_join_waitlist'); openContact() }} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 28px', borderRadius: 50, border: 'none', cursor: 'pointer', background: '#1E4DD8', color: '#FFF', fontWeight: 800, fontSize: 14, animation: 'cta-glow 2.5s ease-in-out infinite' }}>
               <Rocket size={16} strokeWidth={2} /> Join the Waitlist

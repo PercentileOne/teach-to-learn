@@ -34,8 +34,8 @@ export default function HeroSection() {
 
             {/* Sub-headline */}
             <p className="text-[clamp(1.1rem,3vw,1.45rem)] text-white/90 font-semibold mb-4" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.12)' }}>
-              Pick any subject. We build your study path.<br/>
-              <span style={{ color: '#FDE68A' }}>Then you speak — and AI scores your</span>{' '}
+              You learn faster when you speak out loud.<br/>
+              <span style={{ color: '#FDE68A' }}>Pick any subject. Talk about it. AI scores your</span>{' '}
               <span style={{ color: '#FFF' }}>Clarity · Confidence · Relevance · Depth.</span>
             </p>
 
@@ -64,7 +64,7 @@ export default function HeroSection() {
                   step: '02',
                   Icon: Mic,
                   title: 'Get tested — out loud',
-                  desc: 'A live panel of AI interviewers asks real questions. You answer by speaking.',
+                  desc: 'A live AI panel challenges you with real questions. You answer by speaking — out loud.',
                   color: '#C4B5FD',
                   bg: 'linear-gradient(135deg,rgba(76,29,149,0.6),rgba(109,40,217,0.3))',
                   border: 'rgba(167,139,250,0.30)',
@@ -105,8 +105,12 @@ export default function HeroSection() {
               <button className="btn-secondary" onClick={() => { track('cta_watch_demo'); document.getElementById('live-stage')?.scrollIntoView({ behavior: 'smooth' }) }} style={{ background: 'rgba(0,0,0,0.40)', border: '1px solid rgba(255,255,255,0.30)', color: '#fff', backdropFilter: 'blur(8px)', display: 'inline-flex', alignItems: 'center', gap: 7 }}><Play size={13} strokeWidth={2.5} fill='white' /> Watch the Demo</button>
             </div>
 
+            {/* Micro-copy */}
+            <p className="text-sm text-white/50" style={{ marginTop: 2, fontStyle: 'italic', letterSpacing: '0.01em' }}>
+              Launching soon — join the early access list.
+            </p>
             {/* Trust line */}
-            <p className="text-sm text-white/55">No credit card required · Any subject · Any level</p>
+            <p className="text-sm text-white/40" style={{ marginTop: 10 }}>No credit card required · Any subject · Any level</p>
           </div>
 
           {/* Floating phone mockup */}

@@ -109,8 +109,8 @@ function PhotoTile({ tile, delay }: { tile: typeof PHOTO_TILES[0]; delay: number
 const STEP_CARDS = [
   {
     num: '01',
-    headline: 'Teacher Mode',
-    body: 'The moment you start explaining, your brain reorganises knowledge — making connections that passive reading never triggers.',
+    headline: 'Deeper Understanding',
+    body: 'The moment you explain out loud, your brain reorganises knowledge — making connections that passive reading never triggers.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -168,33 +168,34 @@ export default function TeachToLearnSection() {
             }}>
               <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: ACCENT, display: 'inline-block' }} />
               <span style={{ fontSize: '0.67rem', fontWeight: 800, letterSpacing: '.15em', textTransform: 'uppercase' as const, color: ACCENT }}>
-                The Teach to Learn Principle
+                Why Talking Works
               </span>
             </div>
 
             <h2 style={{
               fontSize: 'clamp(1.75rem,4.5vw,2.85rem)',
               fontWeight: 900, letterSpacing: '-.03em', lineHeight: 1.07,
-              color: '#0A0F1C', margin: '0 0 12px',
+              color: '#0A0F1C', margin: '0 0 20px',
             }}>
-              Why Explaining a Topic<br />Makes You{' '}
-              <span style={{ color: ACCENT }}>Learn it Faster</span>
+              Talking out loud activates<br />the brain{' '}
+              <span style={{ color: ACCENT }}>differently.</span>
             </h2>
 
-            <p style={{ fontSize: '15px', fontStyle: 'italic', color: '#9CA3AF', marginBottom: '28px', lineHeight: 1.6 }}>
-              The science behind the Teach to Learn Principle.
-            </p>
-
-            <p style={{ fontSize: '17px', fontWeight: 500, color: '#1A2332', lineHeight: 1.72, marginBottom: '28px' }}>
-              When you explain something out loud, your brain switches into{' '}
-              <span style={{ color: ACCENT, fontWeight: 700 }}>'teacher mode'</span>.
+            <p style={{ fontSize: '17px', fontWeight: 400, color: '#374151', lineHeight: 1.80, marginBottom: '28px' }}>
+              It strengthens memory, deepens understanding, and forces clarity.
+              When you explain something verbally — especially under pressure —
+              you learn faster and retain more.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '32px' }}>
-              {YOU_BULLETS.map((line, i) => (
+              {[
+                'Talking out loud improves recall.',
+                'Explaining strengthens understanding.',
+                'Speaking under pressure builds confidence.',
+              ].map((line, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                   <div style={{ flexShrink: 0, marginTop: '3px' }}><ChevronIcon /></div>
-                  <span style={{ fontSize: '16px', fontWeight: 500, color: '#374151', lineHeight: 1.5 }}>{line}</span>
+                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#0A0F1C', lineHeight: 1.5 }}>{line}</span>
                 </div>
               ))}
             </div>
@@ -207,13 +208,9 @@ export default function TeachToLearnSection() {
               marginBottom: '22px',
             }}>
               <p style={{ fontSize: '15.5px', fontWeight: 600, lineHeight: 1.65, color: '#1A2332', margin: 0 }}>
-                This is the <span style={{ color: ACCENT }}>Teach to Learn Principle</span> — one of the most powerful learning methods ever discovered.
+                <strong style={{ color: '#0A0F1C' }}>Talk to Learn</strong> is built on this principle — AI that listens, scores, and helps you improve every time you speak.
               </p>
             </div>
-
-            <p style={{ fontSize: '15px', color: '#6B7280', lineHeight: 1.72, marginBottom: '20px' }}>
-              <strong style={{ color: '#0A0F1C', fontWeight: 700 }}>Talk to Learn</strong> brings this method to life with AI that listens, scores, and helps you improve every time you speak.
-            </p>
 
             {/* Backed by research link */}
             <button
