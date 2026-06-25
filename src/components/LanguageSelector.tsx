@@ -18,6 +18,7 @@ const LANGUAGES = [
   { code: 'tr', label: 'Turkish', native: 'Türkçe' },
   { code: 'nl', label: 'Dutch', native: 'Nederlands' },
   { code: 'pl', label: 'Polish', native: 'Polski' },
+  { code: 'tw', label: 'Twi', native: 'Twi' },
 ]
 
 interface Props {
