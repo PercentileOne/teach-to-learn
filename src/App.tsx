@@ -13,6 +13,7 @@ import GlobalLanguageSection from './components/GlobalLanguageSection'
 import LiveStageSection from './components/LiveStageSection'
 import SocialSharingSection from './components/SocialSharingSection'
 import PricingSection from './components/PricingSection'
+import TestimonialsSection from './components/TestimonialsSection'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
       <GlobalLanguageSection />
       <SocialSharingSection />
       <PricingSection />
+      <TestimonialsSection />
       <Footer />
     </>
   )
