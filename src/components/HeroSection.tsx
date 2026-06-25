@@ -42,7 +42,7 @@ export default function HeroSection() {
               <span style={{ fontSize: 20 }}>🧠</span>
               <span style={{ fontSize: 13, fontWeight: 700, color: '#6EE7B7', lineHeight: 1.4 }}>
                 The proven method that <strong style={{ color: '#FFF', fontWeight: 900 }}>doubles comprehension</strong> —<br/>
-                <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.65)' }}>now powered by AI and available for any subject.</span>
+                <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.65)' }}>now powered by AI and available for any subject or certification.</span>
               </span>
             </div>
 
