@@ -32,10 +32,19 @@ export default function HeroSection() {
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-[clamp(1.1rem,3vw,1.45rem)] text-white/90 font-semibold mb-6" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.12)' }}>
+            <p className="text-[clamp(1.1rem,3vw,1.45rem)] text-white/90 font-semibold mb-4" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.12)' }}>
               Pick any subject. We build your study path.<br/>
               <span style={{ color: '#FDE68A' }}>Then you speak — and AI scores you.</span>
             </p>
+
+            {/* Comprehension claim */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'linear-gradient(135deg,rgba(52,211,153,0.18),rgba(16,185,129,0.10))', border: '1px solid rgba(52,211,153,0.40)', borderRadius: 12, padding: '10px 16px', marginBottom: 24 }}>
+              <span style={{ fontSize: 20 }}>🧠</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#6EE7B7', lineHeight: 1.4 }}>
+                The proven method that <strong style={{ color: '#FFF', fontWeight: 900 }}>doubles comprehension</strong> —<br/>
+                <span style={{ fontWeight: 500, color: 'rgba(255,255,255,0.65)' }}>now powered by AI and available for any subject.</span>
+              </span>
+            </div>
 
             {/* 3-step flow */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28, maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }} className="md:mx-0">
