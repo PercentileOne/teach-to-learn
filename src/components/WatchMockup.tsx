@@ -17,37 +17,37 @@ const ANIM = `
 
 // ── Screen 1: Speaking (mirrors phone TalkScreen) ─────────────────────────────
 function TalkScreen() {
-  const CIRC = 2 * Math.PI * 24
+  const CIRC = 2 * Math.PI * 18
   const delays = [0, 0.15, 0.07, 0.22, 0.1, 0.18, 0.05, 0.2]
   return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:5, padding:'4px 4px' }}>
-      {/* Countdown ring */}
-      <div style={{ position:'relative', width:48, height:48 }}>
-        <svg viewBox="0 0 52 52" style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}>
-          <circle cx="26" cy="26" r="24" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="4" />
-          <circle cx="26" cy="26" r="24" fill="none" stroke="#1E4DD8" strokeWidth="4"
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:3, padding:'6px 4px' }}>
+      {/* Countdown ring — small */}
+      <div style={{ position:'relative', width:36, height:36 }}>
+        <svg viewBox="0 0 40 40" style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}>
+          <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="3" />
+          <circle cx="20" cy="20" r="18" fill="none" stroke="#1E4DD8" strokeWidth="3"
             strokeDasharray={CIRC} strokeDashoffset={CIRC * 0.35}
             strokeLinecap="round"
-            style={{ filter:'drop-shadow(0 0 4px #1E4DD8)' }}
+            style={{ filter:'drop-shadow(0 0 3px #1E4DD8)' }}
           />
         </svg>
         <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-          <span style={{ fontSize:13, fontWeight:900, color:'#FFF', letterSpacing:'-0.5px', lineHeight:1 }}>1:20</span>
-          <span style={{ fontSize:6, color:'rgba(255,255,255,0.40)' }}>remaining</span>
+          <span style={{ fontSize:10, fontWeight:900, color:'#FFF', lineHeight:1 }}>1:20</span>
+          <span style={{ fontSize:5, color:'rgba(255,255,255,0.40)' }}>left</span>
         </div>
       </div>
 
       {/* Waveform */}
-      <svg width="43" height="16" viewBox="0 0 43 16">
+      <svg width="40" height="12" viewBox="0 0 40 12">
         {delays.map((d, i) => (
-          <rect key={i} x={i * 5.5} y={0} width={3} height={16} rx={1.5} fill="#4F8EF7"
+          <rect key={i} x={i * 5} y={0} width={2.5} height={12} rx={1.2} fill="#4F8EF7"
             style={{ animation:`watch-bar-${i} .65s ${d}s ease-in-out infinite`, transformOrigin:'center bottom', transformBox:'fill-box' }}
           />
         ))}
       </svg>
 
-      {/* Speaking button */}
-      <div style={{ background:'#1E4DD8', borderRadius:20, padding:'4px 10px', fontSize:8, fontWeight:800, color:'#FFF', boxShadow:'0 2px 8px rgba(30,77,216,0.55)', display:'flex', alignItems:'center', gap:3 }}>
+      {/* Speaking pill */}
+      <div style={{ background:'#1E4DD8', borderRadius:12, padding:'3px 8px', fontSize:7, fontWeight:800, color:'#FFF', boxShadow:'0 2px 6px rgba(30,77,216,0.55)' }}>
         🎙 Speaking…
       </div>
     </div>
@@ -68,9 +68,9 @@ function ResultsScreen() {
   ]
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:5, padding:'0 6px' }}>
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:3, padding:'4px 6px' }}>
       {/* Score ring */}
-      <div style={{ position:'relative', width:52, height:52 }}>
+      <div style={{ position:'relative', width:40, height:40 }}>
         <svg viewBox="0 0 52 52" style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}>
           <circle cx="26" cy="26" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
           <circle cx="26" cy="26" r="24" fill="none" stroke="#D97706" strokeWidth="4"
