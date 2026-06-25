@@ -69,7 +69,6 @@ export default function PanelQA({ mood }: { mood: Mood }) {
   const [qIndex,   setQIndex]   = useState(0)
   const [qaLog,    setQaLog]    = useState<QA[]>([])
   const [transcript, setTranscript] = useState('')
-  const [listening,  setListening]  = useState(false)
   const [askerIdx,   setAskerIdx]   = useState(0)
   const [error,      setError]      = useState('')
   const [finalScore, setFinalScore] = useState<Scores | null>(null)
@@ -147,16 +146,14 @@ Rules:
       setTranscript(t)
     }
     r.onerror = (e: any) => {
-      setListening(false)
       if (e.error === 'not-allowed') setError('Microphone access denied. Please allow mic access in your browser and try again.')
       else if (e.error === 'no-speech') setError('No speech detected. Make sure your mic is working and try again.')
       else setError(`Mic error: ${e.error}. Please try again.`)
       setPhase('asking')
     }
-    r.onend = () => setListening(false)
+    r.onend = () => {}
     recogRef.current = r
     r.start()
-    setListening(true)
     setTranscript('')
     setPhase('answering')
     if (currentAudio) { currentAudio.pause(); currentAudio = null }
@@ -165,7 +162,6 @@ Rules:
 
   const stopListening = () => {
     recogRef.current?.stop()
-    setListening(false)
   }
 
   // ── Score answer via Claude ────────────────────────────────────────────────
