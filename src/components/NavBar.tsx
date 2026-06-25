@@ -97,8 +97,9 @@ export default function NavBar() {
             </button>
           </div>
 
-          {/* Mobile — About + CTA */}
+          {/* Mobile — Language + About + CTA */}
           <div className="flex md:hidden" style={{ gap: '8px', alignItems: 'center' }}>
+            <LanguageSelector />
             <button
               onClick={() => setAboutOpen(true)}
               style={{
