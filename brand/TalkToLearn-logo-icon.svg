@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#0A0F1C" rx="112"/>
+  <defs>
+    <clipPath id="cap"><rect x="196" y="80" width="120" height="196" rx="60"/></clipPath>
+  </defs>
+  <rect x="196" y="80" width="120" height="196" rx="60" fill="#4F8EF7"/>
+  <line x1="196" y1="134" x2="316" y2="134" stroke="rgba(255,255,255,0.28)" stroke-width="10" clip-path="url(#cap)" stroke-linecap="round"/>
+  <line x1="196" y1="168" x2="316" y2="168" stroke="rgba(255,255,255,0.28)" stroke-width="10" clip-path="url(#cap)" stroke-linecap="round"/>
+  <line x1="196" y1="202" x2="316" y2="202" stroke="rgba(255,255,255,0.28)" stroke-width="10" clip-path="url(#cap)" stroke-linecap="round"/>
+  <line x1="196" y1="236" x2="316" y2="236" stroke="rgba(255,255,255,0.28)" stroke-width="10" clip-path="url(#cap)" stroke-linecap="round"/>
+  <path d="M156 206 L156 234 A100 100 0 0 0 356 234 L356 206" fill="none" stroke="#4F8EF7" stroke-width="18" stroke-linecap="round"/>
+  <line x1="256" y1="334" x2="256" y2="390" stroke="#4F8EF7" stroke-width="18" stroke-linecap="round"/>
+  <line x1="196" y1="390" x2="316" y2="390" stroke="#4F8EF7" stroke-width="18" stroke-linecap="round"/>
+  <path d="M364 170 Q385 206 364 242" fill="none" stroke="#4F8EF7" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+  <path d="M386 148 Q415 206 386 264" fill="none" stroke="#4F8EF7" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
+</svg>

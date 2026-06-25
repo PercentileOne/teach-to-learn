@@ -1,0 +1,19 @@
+<svg width="600" height="780" viewBox="0 0 600 780" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="780" fill="#FFFFFF" rx="72" stroke="#E5E7EB" stroke-width="1"/>
+  <defs>
+    <clipPath id="cap"><rect x="228" y="60" width="144" height="234" rx="72"/></clipPath>
+  </defs>
+  <rect x="228" y="60" width="144" height="234" rx="72" fill="#0A0F1C"/>
+  <line x1="228" y1="126" x2="372" y2="126" stroke="rgba(255,255,255,0.30)" stroke-width="12" clip-path="url(#cap)" stroke-linecap="round"/>
+  <line x1="228" y1="168" x2="372" y2="168" stroke="rgba(255,255,255,0.30)" stroke-width="12" clip-path="url(#cap)" stroke-linecap="round"/>
+  <line x1="228" y1="210" x2="372" y2="210" stroke="rgba(255,255,255,0.30)" stroke-width="12" clip-path="url(#cap)" stroke-linecap="round"/>
+  <line x1="228" y1="252" x2="372" y2="252" stroke="rgba(255,255,255,0.30)" stroke-width="12" clip-path="url(#cap)" stroke-linecap="round"/>
+  <path d="M186 246 L186 276 A114 114 0 0 0 414 276 L414 246" fill="none" stroke="#0A0F1C" stroke-width="21" stroke-linecap="round"/>
+  <line x1="300" y1="390" x2="300" y2="456" stroke="#0A0F1C" stroke-width="21" stroke-linecap="round"/>
+  <line x1="222" y1="456" x2="378" y2="456" stroke="#0A0F1C" stroke-width="21" stroke-linecap="round"/>
+  <path d="M426 204 Q450 237 426 270" fill="none" stroke="#0A0F1C" stroke-width="7.5" stroke-linecap="round" opacity="0.30"/>
+  <path d="M450 180 Q486 237 450 294" fill="none" stroke="#0A0F1C" stroke-width="6" stroke-linecap="round" opacity="0.18"/>
+  <text x="300" y="570" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="72" font-weight="600" letter-spacing="-1.5" fill="#0A0F1C">TalkToLearn</text>
+  <line x1="180" y1="615" x2="420" y2="615" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
+  <text x="300" y="660" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="28" font-weight="300" fill="rgba(0,0,0,0.38)" letter-spacing="1.5">Talk About It, To Understand It.</text>
+</svg>
