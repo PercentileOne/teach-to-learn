@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import NavBar from './components/NavBar'
 import HeroSection from './components/HeroSection'
+import VideoFeed from './components/VideoFeed'
+import UserProfile from './components/UserProfile'
 import TeachToLearnSection from './components/TeachToLearnSection'
 import CardFlowSection from './components/CardFlowSection'
 import IpadWalkthroughSection from './components/IpadWalkthroughSection'
@@ -17,8 +20,17 @@ import TestimonialsSection from './components/TestimonialsSection'
 import Footer from './components/Footer'
 
 export default function App() {
+  const [showFeed, setShowFeed] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
+
+  // Expose globally so HeroSection CTA can trigger the feed
+  ;(window as unknown as Record<string, unknown>).__openVideoFeed = () => setShowFeed(true)
+  ;(window as unknown as Record<string, unknown>).__openUserProfile = () => setShowProfile(true)
+
   return (
     <>
+      {showFeed && <VideoFeed onClose={() => setShowFeed(false)} />}
+      {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
       <NavBar />
       <HeroSection />
       <TeachToLearnSection />

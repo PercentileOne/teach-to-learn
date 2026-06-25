@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import PhoneMockup from './PhoneMockup'
-import { openContact } from './NavBar'
+
 import { track } from '../analytics'
 import { BookOpen, Mic, Trophy, Zap, Play } from 'lucide-react'
 
@@ -110,7 +110,7 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-3.5 justify-center md:justify-start mb-6">
-              <button className="btn-primary" onClick={() => { track('cta_start_free'); openContact() }} style={{ background: 'rgba(30,77,216,0.95)', boxShadow: '0 4px 18px rgba(30,77,216,0.55)' }}>{t('hero.startFree')}</button>
+              <button className="btn-primary" onClick={() => { track('cta_give_talk'); (window as unknown as Record<string, () => void>).__openVideoFeed?.() }} style={{ background: 'rgba(30,77,216,0.95)', boxShadow: '0 4px 18px rgba(30,77,216,0.55)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>🎙 Give a Talk</button>
               <button className="btn-secondary" onClick={() => { track('cta_watch_demo'); document.getElementById('live-stage')?.scrollIntoView({ behavior: 'smooth' }) }} style={{ background: 'rgba(0,0,0,0.40)', border: '1px solid rgba(255,255,255,0.30)', color: '#fff', backdropFilter: 'blur(8px)', display: 'inline-flex', alignItems: 'center', gap: 7 }}><Play size={13} strokeWidth={2.5} fill='white' /> {t('hero.watchDemo')}</button>
             </div>
 
