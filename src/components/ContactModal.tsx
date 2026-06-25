@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { track } from '../analytics'
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -18,7 +19,7 @@ export default function ContactModal({ onClose }: { onClose: () => void }) {
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ name, email, subject, message }),
       })
-      if (res.ok) { setStatus('sent') } else { setStatus('error') }
+      if (res.ok) { setStatus('sent'); track('contact_form_sent') } else { setStatus('error') }
     } catch { setStatus('error') }
   }
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { track } from '../analytics'
 import AboutModal from './AboutModal'
 import ContactModal from './ContactModal'
 
@@ -87,7 +88,7 @@ export default function NavBar() {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'
             ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(30,77,216,.32)'
           }}
-          onClick={openContact}
+          onClick={() => { track('cta_launching_soon'); openContact() }}
           >
             Launching Soon
           </button>

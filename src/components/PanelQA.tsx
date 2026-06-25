@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { track } from '../analytics'
 
 type Mood = 'friendly' | 'professional' | 'tough'
 type Phase = 'setup' | 'generating' | 'asking' | 'answering' | 'scoring' | 'results'
@@ -114,6 +115,7 @@ Rules:
       setQaLog([])
       setAskerIdx(0)
       setPhase('asking')
+      track('panel_qa_started', { topic, mood })
     } catch (e) {
       setError('Could not generate questions. Please try again.')
       setPhase('setup')
@@ -201,7 +203,9 @@ No other text.`,
       if (qIndex + 1 >= questions.length) {
         // Final results
         const avg = (k: keyof Scores) => Math.round(newLog.reduce((s, q) => s + (q.scores?.[k] || 0), 0) / newLog.length)
-        setFinalScore({ clarity: avg('clarity'), confidence: avg('confidence'), relevance: avg('relevance'), depth: avg('depth') })
+        const scores = { clarity: avg('clarity'), confidence: avg('confidence'), relevance: avg('relevance'), depth: avg('depth') }
+        setFinalScore(scores)
+        track('panel_qa_completed', { topic, mood, score: String(Math.round((scores.clarity + scores.confidence + scores.relevance + scores.depth) / 4)) })
         setPhase('results')
       } else {
         setQIndex(i => i + 1)

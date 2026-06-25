@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import InterviewPanel from './InterviewPanel'
 import PanelQA from './PanelQA'
 import { openContact } from './NavBar'
+import { track } from '../analytics'
 
 const KF = `
 @keyframes stage-in { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
@@ -53,7 +54,7 @@ export default function LiveStageSection() {
               <div style={{ fontSize: 15, fontWeight: 800, color: '#FFF', marginBottom: 4 }}>Ready to take the real stage?</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,.38)' }}>Join the waitlist and be first when we launch.</div>
             </div>
-            <button onClick={openContact} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 28px', borderRadius: 50, border: 'none', cursor: 'pointer', background: '#1E4DD8', color: '#FFF', fontWeight: 800, fontSize: 14, animation: 'cta-glow 2.5s ease-in-out infinite' }}>
+            <button onClick={() => { track('cta_join_waitlist'); openContact() }} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 28px', borderRadius: 50, border: 'none', cursor: 'pointer', background: '#1E4DD8', color: '#FFF', fontWeight: 800, fontSize: 14, animation: 'cta-glow 2.5s ease-in-out infinite' }}>
               🚀 Join the Waitlist
             </button>
           </div>

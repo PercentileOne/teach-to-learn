@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { openContact } from './NavBar'
+import { track } from '../analytics'
 
 const KF = `
 @keyframes pr-fadein { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
@@ -308,7 +309,7 @@ export default function PricingSection() {
                   }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '.88' }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1' }}
-                  onClick={openContact}
+                  onClick={() => { track('cta_notify_pricing', { plan: plan.name }); openContact() }}
                 >
                   🚀 Notify Me at Launch
                 </button>
