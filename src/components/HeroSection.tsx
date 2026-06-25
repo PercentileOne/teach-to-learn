@@ -38,7 +38,7 @@ export default function HeroSection() {
             </p>
 
             {/* Comprehension claim */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'linear-gradient(135deg,rgba(52,211,153,0.18),rgba(16,185,129,0.10))', border: '1px solid rgba(52,211,153,0.40)', borderRadius: 12, padding: '10px 16px', marginBottom: 24 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(52,211,153,0.50)', borderRadius: 12, padding: '10px 16px', marginBottom: 24 }}>
               <span style={{ fontSize: 20 }}>🧠</span>
               <span style={{ fontSize: 13, fontWeight: 700, color: '#6EE7B7', lineHeight: 1.4 }}>
                 The proven method that <strong style={{ color: '#FFF', fontWeight: 900 }}>doubles comprehension</strong> —<br/>
@@ -47,7 +47,7 @@ export default function HeroSection() {
             </div>
 
             {/* 3-step flow */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28, maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }} className="md:mx-0">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
               {[
                 {
                   step: '01',
@@ -73,19 +73,19 @@ export default function HeroSection() {
               ].map(({ step, icon, title, desc, color }) => (
                 <div key={step} style={{
                   display: 'flex', alignItems: 'flex-start', gap: 14,
-                  background: 'rgba(255,255,255,0.06)', borderRadius: 14,
-                  padding: '14px 16px', border: '1px solid rgba(255,255,255,0.10)',
-                  backdropFilter: 'blur(8px)',
+                  background: 'rgba(0,0,0,0.25)', borderRadius: 14,
+                  padding: '14px 16px', border: '1px solid rgba(255,255,255,0.18)',
+                  backdropFilter: 'blur(12px)',
                 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `${color}22`, border: `1px solid ${color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `${color}33`, border: `1px solid ${color}66`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
                     {icon}
                   </div>
                   <div style={{ textAlign: 'left' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
                       <span style={{ fontSize: 10, fontWeight: 800, color, letterSpacing: '0.1em' }}>STEP {step}</span>
                       <span style={{ fontSize: 13, fontWeight: 800, color: '#FFF' }}>{title}</span>
                     </div>
-                    <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{desc}</p>
+                    <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.80)', lineHeight: 1.5 }}>{desc}</p>
                   </div>
                 </div>
               ))}
