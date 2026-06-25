@@ -1,134 +1,154 @@
+import { useEffect, useState } from 'react'
+
+const SCREEN_MS = 3800
+const FADE_MS   = 600
+
 const ANIM = `
 @keyframes watch-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
-@keyframes watch-bar-0 { 0%,100% { transform:scaleY(.35); } 50% { transform:scaleY(1); } }
-@keyframes watch-bar-1 { 0%,100% { transform:scaleY(.5);  } 50% { transform:scaleY(.9); } }
-@keyframes watch-bar-2 { 0%,100% { transform:scaleY(.6);  } 50% { transform:scaleY(1); } }
+@keyframes watch-bar-0 { 0%,100% { transform:scaleY(.35); } 50% { transform:scaleY(1);   } }
+@keyframes watch-bar-1 { 0%,100% { transform:scaleY(.5);  } 50% { transform:scaleY(.9);  } }
+@keyframes watch-bar-2 { 0%,100% { transform:scaleY(.6);  } 50% { transform:scaleY(1);   } }
 @keyframes watch-bar-3 { 0%,100% { transform:scaleY(.3);  } 50% { transform:scaleY(.85); } }
-@keyframes watch-bar-4 { 0%,100% { transform:scaleY(.7);  } 50% { transform:scaleY(1); } }
+@keyframes watch-bar-4 { 0%,100% { transform:scaleY(.7);  } 50% { transform:scaleY(1);   } }
 @keyframes watch-bar-5 { 0%,100% { transform:scaleY(.45); } 50% { transform:scaleY(.95); } }
-@keyframes watch-bar-6 { 0%,100% { transform:scaleY(.55); } 50% { transform:scaleY(1); } }
-@keyframes watch-bar-7 { 0%,100% { transform:scaleY(.4);  } 50% { transform:scaleY(.8); } }
+@keyframes watch-bar-6 { 0%,100% { transform:scaleY(.55); } 50% { transform:scaleY(1);   } }
+@keyframes watch-bar-7 { 0%,100% { transform:scaleY(.4);  } 50% { transform:scaleY(.8);  } }
 `
 
-// Bars anchored at the bottom — grow upward
-function WaveBars() {
+// ── Screen: Recording ─────────────────────────────────────────────────────────
+function RecordingScreen() {
   const delays = [0, 0.15, 0.07, 0.22, 0.1, 0.18, 0.05, 0.2]
-  const maxH = 20
   return (
-    <svg width="43" height={maxH} viewBox={`0 0 43 ${maxH}`}>
-      {delays.map((d, i) => (
-        <rect
-          key={i}
-          x={i * 5.5}
-          y={0}
-          width={3}
-          height={maxH}
-          rx={1.5}
-          fill="#4F8EF7"
-          style={{
-            animation: `watch-bar-${i} .65s ${d}s ease-in-out infinite`,
-            transformOrigin: 'center bottom',
-            transformBox: 'fill-box',
-          }}
-        />
-      ))}
-    </svg>
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:6 }}>
+      <div style={{ fontFamily:'monospace', fontSize:14, fontWeight:900, color:'#4F8EF7', letterSpacing:'-0.03em' }}>
+        00:42
+      </div>
+      <svg width="43" height="20" viewBox="0 0 43 20">
+        {delays.map((d, i) => (
+          <rect key={i} x={i * 5.5} y={0} width={3} height={20} rx={1.5} fill="#4F8EF7"
+            style={{ animation:`watch-bar-${i} .65s ${d}s ease-in-out infinite`, transformOrigin:'center bottom', transformBox:'fill-box' }}
+          />
+        ))}
+      </svg>
+      <div style={{ width:18, height:18, borderRadius:'50%', background:'rgba(239,68,68,0.85)', border:'1.5px solid rgba(239,68,68,0.4)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 8px rgba(239,68,68,0.5)' }}>
+        <div style={{ width:6, height:6, borderRadius:1, background:'#fff' }} />
+      </div>
+    </div>
   )
 }
 
+// ── Screen: Results ───────────────────────────────────────────────────────────
+function ResultsScreen() {
+  const CIRCUMFERENCE = 2 * Math.PI * 24
+  const score = 82
+  const fraction = score / 100
+
+  const bars = [
+    { color:'#38BDF8', val:87 },
+    { color:'#818CF8', val:74 },
+    { color:'#34D399', val:91 },
+    { color:'#FB923C', val:82 },
+  ]
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:5, padding:'0 6px' }}>
+      {/* Score ring */}
+      <div style={{ position:'relative', width:52, height:52 }}>
+        <svg viewBox="0 0 52 52" style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}>
+          <circle cx="26" cy="26" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
+          <circle cx="26" cy="26" r="24" fill="none" stroke="#D97706" strokeWidth="4"
+            strokeDasharray={CIRCUMFERENCE}
+            strokeDashoffset={(1 - fraction) * CIRCUMFERENCE}
+            strokeLinecap="round"
+            style={{ filter:'drop-shadow(0 0 4px #D97706)' }}
+          />
+        </svg>
+        <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+          <span style={{ fontSize:14, fontWeight:900, color:'#FFF', letterSpacing:'-0.5px', lineHeight:1 }}>{score}</span>
+          <span style={{ fontSize:7, color:'rgba(255,255,255,0.4)', lineHeight:1 }}>/ 100</span>
+        </div>
+      </div>
+
+      {/* Grade badge */}
+      <div style={{ background:'rgba(217,119,6,0.18)', border:'1px solid rgba(217,119,6,0.40)', borderRadius:20, padding:'2px 8px', fontSize:8, fontWeight:800, color:'#F59E0B' }}>
+        ⚡ Excellent
+      </div>
+
+      {/* Mini bars */}
+      <div style={{ width:'100%', display:'flex', flexDirection:'column', gap:3 }}>
+        {bars.map((b, i) => (
+          <div key={i} style={{ height:3, borderRadius:2, background:'rgba(255,255,255,0.08)', overflow:'hidden' }}>
+            <div style={{ width:`${b.val}%`, height:'100%', borderRadius:2, background:b.color }} />
+          </div>
+        ))}
+      </div>
+
+      <div style={{ fontSize:7, color:'rgba(255,255,255,0.30)', textAlign:'center' }}>📤 Share results</div>
+    </div>
+  )
+}
+
+// ── Cycle controller ──────────────────────────────────────────────────────────
+// The watch syncs with the phone: phone shows results on screen 5 (index 4),
+// so the watch shows results at the same point in the cycle.
+const SCREENS = ['recording', 'recording', 'recording', 'recording', 'results'] as const
+type ScreenId = typeof SCREENS[number]
+
+function AnimatedWatch() {
+  const [current, setCurrent] = useState<ScreenId>('recording')
+  const [opacity, setOpacity] = useState(1)
+  const idx = { current: 0 }
+
+  useEffect(() => {
+    const cycle = () => {
+      setOpacity(0)
+      setTimeout(() => {
+        idx.current = (idx.current + 1) % SCREENS.length
+        setCurrent(SCREENS[idx.current])
+        setOpacity(1)
+      }, FADE_MS)
+    }
+    const t = setInterval(cycle, SCREEN_MS)
+    return () => clearInterval(t)
+  }, [])
+
+  return (
+    <div style={{ transition:`opacity ${FADE_MS}ms ease`, opacity, height:'100%' }}>
+      {current === 'results' ? <ResultsScreen /> : <RecordingScreen />}
+    </div>
+  )
+}
+
+// ── Watch shell ───────────────────────────────────────────────────────────────
 export default function WatchMockup() {
   return (
     <>
       <style>{ANIM}</style>
-      <div style={{
-        width: 110,
-        animation: 'watch-float 4s 1.5s ease-in-out infinite',
-        filter: 'drop-shadow(0 8px 22px rgba(0,0,0,0.30)) drop-shadow(0 2px 6px rgba(79,142,247,0.20))',
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:0,
+        animation:'watch-float 4s 1.5s ease-in-out infinite',
+        filter:'drop-shadow(0 8px 22px rgba(0,0,0,0.32)) drop-shadow(0 2px 6px rgba(79,142,247,0.18))',
       }}>
-        {/* Watch band top */}
-        <div style={{
-          width: 46, height: 28, background: 'linear-gradient(180deg,#1a1a2e,#111827)',
-          borderRadius: '6px 6px 0 0', margin: '0 auto',
-          borderLeft: '1.5px solid rgba(255,255,255,0.08)',
-          borderRight: '1.5px solid rgba(255,255,255,0.08)',
-          borderTop: '1.5px solid rgba(255,255,255,0.12)',
-        }} />
 
-        {/* Watch case */}
-        <div style={{
-          width: 78, height: 94,
-          background: 'linear-gradient(145deg,#1c1c2e 0%,#12121f 100%)',
-          borderRadius: 20,
-          border: '2px solid rgba(255,255,255,0.12)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(0,0,0,0.5)',
-          position: 'relative',
-          margin: '0 auto',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          {/* Crown button */}
-          <div style={{
-            position: 'absolute', right: -5, top: 28,
-            width: 5, height: 20, borderRadius: 3,
-            background: 'linear-gradient(180deg,#2a2a3e,#1a1a2e)',
-            border: '1px solid rgba(255,255,255,0.10)',
-          }} />
+        {/* Band top */}
+        <div style={{ width:44, height:26, background:'linear-gradient(180deg,#1a1a2e,#111827)', borderRadius:'6px 6px 0 0', borderLeft:'1.5px solid rgba(255,255,255,0.08)', borderRight:'1.5px solid rgba(255,255,255,0.08)', borderTop:'1.5px solid rgba(255,255,255,0.12)' }} />
 
+        {/* Case */}
+        <div style={{ width:80, height:96, background:'linear-gradient(145deg,#1c1c2e 0%,#12121f 100%)', borderRadius:20, border:'2px solid rgba(255,255,255,0.12)', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(0,0,0,0.5)', position:'relative', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          {/* Crown */}
+          <div style={{ position:'absolute', right:-5, top:28, width:5, height:20, borderRadius:3, background:'linear-gradient(180deg,#2a2a3e,#1a1a2e)', border:'1px solid rgba(255,255,255,0.10)' }} />
           {/* Screen */}
-          <div style={{
-            width: 62, height: 78,
-            background: 'linear-gradient(160deg,#080e1a 0%,#0d1525 100%)',
-            borderRadius: 14,
-            overflow: 'hidden',
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            gap: 6,
-            padding: '8px 6px',
-          }}>
-            {/* Timer */}
-            <div style={{
-              fontFamily: 'monospace',
-              fontSize: 14,
-              fontWeight: 900,
-              color: '#4F8EF7',
-              letterSpacing: '-0.03em',
-              lineHeight: 1,
-            }}>
-              00:42
-            </div>
-
-            {/* Waveform */}
-            <WaveBars />
-
-            {/* Stop dot */}
-            <div style={{
-              width: 18, height: 18,
-              borderRadius: '50%',
-              background: 'rgba(239,68,68,0.85)',
-              border: '1.5px solid rgba(239,68,68,0.4)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 0 8px rgba(239,68,68,0.5)',
-            }}>
-              <div style={{ width: 6, height: 6, borderRadius: 1, background: '#fff' }} />
-            </div>
+          <div style={{ width:64, height:80, background:'linear-gradient(160deg,#080e1a 0%,#0d1525 100%)', borderRadius:14, overflow:'hidden' }}>
+            <AnimatedWatch />
           </div>
         </div>
 
-        {/* Watch band bottom */}
-        <div style={{
-          width: 46, height: 30, background: 'linear-gradient(180deg,#111827,#1a1a2e)',
-          borderRadius: '0 0 8px 8px', margin: '0 auto',
-          borderLeft: '1.5px solid rgba(255,255,255,0.08)',
-          borderRight: '1.5px solid rgba(255,255,255,0.08)',
-          borderBottom: '1.5px solid rgba(255,255,255,0.06)',
-        }} />
+        {/* Band bottom */}
+        <div style={{ width:44, height:28, background:'linear-gradient(180deg,#111827,#1a1a2e)', borderRadius:'0 0 8px 8px', borderLeft:'1.5px solid rgba(255,255,255,0.08)', borderRight:'1.5px solid rgba(255,255,255,0.08)', borderBottom:'1.5px solid rgba(255,255,255,0.06)' }} />
 
         {/* Label */}
-        <p style={{
-          textAlign: 'center', marginTop: 8,
-          fontSize: 10, fontWeight: 700,
-          color: 'rgba(255,255,255,0.35)',
-          letterSpacing: '0.08em', textTransform: 'uppercase',
-        }}>Apple Watch</p>
+        <p style={{ textAlign:'center', marginTop:10, fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.65)', letterSpacing:'0.12em', textTransform:'uppercase' }}>
+          Apple Watch
+        </p>
       </div>
     </>
   )
