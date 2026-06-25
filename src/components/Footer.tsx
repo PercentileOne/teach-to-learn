@@ -63,7 +63,7 @@ export default function Footer() {
                   onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#FFF'}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.45)'}
                 >{t('footer.contact')}</button>
-                <a href="https://www.linkedin.com/in/franciscobbinah/" target="_blank" rel="noopener noreferrer"
+                <a href="https://www.linkedin.com/in/francis-cobbinah150769" target="_blank" rel="noopener noreferrer"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .18s' }}
                   onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#FFF'}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.45)'}
