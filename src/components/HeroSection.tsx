@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import PhoneMockup from './PhoneMockup'
+import WatchMockup from './WatchMockup'
 
 import { track } from '../analytics'
 import { BookOpen, Mic, Trophy, Zap, Play } from 'lucide-react'
@@ -122,16 +123,22 @@ export default function HeroSection() {
             <p className="text-sm text-white/40" style={{ marginTop: 10 }}>{t('hero.trust')}</p>
           </div>
 
-          {/* Floating phone mockup */}
-          <div className="w-[260px] md:w-auto" style={{
+          {/* Floating phone + watch column */}
+          <div style={{
             flexShrink: 0,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16,
             animation: 'hero-phone .9s .2s cubic-bezier(.4,0,.2,1) both',
-            filter: [
-              'drop-shadow(0 8px 24px rgba(0,0,0,0.18))',
-              'drop-shadow(0 32px 64px rgba(0,0,0,0.14))',
-            ].join(' '),
           }}>
-            <PhoneMockup variant="timer" animated />
+            <div className="w-[260px] md:w-auto" style={{
+              filter: [
+                'drop-shadow(0 8px 24px rgba(0,0,0,0.18))',
+                'drop-shadow(0 32px 64px rgba(0,0,0,0.14))',
+              ].join(' '),
+            }}>
+              <PhoneMockup variant="timer" animated />
+            </div>
+
+            <WatchMockup />
           </div>
 
         </div>
