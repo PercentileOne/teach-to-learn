@@ -123,10 +123,9 @@ export default function HeroSection() {
             <p className="text-sm text-white/40" style={{ marginTop: 10 }}>{t('hero.trust')}</p>
           </div>
 
-          {/* Floating phone + watch row */}
-          <div style={{
+          {/* Floating phone + watch — row on desktop, column on mobile */}
+          <div className="flex flex-col items-center gap-6 md:flex-row md:items-end md:gap-6" style={{
             flexShrink: 0,
-            display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 24,
             animation: 'hero-phone .9s .2s cubic-bezier(.4,0,.2,1) both',
             marginRight: '-40px',
           }}>
@@ -139,7 +138,10 @@ export default function HeroSection() {
               <PhoneMockup variant="timer" animated />
             </div>
 
-            <WatchMockup />
+            {/* Scale watch down on mobile */}
+            <div className="scale-[0.70] md:scale-100 origin-top">
+              <WatchMockup />
+            </div>
           </div>
 
         </div>
