@@ -80,7 +80,7 @@ export default function HeroSection() {
             </p>
 
             {/* Comprehension claim */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(52,211,153,0.50)', borderRadius: 12, padding: '10px 16px', marginBottom: 24 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(52,211,153,0.50)', borderRadius: 12, padding: '10px 16px', marginBottom: 24, boxShadow: '0 4px 20px rgba(0,0,0,0.25), 0 1px 4px rgba(0,0,0,0.15)' }}>
               <Zap size={18} color="#6EE7B7" strokeWidth={2.5} />
               <span style={{ fontSize: 13, fontWeight: 700, color: '#6EE7B7', lineHeight: 1.4 }}>
                 {t('hero.comprehensionBanner')}
@@ -95,6 +95,7 @@ export default function HeroSection() {
                   background: bg, borderRadius: 14,
                   padding: '16px 18px', border: `1px solid ${border}`,
                   backdropFilter: 'blur(12px)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.25), 0 1px 4px rgba(0,0,0,0.15)',
                 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}22`, border: `1px solid ${color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Icon size={18} color={color} strokeWidth={2} />
