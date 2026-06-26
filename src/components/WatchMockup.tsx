@@ -20,9 +20,9 @@ function TalkScreen() {
   const CIRC = 2 * Math.PI * 38
   const delays = [0, 0.15, 0.07, 0.22, 0.1, 0.18, 0.05, 0.2]
   return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:10, padding:'8px 10px' }}>
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:7, padding:'6px 10px' }}>
       {/* Ring */}
-      <div style={{ position:'relative', width:80, height:80 }}>
+      <div style={{ position:'relative', width:58, height:58 }}>
         <svg viewBox="0 0 88 88" style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}>
           <circle cx="44" cy="44" r="38" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="7" />
           <circle cx="44" cy="44" r="38" fill="none" stroke="#2D8CFF" strokeWidth="7"
@@ -31,22 +31,22 @@ function TalkScreen() {
           />
         </svg>
         <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-          <span style={{ fontSize:22, fontWeight:900, color:'#FFF', lineHeight:1 }}>1:20</span>
-          <span style={{ fontSize:11, color:'rgba(255,255,255,0.45)', marginTop:2 }}>remaining</span>
+          <span style={{ fontSize:16, fontWeight:900, color:'#FFF', lineHeight:1 }}>1:20</span>
+          <span style={{ fontSize:8, color:'rgba(255,255,255,0.45)', marginTop:2 }}>remaining</span>
         </div>
       </div>
 
       {/* Waveform */}
-      <svg width="110" height="28" viewBox="0 0 110 28" style={{ width:110, height:28 }}>
+      <svg width="96" height="22" viewBox="0 0 96 22" style={{ width:96, height:22 }}>
         {delays.map((d, i) => (
-          <rect key={i} x={i * 13.75} y={0} width={7} height={28} rx={3.5} fill="#4F8EF7"
+          <rect key={i} x={i * 12} y={0} width={6} height={22} rx={3} fill="#4F8EF7"
             style={{ animation:`watch-bar-${i} .65s ${d}s ease-in-out infinite`, transformOrigin:'center bottom', transformBox:'fill-box' }}
           />
         ))}
       </svg>
 
       {/* Speaking pill */}
-      <div style={{ background:'#1E4DD8', borderRadius:20, padding:'6px 16px', fontSize:14, fontWeight:800, color:'#FFF', boxShadow:'0 4px 12px rgba(30,77,216,0.55)', whiteSpace:'nowrap' }}>
+      <div style={{ background:'#1E4DD8', borderRadius:20, padding:'4px 13px', fontSize:11, fontWeight:800, color:'#FFF', boxShadow:'0 4px 12px rgba(30,77,216,0.55)', whiteSpace:'nowrap' }}>
         🎙 Speaking…
       </div>
     </div>
@@ -67,9 +67,9 @@ function ResultsScreen() {
   ]
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:8, padding:'8px 12px' }}>
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', gap:6, padding:'6px 12px' }}>
       {/* Score ring */}
-      <div style={{ position:'relative', width:80, height:80 }}>
+      <div style={{ position:'relative', width:58, height:58 }}>
         <svg viewBox="0 0 88 88" style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}>
           <circle cx="44" cy="44" r="38" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="7" />
           <circle cx="44" cy="44" r="38" fill="none" stroke="#D97706" strokeWidth="7"
@@ -78,25 +78,25 @@ function ResultsScreen() {
           />
         </svg>
         <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-          <span style={{ fontSize:24, fontWeight:900, color:'#FFF', lineHeight:1 }}>{score}</span>
-          <span style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:1 }}>/100</span>
+          <span style={{ fontSize:18, fontWeight:900, color:'#FFF', lineHeight:1 }}>{score}</span>
+          <span style={{ fontSize:8, color:'rgba(255,255,255,0.4)', marginTop:1 }}>/100</span>
         </div>
       </div>
 
       {/* Grade badge */}
-      <div style={{ background:'rgba(217,119,6,0.18)', border:'1px solid rgba(217,119,6,0.40)', borderRadius:20, padding:'4px 14px', fontSize:13, fontWeight:800, color:'#F59E0B', whiteSpace:'nowrap' }}>
+      <div style={{ background:'rgba(217,119,6,0.18)', border:'1px solid rgba(217,119,6,0.40)', borderRadius:20, padding:'3px 12px', fontSize:11, fontWeight:800, color:'#F59E0B', whiteSpace:'nowrap' }}>
         ⚡ Excellent
       </div>
 
       {/* Bars */}
-      <div style={{ width:'100%', display:'flex', flexDirection:'column', gap:5 }}>
+      <div style={{ width:'100%', display:'flex', flexDirection:'column', gap:4 }}>
         {bars.map((b, i) => (
           <div key={i}>
             <div style={{ display:'flex', justifyContent:'space-between', marginBottom:2 }}>
-              <span style={{ fontSize:9, color:'rgba(255,255,255,0.45)' }}>{b.label}</span>
-              <span style={{ fontSize:9, color:b.color, fontWeight:700 }}>{b.val}</span>
+              <span style={{ fontSize:8, color:'rgba(255,255,255,0.45)' }}>{b.label}</span>
+              <span style={{ fontSize:8, color:b.color, fontWeight:700 }}>{b.val}</span>
             </div>
-            <div style={{ height:5, borderRadius:3, background:'rgba(255,255,255,0.08)', overflow:'hidden' }}>
+            <div style={{ height:4, borderRadius:3, background:'rgba(255,255,255,0.08)', overflow:'hidden' }}>
               <div style={{ width:`${b.val}%`, height:'100%', borderRadius:3, background:b.color }} />
             </div>
           </div>
