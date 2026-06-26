@@ -149,13 +149,12 @@ export default function WatchMockup() {
         <div style={{
           width: BAND_W,
           height: BAND_T,
-          background: 'linear-gradient(180deg, #1f2532 0%, #161c28 100%)',
+          background: 'linear-gradient(180deg, #111 0%, #0a0a0a 100%)',
           borderRadius: '10px 10px 0 0',
-          border: '1.5px solid rgba(255,255,255,0.10)',
+          border: '1.5px solid rgba(255,255,255,0.07)',
           borderBottom: 'none',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
-          // Subtle band texture lines
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 4px)',
         }} />
 
         {/* Case */}
@@ -222,11 +221,11 @@ export default function WatchMockup() {
         <div style={{
           width: BAND_W,
           height: BAND_B,
-          background: 'linear-gradient(180deg, #161c28 0%, #1f2532 100%)',
+          background: 'linear-gradient(180deg, #0a0a0a 0%, #111 100%)',
           borderRadius: '0 0 10px 10px',
-          border: '1.5px solid rgba(255,255,255,0.08)',
+          border: '1.5px solid rgba(255,255,255,0.06)',
           borderTop: 'none',
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px)',
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 4px)',
         }} />
 
         {/* Label */}

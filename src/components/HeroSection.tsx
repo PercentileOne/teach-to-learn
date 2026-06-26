@@ -7,7 +7,7 @@ import { BookOpen, Mic, Trophy, Zap, Play } from 'lucide-react'
 
 const HKF = `
 @keyframes hero-fade { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-@keyframes hero-phone { from { opacity:0; transform:rotate(-4deg) translateY(8px) scale(.96); } to { opacity:1; transform:rotate(-4deg) translateY(-8px) scale(1); } }
+@keyframes hero-phone { from { opacity:0; transform:translateY(8px) scale(.96); } to { opacity:1; transform:none; } }
 `
 
 export default function HeroSection() {
@@ -128,6 +128,7 @@ export default function HeroSection() {
             flexShrink: 0,
             display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 24,
             animation: 'hero-phone .9s .2s cubic-bezier(.4,0,.2,1) both',
+            marginRight: '-40px',
           }}>
             <div className="w-[260px] md:w-auto" style={{
               filter: [
