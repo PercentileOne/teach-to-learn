@@ -112,15 +112,38 @@ export default function TeachToLearnSection() {
 
             <button
               onClick={() => setResearchOpen(true)}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '13px', fontWeight: 700, color: ACCENT, background: `${ACCENT}0C`, border: `1px solid ${ACCENT}28`, borderRadius: '20px', padding: '6px 14px', cursor: 'pointer', transition: 'background .18s' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = `${ACCENT}18`}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = `${ACCENT}0C`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                fontSize: '13.5px', fontWeight: 800, color: '#fff',
+                background: `linear-gradient(135deg, ${ACCENT}, #2A5BFF)`,
+                border: 'none',
+                borderRadius: '24px', padding: '9px 18px',
+                cursor: 'pointer',
+                boxShadow: `0 0 0 3px ${ACCENT}33, 0 4px 16px ${ACCENT}44`,
+                animation: 'research-pulse 2.4s ease-in-out infinite',
+                transition: 'transform .18s, box-shadow .18s',
+                letterSpacing: '0.01em',
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = 'translateY(-2px) scale(1.03)'
+                el.style.boxShadow = `0 0 0 4px ${ACCENT}55, 0 8px 24px ${ACCENT}55`
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = ''
+                el.style.boxShadow = `0 0 0 3px ${ACCENT}33, 0 4px 16px ${ACCENT}44`
+              }}
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
               </svg>
               {t('why.researchLink')}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
             </button>
+            <style>{`@keyframes research-pulse { 0%,100% { box-shadow: 0 0 0 3px ${ACCENT}33, 0 4px 16px ${ACCENT}44; } 50% { box-shadow: 0 0 0 6px ${ACCENT}22, 0 4px 20px ${ACCENT}55; } }`}</style>
 
           </div>
 
