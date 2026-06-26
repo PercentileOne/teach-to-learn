@@ -126,15 +126,21 @@ function AnimatedWatch() {
   )
 }
 
-// ── Watch shell (Apple Watch Ultra proportions) ───────────────────────────────
+// ── Woven trail-loop band texture ─────────────────────────────────────────────
+const BAND_BG = [
+  'repeating-linear-gradient(90deg, transparent 0px, transparent 3px, rgba(255,255,255,0.05) 3px, rgba(255,255,255,0.05) 4px)',
+  'repeating-linear-gradient(0deg, transparent 0px, transparent 4px, rgba(0,0,0,0.28) 4px, rgba(0,0,0,0.28) 5px)',
+  'linear-gradient(180deg, #1c1c1c 0%, #111111 50%, #0e0e0e 100%)',
+].join(', ')
+
+// ── Watch shell (Apple Watch Ultra) ──────────────────────────────────────────
 export default function WatchMockup() {
-  // Case is 160 × 174px — close to Ultra's near-square footprint
-  const CASE_W  = 160
-  const CASE_H  = 174
-  const BAND_W  = 124   // bands slightly narrower than case
-  const BAND_T  = 52    // top band height
-  const BAND_B  = 56    // bottom band height
-  const RADIUS  = 36    // case corner radius
+  const CASE_W = 160
+  const CASE_H = 174
+  const BAND_W = 126
+  const BAND_T = 54
+  const BAND_B = 58
+  const RADIUS = 42   // squircle corners matching Ultra
 
   return (
     <>
@@ -142,31 +148,35 @@ export default function WatchMockup() {
       <div style={{
         display:'flex', flexDirection:'column', alignItems:'center', gap:0,
         animation:'watch-float 4s 1.5s ease-in-out infinite',
-        filter:'drop-shadow(0 12px 32px rgba(0,0,0,0.45)) drop-shadow(0 3px 8px rgba(45,140,255,0.18))',
+        filter:[
+          'drop-shadow(0 28px 40px rgba(0,0,0,0.75))',
+          'drop-shadow(0 8px 14px rgba(0,0,0,0.55))',
+          'drop-shadow(0 2px 3px rgba(0,0,0,0.90))',
+        ].join(' '),
       }}>
 
-        {/* Band — top */}
+        {/* Band top — woven texture */}
         <div style={{
-          width: BAND_W,
-          height: BAND_T,
-          backgroundColor: '#0d0d0d',
-          background: 'linear-gradient(180deg, #181818 0%, #0d0d0d 100%)',
+          width: BAND_W, height: BAND_T,
+          background: BAND_BG,
           borderRadius: '10px 10px 0 0',
-          border: '1.5px solid rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.06)',
           borderBottom: 'none',
+          boxShadow: 'inset 2px 0 0 rgba(255,255,255,0.04), inset -2px 0 0 rgba(0,0,0,0.35)',
         }} />
 
-        {/* Case */}
+        {/* Case — dark titanium with edge highlight sheen */}
         <div style={{
-          width: CASE_W,
-          height: CASE_H,
-          background: 'linear-gradient(145deg, #252535 0%, #14141f 60%, #1a1a2a 100%)',
+          width: CASE_W, height: CASE_H,
+          background: 'linear-gradient(148deg, #38384e 0%, #1c1c2a 16%, #111118 65%, #1b1b28 100%)',
           borderRadius: RADIUS,
-          border: '2px solid rgba(255,255,255,0.14)',
-          boxShadow: [
-            'inset 0 1px 0 rgba(255,255,255,0.10)',
-            'inset 0 -1px 0 rgba(0,0,0,0.5)',
-            '0 0 0 1px rgba(0,0,0,0.6)',
+          boxShadow:[
+            'inset 0 2px 0 rgba(255,255,255,0.22)',   // top titanium sheen
+            'inset 2px 0 0 rgba(255,255,255,0.07)',   // left edge
+            'inset -2px 0 4px rgba(0,0,0,0.45)',      // right inner shadow
+            'inset 0 -3px 8px rgba(0,0,0,0.65)',      // bottom depth
+            '0 0 0 1.5px rgba(255,255,255,0.10)',     // outer rim highlight
+            '0 0 0 3px rgba(0,0,0,0.80)',             // outer dark ring
           ].join(', '),
           position: 'relative',
           display: 'flex',
@@ -174,61 +184,74 @@ export default function WatchMockup() {
           justifyContent: 'center',
         }}>
 
-          {/* Digital crown — top right */}
+          {/* Digital crown — right side, knurled cylinder */}
           <div style={{
-            position:'absolute', right:-9, top:32,
-            width:9, height:30,
-            borderRadius:5,
-            background:'linear-gradient(90deg,#2a2a40,#3a3a54)',
-            border:'1px solid rgba(255,255,255,0.14)',
-            boxShadow:'inset 0 1px 0 rgba(255,255,255,0.12)',
+            position:'absolute', right:-12, top:28,
+            width:12, height:36,
+            borderRadius:6,
+            background:'linear-gradient(90deg, #2c2c42 0%, #4a4a66 45%, #38384e 100%)',
+            boxShadow:[
+              'inset 0 1px 0 rgba(255,255,255,0.22)',
+              'inset 0 -1px 0 rgba(0,0,0,0.55)',
+              '3px 0 6px rgba(0,0,0,0.50)',
+            ].join(', '),
+            backgroundImage:[
+              'repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 3px)',
+              'linear-gradient(90deg, #2c2c42 0%, #4a4a66 45%, #38384e 100%)',
+            ].join(', '),
           }} />
 
           {/* Side button — below crown */}
           <div style={{
-            position:'absolute', right:-8, top:72,
-            width:8, height:22,
-            borderRadius:4,
-            background:'linear-gradient(90deg,#252538,#353550)',
-            border:'1px solid rgba(255,255,255,0.10)',
+            position:'absolute', right:-11, top:74,
+            width:11, height:26,
+            borderRadius:5,
+            background:'linear-gradient(90deg, #242438 0%, #363652 100%)',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,0.12), 3px 0 5px rgba(0,0,0,0.40)',
+            border:'1px solid rgba(255,255,255,0.08)',
           }} />
 
-          {/* Action button — left (orange, Ultra-specific) */}
+          {/* Action button — left, Ultra orange */}
           <div style={{
-            position:'absolute', left:-8, top:40,
-            width:8, height:26,
-            borderRadius:4,
-            background:'linear-gradient(90deg,#c2410c,#ea580c)',
-            border:'1px solid rgba(255,100,0,0.5)',
-            boxShadow:'0 0 6px rgba(234,88,12,0.4)',
+            position:'absolute', left:-11, top:36,
+            width:11, height:30,
+            borderRadius:5,
+            background:'linear-gradient(90deg, #b83a0a, #ea580c, #f97316)',
+            boxShadow:[
+              'inset 0 1px 0 rgba(255,200,100,0.35)',
+              '-3px 0 10px rgba(234,88,12,0.55)',
+            ].join(', '),
+            border:'1px solid rgba(255,120,0,0.45)',
           }} />
 
-          {/* Screen */}
+          {/* Screen with bezel inset */}
           <div style={{
-            width: CASE_W - 24,
-            height: CASE_H - 22,
+            width: CASE_W - 20,
+            height: CASE_H - 20,
+            borderRadius: RADIUS - 7,
             background: '#000',
-            borderRadius: RADIUS - 8,
             overflow: 'hidden',
-            boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
+            boxShadow:[
+              'inset 0 0 0 1px rgba(255,255,255,0.07)',
+              'inset 0 3px 10px rgba(0,0,0,0.85)',
+            ].join(', '),
           }}>
             <AnimatedWatch />
           </div>
         </div>
 
-        {/* Band — bottom */}
+        {/* Band bottom — woven texture */}
         <div style={{
-          width: BAND_W,
-          height: BAND_B,
-          backgroundColor: '#0d0d0d',
-          background: 'linear-gradient(180deg, #0d0d0d 0%, #181818 100%)',
-          borderRadius: '0 0 10px 10px',
-          border: '1.5px solid rgba(255,255,255,0.06)',
+          width: BAND_W, height: BAND_B,
+          background: BAND_BG,
+          borderRadius: '0 0 12px 12px',
+          border: '1px solid rgba(255,255,255,0.05)',
           borderTop: 'none',
+          boxShadow: 'inset 2px 0 0 rgba(255,255,255,0.04), inset -2px 0 0 rgba(0,0,0,0.35)',
         }} />
 
         {/* Label */}
-        <p style={{ textAlign:'center', marginTop:12, fontSize:11, fontWeight:700, color:'rgba(0,0,0,0.45)', letterSpacing:'0.12em', textTransform:'uppercase' }}>
+        <p style={{ textAlign:'center', marginTop:14, fontSize:11, fontWeight:700, color:'rgba(0,0,0,0.45)', letterSpacing:'0.12em', textTransform:'uppercase' }}>
           Works on iOS &amp; Android
         </p>
       </div>
