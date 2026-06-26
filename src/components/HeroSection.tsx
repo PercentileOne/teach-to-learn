@@ -62,7 +62,7 @@ export default function HeroSection() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-[clamp(2.8rem,8vw,5rem)] font-black leading-[1.02] tracking-[-0.04em] text-white mb-4">
+            <h1 className="text-[clamp(2.8rem,8vw,5rem)] font-black leading-[1.02] tracking-[-0.04em] text-white mb-4" style={{ textShadow: '0 4px 16px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.20)' }}>
               {t('hero.title')}
             </h1>
 
