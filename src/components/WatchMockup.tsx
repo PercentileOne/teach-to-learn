@@ -251,7 +251,7 @@ export default function WatchMockup() {
         }} />
 
         {/* Label */}
-        <p style={{ textAlign:'center', marginTop:14, fontSize:11, fontWeight:700, color:'rgba(0,0,0,0.45)', letterSpacing:'0.12em', textTransform:'uppercase' }}>
+        <p style={{ textAlign:'center', marginTop:14, fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.55)', letterSpacing:'0.12em', textTransform:'uppercase' }}>
           Works on iOS &amp; Android
         </p>
       </div>
