@@ -1,14 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { track } from '../analytics'
 import AboutModal from './AboutModal'
 import ContactModal from './ContactModal'
 import LanguageSelector from './LanguageSelector'
-
-const NAV_LINKS = [
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: "Who It's For", href: '#who-its-for' },
-  { label: 'Pricing', href: '#pricing' },
-]
 
 function scrollTo(id: string) {
   const el = document.getElementById(id)
@@ -18,8 +13,15 @@ function scrollTo(id: string) {
 export function openContact() { window.dispatchEvent(new CustomEvent('open-contact')) }
 
 export default function NavBar() {
+  const { t } = useTranslation()
   const [aboutOpen, setAboutOpen] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
+
+  const NAV_LINKS = [
+    { label: t('nav.howItWorks'), href: '#how-it-works' },
+    { label: t('nav.whoItsFor'),  href: '#who-its-for' },
+    { label: t('nav.pricing'),    href: '#pricing' },
+  ]
 
   useEffect(() => {
     const handler = () => setContactOpen(true)
@@ -67,8 +69,8 @@ export default function NavBar() {
             {NAV_LINKS.map(({ label, href }) => (
               <NavLink key={label} label={label} onClick={() => scrollTo(href.replace('#', ''))} />
             ))}
-            <NavLink label="About" onClick={() => setAboutOpen(true)} />
-            <NavLink label="Contact" onClick={() => setContactOpen(true)} />
+            <NavLink label={t('nav.about')} onClick={() => setAboutOpen(true)} />
+            <NavLink label={t('nav.contact')} onClick={() => setContactOpen(true)} />
           </div>
 
           {/* Language selector + Desktop CTA */}
@@ -93,7 +95,7 @@ export default function NavBar() {
             }}
             onClick={() => { track('cta_launching_soon'); openContact() }}
             >
-              Launching Soon
+              {t('nav.cta')}
             </button>
           </div>
 
@@ -108,7 +110,7 @@ export default function NavBar() {
                 borderRadius: '20px', padding: '6px 14px', cursor: 'pointer',
               }}
             >
-              About
+              {t('nav.about')}
             </button>
             <button onClick={() => { track('cta_start_free_nav'); openContact() }} style={{
               padding: '8px 16px', borderRadius: '50px',
@@ -116,7 +118,7 @@ export default function NavBar() {
               color: '#FFFFFF', fontSize: '12px', fontWeight: 800,
               border: 'none', cursor: 'pointer',
             }}>
-              Start Free
+              {t('nav.startFree')}
             </button>
           </div>
 
