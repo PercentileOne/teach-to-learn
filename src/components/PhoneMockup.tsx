@@ -195,7 +195,7 @@ function TalkScreen({ elapsed }: { elapsed: number }) {
   return (
     <div style={{
       background: '#080E1C', height: '100%', display: 'flex',
-      flexDirection: 'column', alignItems: 'center', padding: '14px 12px 10px',
+      flexDirection: 'column', alignItems: 'center', padding: '36px 12px 10px',
       fontFamily: 'system-ui, sans-serif',
     }}>
       <div style={{ fontSize: '8px', fontWeight: 800, color: 'rgba(255,255,255,0.35)', letterSpacing: '1.5px', marginBottom: '4px' }}>TALK TEST</div>
